@@ -4,15 +4,21 @@
 namespace dae
 {
 	class GameObject;
+	class TextObject;
 	class Scene final
 	{
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
-		void Add(std::shared_ptr<GameObject> object);
-		void Remove(std::shared_ptr<GameObject> object);
-		void RemoveAll();
+		void AddGameObject(std::shared_ptr<GameObject> object);
+		void RemoveGameObject(std::shared_ptr<GameObject> object);
+		void RemoveAllGameObjects();
 
-		void Update();
+		void AddTextObject(std::shared_ptr<TextObject> object);
+		void RemoveTextObject(std::shared_ptr<TextObject> object);
+		void RemoveAllTextObjects();
+
+		void FixedUpdate(float deltaTime);
+		void Update(float deltaTime);
 		void Render() const;
 
 		~Scene();
@@ -25,7 +31,8 @@ namespace dae
 		explicit Scene(const std::string& name);
 
 		std::string m_name;
-		std::vector < std::shared_ptr<GameObject>> m_objects{};
+		std::vector < std::shared_ptr<GameObject>> m_gameObjects{};
+		std::vector < std::shared_ptr<TextObject>> m_textObjects{};
 
 		static unsigned int m_idCounter; 
 	};

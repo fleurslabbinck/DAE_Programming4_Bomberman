@@ -1,18 +1,17 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "GameObject.h"
 #include "Transform.h"
 
 namespace dae
 {
 	class Font;
 	class Texture2D;
-	class TextObject final : public GameObject
+	class TextObject final
 	{
 	public:
-		void Update() override;
-		void Render() const override;
+		void Update();
+		void Render() const;
 
 		void SetText(const std::string& text);
 		void SetPosition(float x, float y);
