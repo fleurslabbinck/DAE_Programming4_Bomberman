@@ -1,6 +1,5 @@
 #include "Scene.h"
 #include "GameObject.h"
-#include "TextObject.h"
 
 #include <algorithm>
 
@@ -27,21 +26,6 @@ void Scene::RemoveAllGameObjects()
 	m_gameObjects.clear();
 }
 
-void Scene::AddTextObject(std::shared_ptr<TextObject> textObject)
-{
-	m_textObjects.emplace_back(std::move(textObject));
-}
-
-void Scene::RemoveTextObject(std::shared_ptr<TextObject> textObject)
-{
-	m_textObjects.erase(std::remove(m_textObjects.begin(), m_textObjects.end(), textObject), m_textObjects.end());
-}
-
-void Scene::RemoveAllTextObjects()
-{
-	m_textObjects.clear();
-}
-
 void Scene::FixedUpdate(float deltaTime)
 {
 	for (auto& object : m_gameObjects)
@@ -56,21 +40,11 @@ void Scene::Update(float deltaTime)
 	{
 		object->Update(deltaTime);
 	}
-
-	for (auto& object : m_textObjects)
-	{
-		object->Update();
-	}
 }
 
 void Scene::Render() const
 {
 	for (const auto& object : m_gameObjects)
-	{
-		object->Render();
-	}
-
-	for (auto& object : m_textObjects)
 	{
 		object->Render();
 	}
