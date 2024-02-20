@@ -36,19 +36,19 @@ namespace dae
 	};
 
 	//---------------------------------
-	//BITMAPCOMPONENT
+	//RENDERCOMPONENT
 	//---------------------------------
-	class BitmapComponent : public Component
+	class RenderComponent : public Component
 	{
 	public:
 		virtual void Render(const Transform& transform) const override;
 
-		BitmapComponent() = default;
-		virtual ~BitmapComponent() = default;
-		BitmapComponent(const BitmapComponent& other) = delete;
-		BitmapComponent(BitmapComponent&& other) = delete;
-		BitmapComponent& operator=(const BitmapComponent& other) = delete;
-		BitmapComponent& operator=(BitmapComponent&& other) = delete;
+		RenderComponent() = default;
+		virtual ~RenderComponent() = default;
+		RenderComponent(const RenderComponent& other) = delete;
+		RenderComponent(RenderComponent&& other) = delete;
+		RenderComponent& operator=(const RenderComponent& other) = delete;
+		RenderComponent& operator=(RenderComponent&& other) = delete;
 	};
 
 	//---------------------------------
@@ -62,7 +62,7 @@ namespace dae
 
 		void Initialize(const std::string& text, std::shared_ptr<Font> font);
 		void SetText(const std::string& text);
-		virtual void SetPosition(float x, float y) override;
+		void UpdateText();
 
 		TextComponent() = default;
 		virtual ~TextComponent() = default;
@@ -79,18 +79,20 @@ namespace dae
 	//---------------------------------
 	//FPSCOMPONENT
 	//---------------------------------
-	class FPSComponent : public Component
+	class FPSComponent final : public TextComponent
 	{
 	public:
+		void Update(float deltaTime) override;
 
-		FPSComponent(float FPS);
-		virtual ~FPSComponent();
+		FPSComponent() = default;
+		virtual ~FPSComponent() = default;
 		FPSComponent(const FPSComponent& other) = delete;
 		FPSComponent(FPSComponent&& other) = delete;
 		FPSComponent& operator=(const FPSComponent& other) = delete;
 		FPSComponent& operator=(FPSComponent&& other) = delete;
 
 	private:
-
+		int m_frameCount{};
+		float m_accumulatedTime{};
 	};
 }

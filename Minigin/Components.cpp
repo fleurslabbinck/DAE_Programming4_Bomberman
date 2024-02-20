@@ -1,5 +1,7 @@
 #include <stdexcept>
 #include <SDL_ttf.h>
+#include <iomanip>
+#include <sstream>
 #include "Components.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
@@ -28,7 +30,7 @@ void dae::Component::SetPosition(float x, float y)
 //---------------------------------
 //BITMAPCOMPONENT
 //---------------------------------
-void dae::BitmapComponent::Render(const Transform& transform) const
+void dae::RenderComponent::Render(const Transform& transform) const
 {
 	const auto& pos = transform.GetPosition();
 	Renderer::GetInstance().RenderTexture(*m_texture, pos.x + m_transform.GetPosition().x, pos.y + m_transform.GetPosition().y);
@@ -45,23 +47,7 @@ void dae::BitmapComponent::Render(const Transform& transform) const
 
 void dae::TextComponent::Update(float)
 {
-	if (m_needsUpdate)
-	{
-		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
-		const auto surf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), color);
-		if (surf == nullptr)
-		{
-			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
-		}
-		auto texture = SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surf);
-		if (texture == nullptr)
-		{
-			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
-		}
-		SDL_FreeSurface(surf);
-		m_texture = std::make_shared<Texture2D>(texture);
-		m_needsUpdate = false;
-	}
+	if (m_needsUpdate) UpdateText();
 }
 
 void dae::TextComponent::Render(const Transform&) const
@@ -87,7 +73,46 @@ void dae::TextComponent::SetText(const std::string& text)
 	m_needsUpdate = true;
 }
 
-void dae::TextComponent::SetPosition(const float x, const float y)
+void dae::TextComponent::UpdateText()
 {
-	m_transform.SetPosition(x, y, 0.0f);
+	const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
+	const auto surf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), color);
+	if (surf == nullptr)
+	{
+		throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
+	}
+	auto texture = SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surf);
+	if (texture == nullptr)
+	{
+		throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
+	}
+	SDL_FreeSurface(surf);
+	m_texture = std::make_shared<Texture2D>(texture);
+	m_needsUpdate = false;
+}
+
+//---------------------------------
+//FPSCOMPONENT
+//---------------------------------
+
+void dae::FPSComponent::Update(float deltaTime)
+{
+	constexpr float maxTime{ 0.1f };
+	
+	++m_frameCount;
+	m_accumulatedTime += deltaTime;
+
+	if (m_accumulatedTime >= maxTime)
+	{
+		float fps{ m_frameCount / m_accumulatedTime };
+
+		std::stringstream buffer;
+		buffer << std::fixed << std::setprecision(1) << fps;
+
+		SetText(buffer.str() + " FPS");
+		UpdateText();
+
+		m_frameCount = 0;
+		m_accumulatedTime = 0;
+	}
 }
