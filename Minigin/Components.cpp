@@ -28,7 +28,7 @@ void dae::Component::SetPosition(float x, float y)
 }
 
 //---------------------------------
-//BITMAPCOMPONENT
+//RENDERCOMPONENT
 //---------------------------------
 void dae::RenderComponent::Render(const Transform& transform) const
 {
