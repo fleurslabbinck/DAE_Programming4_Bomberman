@@ -11,6 +11,12 @@
 //---------------------------------
 //BASE COMPONENT
 //---------------------------------
+void dae::Component::FixedUpdate(float) {}
+
+void dae::Component::Update(float) {}
+
+void dae::Component::Render(const Transform&) const {}
+
 void dae::Component::SetTexture(const std::string& filename)
 {
 	m_texture = ResourceManager::GetInstance().LoadTexture(filename);

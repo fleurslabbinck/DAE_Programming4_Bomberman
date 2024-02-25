@@ -15,9 +15,9 @@ namespace dae
 	class Component
 	{
 	public:
-		virtual void FixedUpdate(float deltaTime) {};
-		virtual void Update(float deltaTime) {};
-		virtual void Render(const Transform& transform) const {};
+		virtual void FixedUpdate(float deltaTime);
+		virtual void Update(float deltaTime);
+		virtual void Render(const Transform& transform) const;
 
 		virtual void SetTexture(const std::string& filename);
 		virtual void SetPosition(float x, float y);

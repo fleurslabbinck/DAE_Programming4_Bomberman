@@ -1,7 +1,10 @@
 #include <string>
 #include <algorithm>
 #include "GameObject.h"
+#include "Components.h"
 #include "Renderer.h"
+
+dae::GameObject::~GameObject() = default;
 
 void dae::GameObject::AddComponent(std::shared_ptr<Component> component)
 {
