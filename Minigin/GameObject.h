@@ -1,12 +1,11 @@
 #pragma once
-#include <memory>
 #include <vector>
 #include "Transform.h"
+#include "Components.h"
 
 namespace dae
 {
 	class Texture2D;
-	class Component;
 
 	// todo: this should become final.
 	class GameObject final
@@ -37,7 +36,7 @@ namespace dae
 		void SetPosition(float x, float y);
 
 		GameObject() = default;
-		~GameObject();
+		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
