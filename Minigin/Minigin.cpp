@@ -12,9 +12,6 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "Minigin.h"
-#include "InputManager.h"
-#include "SceneManager.h"
-#include "Renderer.h"
 #include "ResourceManager.h"
 
 SDL_Window* g_window{};
@@ -74,7 +71,7 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 	}
 
 	g_window = SDL_CreateWindow(
-		"Programming 4 assignment",
+		"Programming 4 assignment - Fleur Slabbinck",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		640,
@@ -98,56 +95,50 @@ dae::Minigin::~Minigin()
 	SDL_Quit();
 }
 
-//void dae::Minigin::Run(const std::function<void()>& load)
-//{
-//	load();
-//
-//	using namespace std::chrono;
-//
-//#ifndef __EMSCRIPTEN__
-//	while (!m_quit)
-//		RunOneFrame();
-//#else
-//	emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
-//#endif
-//}
-
 void dae::Minigin::Run(const std::function<void()>& load)
 {
-	constexpr float targetFPS{ 165.f };
-	constexpr float fixedTimeStep{ 0.3f };
-	constexpr std::chrono::milliseconds msPerFrame{ static_cast<long long>(1.f / targetFPS * 1000.f) };
-
 	load();
 
-	auto& renderer = Renderer::GetInstance();
-	auto& sceneManager = SceneManager::GetInstance();
-	auto& input = InputManager::GetInstance();
+	//auto& renderer = Renderer::GetInstance();
+	//auto& sceneManager = SceneManager::GetInstance();
+	//auto& input = InputManager::GetInstance();
 
-	bool doContinue = true;
+	SetTargetFPS(m_targetFPS);
 
-	auto lastTime{ std::chrono::high_resolution_clock::now() };
-	float lag{ 0.f };
+	m_lastTime = std::chrono::high_resolution_clock::now();
 
-	while (doContinue)
+#ifndef __EMSCRIPTEN__
+	while (!m_quit)
+		RunOneFrame();
+#else
+	emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
+#endif
+}
+
+void dae::Minigin::RunOneFrame()
+{
+	const auto currentTime{ std::chrono::high_resolution_clock::now() };
+	const float deltaTime{ std::chrono::duration<float>(currentTime - m_lastTime).count() };
+	m_lastTime = currentTime;
+	m_lag += deltaTime;
+
+	m_quit = m_input.ProcessInput();
+
+	while (m_lag >= m_fixedTimeStep)
 	{
-		const auto currentTime{ std::chrono::high_resolution_clock::now() };
-		const float deltaTime{ std::chrono::duration<float>(currentTime - lastTime).count() };
-		lastTime = currentTime;
-		lag += deltaTime;
-
-		doContinue = input.ProcessInput();
-
-		while (lag >= fixedTimeStep)
-		{
-			sceneManager.FixedUpdate(fixedTimeStep);
-			lag -= fixedTimeStep;
-		}
-
-		sceneManager.Update(deltaTime);
-		renderer.Render();
-
-		const auto sleepTime{ currentTime + msPerFrame - std::chrono::high_resolution_clock::now() };
-		std::this_thread::sleep_for(sleepTime);
+		m_sceneManager.FixedUpdate(m_fixedTimeStep);
+		m_lag -= m_fixedTimeStep;
 	}
+
+	m_sceneManager.Update(deltaTime);
+	m_renderer.Render();
+
+	const auto sleepTime{ currentTime + m_msPerFrame - std::chrono::high_resolution_clock::now() };
+	if (sleepTime.count() > 0) std::this_thread::sleep_for(sleepTime);
+}
+
+void dae::Minigin::SetTargetFPS(float fps)
+{
+	m_targetFPS = fps;
+	m_msPerFrame = (std::chrono::milliseconds)static_cast<long long>(1.f / m_targetFPS * 1000.f);
 }
