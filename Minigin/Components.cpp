@@ -7,63 +7,61 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
+#include "TimeManager.h"
 
 //---------------------------------
 //BASE COMPONENT
 //---------------------------------
-void dae::Component::FixedUpdate(float) {}
+void dae::BaseComponent::Update() { for (auto component : m_subComponents) component->Update(); }
 
-void dae::Component::Update(float) {}
+void dae::BaseComponent::Render(const glm::vec3& pos) const { for (auto component : m_subComponents) component->Render(pos); }
 
-void dae::Component::Render(const Transform&) const {}
-
-void dae::Component::SetTexture(const std::string& filename)
+//---------------------------------
+//TRANSFORMCOMPONENT
+//---------------------------------
+void dae::TransformComponent::SetPosition(float x, float y, float z)
 {
-	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
+	m_position.x = x;
+	m_position.y = y;
+	m_position.z = z;
 }
 
-void dae::Component::SetPosition(float x, float y)
-{
-	m_transform.SetPosition(x, y, 0.0f);
-}
 
 //---------------------------------
 //RENDERCOMPONENT
 //---------------------------------
-void dae::RenderComponent::Render(const Transform& transform) const
+void dae::RenderComponent::Render(const glm::vec3& pos) const
 {
-	const auto& pos = transform.GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_texture, pos.x + m_transform.GetPosition().x, pos.y + m_transform.GetPosition().y);
+	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
+}
+
+void dae::RenderComponent::SetTexture(const std::string& filename)
+{
+	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
+}
+
+void dae::RenderComponent::SetTexture(std::shared_ptr<Texture2D> texture)
+{
+	m_texture = texture;
 }
 
 //---------------------------------
 //TEXTCOMPONENT
 //---------------------------------
-//dae::TextComponent::TextComponent(const std::string& text, std::shared_ptr<Font> font)
-//	: m_needsUpdate(true), m_text(text), m_font(std::move(font))
-//{
-//	m_texture = nullptr;
-//}
-
-void dae::TextComponent::Update(float)
+void dae::TextComponent::Update()
 {
 	if (m_needsUpdate) UpdateText();
 }
 
-void dae::TextComponent::Render(const Transform&) const
+void dae::TextComponent::Render(const glm::vec3& pos) const
 {
-	if (m_texture != nullptr)
-	{
-		const auto& pos = m_transform.GetPosition();
-		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
-	}
+	m_renderComponent->Render(pos);
 }
 
 void dae::TextComponent::Initialize(const std::string& text, std::shared_ptr<Font> font)
 {
-	m_needsUpdate = true;
+	m_font = font;
 	m_text = text;
-	m_font = std::move(font);
 }
 
 // This implementation uses the "dirty flag" pattern
@@ -87,7 +85,7 @@ void dae::TextComponent::UpdateText()
 		throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 	}
 	SDL_FreeSurface(surf);
-	m_texture = std::make_shared<Texture2D>(texture);
+	m_renderComponent->SetTexture(std::make_shared<Texture2D>(texture));
 	m_needsUpdate = false;
 }
 
@@ -95,12 +93,14 @@ void dae::TextComponent::UpdateText()
 //FPSCOMPONENT
 //---------------------------------
 
-void dae::FPSComponent::Update(float deltaTime)
+void dae::FPSComponent::Update()
 {
 	constexpr float maxTime{ 0.1f };
+
+	TimeManager& time = TimeManager::GetInstance();
 	
 	++m_frameCount;
-	m_accumulatedTime += deltaTime;
+	m_accumulatedTime += time.GetDeltaTime();
 
 	if (m_accumulatedTime >= maxTime)
 	{
@@ -109,10 +109,15 @@ void dae::FPSComponent::Update(float deltaTime)
 		std::stringstream buffer;
 		buffer << std::fixed << std::setprecision(1) << fps;
 
-		SetText(buffer.str() + " FPS");
-		UpdateText();
+		m_textComponent->SetText(buffer.str() + " FPS");
+		m_textComponent->UpdateText();
 
 		m_frameCount = 0;
 		m_accumulatedTime = 0;
 	}
+}
+
+void dae::FPSComponent::Render(const glm::vec3& pos) const
+{
+	m_textComponent->Render(pos);
 }

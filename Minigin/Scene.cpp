@@ -26,19 +26,11 @@ void Scene::RemoveAllGameObjects()
 	m_gameObjects.clear();
 }
 
-void Scene::FixedUpdate(float deltaTime)
-{
-	for (auto& object : m_gameObjects)
-	{
-		object->FixedUpdate(deltaTime);
-	}
-}
-
-void Scene::Update(float deltaTime)
+void Scene::Update()
 {
 	for(auto& object : m_gameObjects)
 	{
-		object->Update(deltaTime);
+		object->Update();
 	}
 }
 

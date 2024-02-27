@@ -1,19 +1,19 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "Transform.h"
+#include "Components.h"
 
 namespace dae
 {
 	class Texture2D;
-	class Component;
+	class BaseComponent;
 
 	// todo: this should become final.
 	class GameObject final
 	{
 	public:
-		void AddComponent(std::shared_ptr<Component> object);
-		void RemoveComponent(std::shared_ptr<Component> object);
+		void AddComponent(std::shared_ptr<BaseComponent> object);
+		void RemoveComponent(std::shared_ptr<BaseComponent> object);
 		
 		template <typename C>
 		std::shared_ptr<C> GetComponent(size_t occurence = 1) const
@@ -29,12 +29,11 @@ namespace dae
 		};
 		bool HasComponent() const { return m_components.empty(); };
 
-		void FixedUpdate(float deltaTime);
-		void Update(float deltaTime);
+		void Update();
 		void Render() const;
 
-		///void SetTexture(const std::string& filename);
 		void SetPosition(float x, float y);
+		std::shared_ptr<TransformComponent> GetTransform() const { return m_transformComponent; }
 
 		GameObject() = default;
 		~GameObject();
@@ -44,9 +43,7 @@ namespace dae
 		GameObject& operator=(GameObject&& other) = delete;
 
 	private:
-		Transform m_transform{};
-		// todo: mmm, every gameobject has a texture? Is that correct?
-		//std::shared_ptr<Texture2D> m_texture{};
-		std::vector <std::shared_ptr<Component>> m_components{};
+		std::shared_ptr<TransformComponent> m_transformComponent{};
+		std::vector <std::shared_ptr<BaseComponent>> m_components{};
 	};
 }

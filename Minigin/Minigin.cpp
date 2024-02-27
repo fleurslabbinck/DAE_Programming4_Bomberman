@@ -14,6 +14,7 @@
 #include "Minigin.h"
 #include "ResourceManager.h"
 
+
 SDL_Window* g_window{};
 
 void LogSDLVersion(const std::string& message, const SDL_version& v)
@@ -99,13 +100,12 @@ void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 
-	//auto& renderer = Renderer::GetInstance();
-	//auto& sceneManager = SceneManager::GetInstance();
-	//auto& input = InputManager::GetInstance();
+	constexpr int targetFPS{ 165 };
 
-	SetTargetFPS(m_targetFPS);
+	m_time.SetTargetFPS(targetFPS);
 
-	m_lastTime = std::chrono::high_resolution_clock::now();
+	m_time.UpdateCurrTime();
+	m_time.SetLastTime();
 
 #ifndef __EMSCRIPTEN__
 	while (!m_quit)
@@ -117,28 +117,15 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 void dae::Minigin::RunOneFrame()
 {
-	const auto currentTime{ std::chrono::high_resolution_clock::now() };
-	const float deltaTime{ std::chrono::duration<float>(currentTime - m_lastTime).count() };
-	m_lastTime = currentTime;
-	m_lag += deltaTime;
+	m_time.UpdateCurrTime();
+	m_time.CalculateDeltaTime();
+	m_time.SetLastTime();
 
 	m_quit = m_input.ProcessInput();
 
-	while (m_lag >= m_fixedTimeStep)
-	{
-		m_sceneManager.FixedUpdate(m_fixedTimeStep);
-		m_lag -= m_fixedTimeStep;
-	}
-
-	m_sceneManager.Update(deltaTime);
+	m_sceneManager.Update();
 	m_renderer.Render();
 
-	const auto sleepTime{ currentTime + m_msPerFrame - std::chrono::high_resolution_clock::now() };
+	const auto sleepTime{ m_time.GetSleepTime() };
 	if (sleepTime.count() > 0) std::this_thread::sleep_for(sleepTime);
-}
-
-void dae::Minigin::SetTargetFPS(float fps)
-{
-	m_targetFPS = fps;
-	m_msPerFrame = (std::chrono::milliseconds)static_cast<long long>(1.f / m_targetFPS * 1000.f);
 }
