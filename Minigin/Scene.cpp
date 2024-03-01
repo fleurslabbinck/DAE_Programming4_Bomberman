@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "GameObject.h"
+#include "TimeManager.h"
 
 #include <algorithm>
 
@@ -28,9 +29,18 @@ void Scene::RemoveAllGameObjects()
 
 void Scene::Update()
 {
-	for(auto& object : m_gameObjects)
+	std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [&](std::shared_ptr<GameObject> go) 
+		{ 
+			if (!go->IsDead()) go->Update();
+			else ++m_deadGameObjects;
+	});
+}
+
+void Scene::LateUpdate()
+{
+	for (size_t idx{}; idx < m_gameObjects.size(); ++idx)
 	{
-		object->Update();
+		if (m_gameObjects[idx]->IsDead()) RemoveGameObject(m_gameObjects[idx]);
 	}
 }
 

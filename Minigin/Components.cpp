@@ -19,6 +19,11 @@ void dae::BaseComponent::Render(const glm::vec3& pos) const { for (auto componen
 //---------------------------------
 //TRANSFORMCOMPONENT
 //---------------------------------
+void dae::TransformComponent::Update()
+{
+
+}
+
 void dae::TransformComponent::SetPosition(float x, float y, float z)
 {
 	m_position.x = x;
@@ -53,12 +58,7 @@ void dae::TextComponent::Update()
 	if (m_needsUpdate) UpdateText();
 }
 
-void dae::TextComponent::Render(const glm::vec3& pos) const
-{
-	m_renderComponent->Render(pos);
-}
-
-void dae::TextComponent::Initialize(const std::string& text, std::shared_ptr<Font> font)
+void dae::TextComponent::Initialize(std::shared_ptr<Font> font, const std::string& text)
 {
 	m_font = font;
 	m_text = text;
@@ -104,20 +104,16 @@ void dae::FPSComponent::Update()
 
 	if (m_accumulatedTime >= maxTime)
 	{
-		float fps{ m_frameCount / m_accumulatedTime };
-
-		std::stringstream buffer;
-		buffer << std::fixed << std::setprecision(1) << fps;
-
-		m_textComponent->SetText(buffer.str() + " FPS");
-		m_textComponent->UpdateText();
+		m_textComponent->SetText(std::format("{:.1f}", m_frameCount / m_accumulatedTime));
 
 		m_frameCount = 0;
 		m_accumulatedTime = 0;
 	}
+
+	if (m_textComponent->NeedsUpdate()) m_textComponent->UpdateText();
 }
 
-void dae::FPSComponent::Render(const glm::vec3& pos) const
+void dae::FPSComponent::Initialize(std::shared_ptr<Font> font, const std::string& text)
 {
-	m_textComponent->Render(pos);
+	m_textComponent->Initialize(font, text);
 }

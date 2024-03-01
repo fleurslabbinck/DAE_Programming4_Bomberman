@@ -4,11 +4,18 @@
 #include "Components.h"
 #include "Renderer.h"
 
+dae::GameObject::GameObject(float x, float y)
+	: m_transformComponent{ std::make_shared<TransformComponent>(this) }
+{
+	m_transformComponent = std::make_shared<TransformComponent>(this);
+	m_transformComponent->SetPosition(x, y);
+}
+
 dae::GameObject::~GameObject() = default;
 
 void dae::GameObject::AddComponent(std::shared_ptr<BaseComponent> component)
 {
-	m_components.emplace_back(std::move(component));
+	m_components.push_back(std::move(component));
 }
 
 void dae::GameObject::RemoveComponent(std::shared_ptr<BaseComponent> component)
@@ -18,7 +25,12 @@ void dae::GameObject::RemoveComponent(std::shared_ptr<BaseComponent> component)
 
 void dae::GameObject::Update()
 {
-	std::for_each(m_components.begin(), m_components.end(), [=](std::shared_ptr<BaseComponent> component) {component->Update(); });
+	std::for_each(m_components.begin(), m_components.end(), [&](std::shared_ptr<BaseComponent> component) {component->Update(); });
+}
+
+void dae::GameObject::LateUpdate()
+{
+	
 }
 
 void dae::GameObject::Render() const

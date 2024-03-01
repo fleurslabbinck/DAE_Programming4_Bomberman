@@ -124,6 +124,7 @@ void dae::Minigin::RunOneFrame()
 	m_quit = m_input.ProcessInput();
 
 	m_sceneManager.Update();
+	m_sceneManager.LateUpdate();
 	m_renderer.Render();
 
 	const auto sleepTime{ m_time.GetSleepTime() };

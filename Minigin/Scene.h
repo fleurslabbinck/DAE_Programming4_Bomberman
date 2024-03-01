@@ -13,6 +13,7 @@ namespace dae
 		void RemoveAllGameObjects();
 
 		void Update();
+		void LateUpdate();
 		void Render() const;
 
 		~Scene();
@@ -26,6 +27,8 @@ namespace dae
 
 		std::string m_name;
 		std::vector < std::shared_ptr<GameObject>> m_gameObjects{};
+
+		int m_deadGameObjects{};
 
 		static unsigned int m_idCounter; 
 	};
