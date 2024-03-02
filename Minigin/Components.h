@@ -24,8 +24,12 @@ namespace dae
 	{
 		GameObject* m_pOwner;
 	public:
+		virtual void FixedUpdate();
 		virtual void Update();
 		virtual void Render(const glm::vec3& pos) const;
+
+		virtual void SetDelete() { m_delete = true; }
+		virtual bool ShouldBeDeleted() const { return m_delete; };
 		
 		virtual ~BaseComponent() = default;
 		BaseComponent() = delete;
@@ -37,6 +41,8 @@ namespace dae
 	protected:
 		std::vector<std::shared_ptr<BaseComponent>> m_subComponents{};
 
+		bool m_delete{ false };
+
 		explicit BaseComponent(GameObject* pOwner) : m_pOwner{ pOwner } {}
 		GameObject* GetOwner() const { return m_pOwner; }
 	};
@@ -47,17 +53,42 @@ namespace dae
 	class TransformComponent : public BaseComponent
 	{
 	public:
-		void Update();
-
-		const glm::vec3& GetPosition() const { return m_position; }
-		void SetPosition(float x, float y, float z = 0);
+		void UpdateWorldPosition();
+		void SetLocalPosition(const glm::vec3& pos);
+		void SetPositionDirty() { m_positionIsDirty = !m_positionIsDirty; };
+		bool IsPositionDirty() const { return m_positionIsDirty; }
+		glm::vec3 GetLocalPosition() { return m_localPosition; }
+		glm::vec3 GetWorldPosition();
 
 		explicit TransformComponent(GameObject* pOwner) : BaseComponent(pOwner) {}
 		TransformComponent(const TransformComponent& other) = delete;
 		TransformComponent(TransformComponent&& other) = delete;
 
 	private:
-		glm::vec3 m_position{};
+		glm::vec3 m_localPosition{};
+		glm::vec3 m_worldPosition{};
+
+		bool m_positionIsDirty{ true };
+	};
+
+	//---------------------------------
+	//ROTATORCOMPONENT
+	//---------------------------------
+	class RotatorComponent : public BaseComponent
+	{
+	public:
+		void Update() override;
+		
+		void SetRotation(float angle) { m_rotation = angle; };
+		float GetRotation() const { return m_rotation; };
+		glm::vec3 RotatePoint(const glm::vec3& pos) const;
+
+		explicit RotatorComponent(GameObject* pOwner) : BaseComponent(pOwner) {};
+		RotatorComponent(const RotatorComponent& other) = delete;
+		RotatorComponent(RotatorComponent&& other) = delete;
+
+	private:
+		float m_rotation{};
 	};
 
 	//---------------------------------

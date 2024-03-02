@@ -27,13 +27,22 @@ void Scene::RemoveAllGameObjects()
 	m_gameObjects.clear();
 }
 
+void Scene::FixedUpdate()
+{
+	std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [&](std::shared_ptr<GameObject> go)
+		{
+			if (!go->IsDead()) go->FixedUpdate();
+		}
+	);
+}
+
 void Scene::Update()
 {
 	std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [&](std::shared_ptr<GameObject> go) 
 		{ 
 			if (!go->IsDead()) go->Update();
-			else ++m_deadGameObjects;
-	});
+		}
+	);
 }
 
 void Scene::LateUpdate()

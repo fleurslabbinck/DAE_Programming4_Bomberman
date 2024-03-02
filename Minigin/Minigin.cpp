@@ -84,13 +84,13 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::GetInstance().Init(g_window);
+	m_renderer.Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
 }
 
 dae::Minigin::~Minigin()
 {
-	Renderer::GetInstance().Destroy();
+	m_renderer.Destroy();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
 	SDL_Quit();
@@ -100,11 +100,13 @@ void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 
+	SDL_RenderSetVSync(m_renderer.GetSDLRenderer(), true);
+
 	constexpr int targetFPS{ 165 };
 
 	m_time.SetTargetFPS(targetFPS);
 
-	m_time.UpdateCurrTime();
+	m_time.SetCurrTime();
 	m_time.SetLastTime();
 
 #ifndef __EMSCRIPTEN__
@@ -117,16 +119,25 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 void dae::Minigin::RunOneFrame()
 {
-	m_time.UpdateCurrTime();
+	m_time.SetCurrTime();
 	m_time.CalculateDeltaTime();
 	m_time.SetLastTime();
+	m_time.SetLag(m_time.GetDeltaTime());
 
 	m_quit = m_input.ProcessInput();
+
+	const float m_fixedTimeStep{ m_time.GetFixedTimeStep() };
+
+	while (m_time.GetLag() >= m_fixedTimeStep)
+	{
+		m_sceneManager.FixedUpdate();
+		m_time.SetLag(-m_fixedTimeStep);
+	}
 
 	m_sceneManager.Update();
 	m_sceneManager.LateUpdate();
 	m_renderer.Render();
 
-	const auto sleepTime{ m_time.GetSleepTime() };
-	if (sleepTime.count() > 0) std::this_thread::sleep_for(sleepTime);
+	//const auto sleepTime{ m_time.GetSleepTime() };
+	//if (sleepTime.count() > 0) std::this_thread::sleep_for(sleepTime);
 }

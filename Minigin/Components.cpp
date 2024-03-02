@@ -8,10 +8,14 @@
 #include "Font.h"
 #include "Texture2D.h"
 #include "TimeManager.h"
+#include "GameObject.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 //---------------------------------
 //BASE COMPONENT
 //---------------------------------
+void dae::BaseComponent::FixedUpdate() { for (auto component : m_subComponents) component->FixedUpdate(); }
+
 void dae::BaseComponent::Update() { for (auto component : m_subComponents) component->Update(); }
 
 void dae::BaseComponent::Render(const glm::vec3& pos) const { for (auto component : m_subComponents) component->Render(pos); }
@@ -19,18 +23,53 @@ void dae::BaseComponent::Render(const glm::vec3& pos) const { for (auto componen
 //---------------------------------
 //TRANSFORMCOMPONENT
 //---------------------------------
-void dae::TransformComponent::Update()
+void dae::TransformComponent::UpdateWorldPosition()
 {
+	if (GetOwner()->GetParent() == nullptr) m_worldPosition = m_localPosition;
+	else m_worldPosition = GetOwner()->GetParent()->GetTransform()->GetWorldPosition() + m_localPosition;
 
+	m_positionIsDirty = false;
 }
 
-void dae::TransformComponent::SetPosition(float x, float y, float z)
+void dae::TransformComponent::SetLocalPosition(const glm::vec3& pos)
 {
-	m_position.x = x;
-	m_position.y = y;
-	m_position.z = z;
+	m_localPosition = pos;
+	SetPositionDirty();
 }
 
+glm::vec3 dae::TransformComponent::GetWorldPosition()
+{
+	if (m_positionIsDirty) UpdateWorldPosition();
+
+	return m_worldPosition;
+}
+
+//---------------------------------
+//ROTATORCOMPONENT
+//---------------------------------
+void dae::RotatorComponent::Update()
+{
+	std::shared_ptr<TransformComponent> tranform{ GetOwner()->GetTransform() };
+
+	const glm::vec3 center{ tranform->GetWorldPosition() };
+	const glm::vec3 localPos{tranform->GetLocalPosition() };
+
+	const glm::vec3 rotatedPos{ RotatePoint(localPos) };
+
+	tranform->SetLocalPosition(rotatedPos);
+}
+
+glm::vec3 dae::RotatorComponent::RotatePoint(const glm::vec3& pos) const
+{
+	const float radians = glm::radians(m_rotation);
+
+	const glm::mat3 rotationMatrix = glm::mat3(
+			glm::vec3(cos(radians), -sin(radians), 0.0f),
+			glm::vec3(sin(radians), cos(radians), 0.0f),
+			glm::vec3(0.0f, 0.0f, 1.0f));
+
+	return rotationMatrix * pos;
+}
 
 //---------------------------------
 //RENDERCOMPONENT
@@ -64,7 +103,6 @@ void dae::TextComponent::Initialize(std::shared_ptr<Font> font, const std::strin
 	m_text = text;
 }
 
-// This implementation uses the "dirty flag" pattern
 void dae::TextComponent::SetText(const std::string& text)
 {
 	m_text = text;
