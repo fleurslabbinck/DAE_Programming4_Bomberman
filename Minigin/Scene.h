@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneManager.h"
+#include "GameObject.h"
 
 namespace dae
 {
@@ -8,8 +9,8 @@ namespace dae
 	{
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
-		void AddGameObject(std::shared_ptr<GameObject> object);
-		void RemoveGameObject(std::shared_ptr<GameObject> object);
+		void AddGameObject(std::unique_ptr<GameObject> object);
+		void RemoveGameObject(std::unique_ptr<GameObject> object);
 		void RemoveAllGameObjects();
 
 		void FixedUpdate();
@@ -27,7 +28,7 @@ namespace dae
 		explicit Scene(const std::string& name);
 
 		std::string m_name;
-		std::vector < std::shared_ptr<GameObject>> m_gameObjects{};
+		std::vector < std::unique_ptr<GameObject>> m_gameObjects{};
 
 		//float m_accumulatedTime{};
 		//bool m_deleted{ false };

@@ -5,8 +5,8 @@
 #include "Components.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
-#include "Font.h"
 #include "Texture2D.h"
+#include "Font.h"
 #include "TimeManager.h"
 #include "GameObject.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,11 +14,11 @@
 //---------------------------------
 //BASE COMPONENT
 //---------------------------------
-void dae::BaseComponent::FixedUpdate() { for (auto component : m_subComponents) component->FixedUpdate(); }
+void dae::BaseComponent::FixedUpdate() { for (auto& component : m_subComponents) component->FixedUpdate(); }
 
-void dae::BaseComponent::Update() { for (auto component : m_subComponents) component->Update(); }
+void dae::BaseComponent::Update() { for (auto& component : m_subComponents) component->Update(); }
 
-void dae::BaseComponent::Render(const glm::vec3& pos) const { for (auto component : m_subComponents) component->Render(pos); }
+void dae::BaseComponent::Render(const glm::vec3& pos) const { for (auto& component : m_subComponents) component->Render(pos); }
 
 //---------------------------------
 //TRANSFORMCOMPONENT
@@ -62,13 +62,13 @@ glm::vec3 dae::TransformComponent::GetWorldPosition()
 //---------------------------------
 void dae::RotatorComponent::Update()
 {
-	std::shared_ptr<TransformComponent> tranform{ GetOwner()->GetTransform() };
+	dae::TransformComponent* transform = GetOwner()->GetTransform();
 
-	const glm::vec3 localPos{tranform->GetLocalPosition() };
+	const glm::vec3 localPos{transform->GetLocalPosition() };
 
 	const glm::vec3 rotatedPos{ RotatePoint(localPos) };
 
-	tranform->SetLocalPosition(rotatedPos);
+	transform->SetLocalPosition(rotatedPos);
 }
 
 glm::vec3 dae::RotatorComponent::RotatePoint(const glm::vec3& pos) const
@@ -93,12 +93,12 @@ void dae::RenderComponent::Render(const glm::vec3& pos) const
 
 void dae::RenderComponent::SetTexture(const std::string& filename)
 {
-	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
+	m_texture = std::move(ResourceManager::GetInstance().LoadTexture(filename));
 }
 
-void dae::RenderComponent::SetTexture(std::shared_ptr<Texture2D> texture)
+void dae::RenderComponent::SetTexture(std::unique_ptr<Texture2D> texture)
 {
-	m_texture = texture;
+	m_texture = std::move(texture);
 }
 
 //---------------------------------
@@ -109,9 +109,9 @@ void dae::TextComponent::Update()
 	if (m_needsUpdate) UpdateText();
 }
 
-void dae::TextComponent::Initialize(std::shared_ptr<Font> font, const std::string& text)
+void dae::TextComponent::Initialize(const std::string& fontPath, int fontSize, const std::string& text)
 {
-	m_font = font;
+	m_font = std::move(dae::ResourceManager::GetInstance().LoadFont(fontPath, fontSize));
 	m_text = text;
 }
 
@@ -135,7 +135,7 @@ void dae::TextComponent::UpdateText()
 		throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 	}
 	SDL_FreeSurface(surf);
-	m_renderComponent->SetTexture(std::make_shared<Texture2D>(texture));
+	m_renderComponent->SetTexture(std::make_unique<Texture2D>(texture));
 	m_needsUpdate = false;
 }
 
@@ -163,7 +163,7 @@ void dae::FPSComponent::Update()
 	if (m_textComponent->NeedsUpdate()) m_textComponent->UpdateText();
 }
 
-void dae::FPSComponent::Initialize(std::shared_ptr<Font> font, const std::string& text)
+void dae::FPSComponent::Initialize(const std::string& fontPath, int fontSize, const std::string& text)
 {
-	m_textComponent->Initialize(font, text);
+	m_textComponent->Initialize(fontPath, fontSize, text);
 }

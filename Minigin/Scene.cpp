@@ -1,5 +1,4 @@
 #include "Scene.h"
-#include "GameObject.h"
 #include "TimeManager.h"
 
 #include <algorithm>
@@ -12,12 +11,12 @@ Scene::Scene(const std::string& name) : m_name(name) {}
 
 Scene::~Scene() = default;
 
-void Scene::AddGameObject(std::shared_ptr<GameObject> gameObject)
+void Scene::AddGameObject(std::unique_ptr<GameObject> gameObject)
 {
 	m_gameObjects.emplace_back(std::move(gameObject));
 }
 
-void Scene::RemoveGameObject(std::shared_ptr<GameObject> gameObject)
+void Scene::RemoveGameObject(std::unique_ptr<GameObject> gameObject)
 {
 	m_gameObjects.erase(std::remove(m_gameObjects.begin(), m_gameObjects.end(), gameObject), m_gameObjects.end());
 }
@@ -29,7 +28,7 @@ void Scene::RemoveAllGameObjects()
 
 void Scene::FixedUpdate()
 {
-	std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [&](std::shared_ptr<GameObject> go)
+	std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [](std::unique_ptr<GameObject>& go)
 		{
 			if (!go->IsDead()) go->FixedUpdate();
 		}
@@ -49,7 +48,7 @@ void Scene::Update()
 	//	m_deleted = true;
 	//}
 
-	std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [&](std::shared_ptr<GameObject> go) 
+	std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [](std::unique_ptr<GameObject>& go) 
 		{ 
 			if (!go->IsDead()) go->Update();
 		}
@@ -60,7 +59,7 @@ void Scene::LateUpdate()
 {
 	for (size_t idx{}; idx < m_gameObjects.size(); ++idx)
 	{
-		if (m_gameObjects[idx]->IsDead()) RemoveGameObject(m_gameObjects[idx]);
+		if (m_gameObjects[idx]->IsDead()) RemoveGameObject(std::move(m_gameObjects[idx]));
 	}
 }
 
