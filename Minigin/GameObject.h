@@ -11,7 +11,7 @@ namespace dae
 		GameObject* GetParent() const { return m_parent; }
 		void SetParent(GameObject* parent, bool keepWorldPosition = false);
 		bool IsChild(GameObject* parent);
-		int GetChildCount() const { return m_children.size(); }
+		int GetChildCount() const { return static_cast<int>(m_children.size()); }
 		GameObject* GetChildAt(int index) const { return m_children[index]; }
 
 		void AddComponent(std::unique_ptr<BaseComponent> component) { m_components.push_back(std::move(component)); };

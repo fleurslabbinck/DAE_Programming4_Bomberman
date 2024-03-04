@@ -8,16 +8,7 @@
 
 namespace dae
 {
-	//class Font;
-	//class Texture2D;
 	class GameObject;
-
-	enum class ComponentType {
-		TransForm,
-		Render,
-		Text,
-		FPS
-	};
 
 	//---------------------------------
 	//BASE COMPONENT
@@ -40,7 +31,7 @@ namespace dae
 		virtual BaseComponent& operator=(BaseComponent&& other) = delete;
 
 	protected:
-		std::vector<std::unique_ptr<BaseComponent>> m_subComponents{};
+		std::vector<BaseComponent*> m_subComponents{};
 
 		bool m_delete{ false };
 
@@ -124,7 +115,7 @@ namespace dae
 		void UpdateText();
 		bool NeedsUpdate() const { return m_needsUpdate; };
 
-		explicit TextComponent(GameObject* pOwner) : BaseComponent(pOwner), m_renderComponent{ std::make_unique<RenderComponent>(pOwner) } { m_subComponents.push_back(std::move(m_renderComponent)); }
+		explicit TextComponent(GameObject* pOwner) : BaseComponent(pOwner), m_renderComponent{ std::make_unique<RenderComponent>(pOwner) } { m_subComponents.push_back(m_renderComponent.get()); }
 		TextComponent(const TextComponent& other) = delete;
 		TextComponent(TextComponent&& other) = delete;
 	protected:
@@ -145,7 +136,7 @@ namespace dae
 
 		void Initialize(const std::string& fontPath, int fontSize, const std::string& text = " ");
 
-		explicit FPSComponent(GameObject* pOwner) : BaseComponent(pOwner), m_textComponent{ std::make_unique<TextComponent>(pOwner) } { m_subComponents.push_back(std::move(m_textComponent)); }
+		explicit FPSComponent(GameObject* pOwner) : BaseComponent(pOwner), m_textComponent{ std::make_unique<TextComponent>(pOwner) } { m_subComponents.push_back(m_textComponent.get()); }
 		FPSComponent(const FPSComponent& other) = delete;
 		FPSComponent(FPSComponent&& other) = delete;
 

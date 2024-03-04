@@ -5,8 +5,6 @@
 #include "Components.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
-#include "Texture2D.h"
-#include "Font.h"
 #include "TimeManager.h"
 #include "GameObject.h"
 #include <glm/gtc/matrix_transform.hpp>

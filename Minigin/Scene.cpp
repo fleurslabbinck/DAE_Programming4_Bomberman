@@ -37,16 +37,17 @@ void Scene::FixedUpdate()
 
 void Scene::Update()
 {
-	//constexpr float maxTime{ 5.f };
-	//dae::TimeManager& time = TimeManager::GetInstance();
-	//
-	//m_accumulatedTime += time.GetDeltaTime();
-	//
-	//if (m_accumulatedTime >= maxTime && !m_deleted)
-	//{
-	//	m_gameObjects[6]->SetParent(nullptr);
-	//	m_deleted = true;
-	//}
+	constexpr float maxTime{ 5.f };
+	dae::TimeManager& time = TimeManager::GetInstance();
+	
+	m_accumulatedTime += time.GetDeltaTime();
+	
+	if (m_accumulatedTime >= maxTime && !m_deleted)
+	{
+		m_gameObjects[6]->SetParent(nullptr);
+		m_deleted = true;
+		m_gameObjects[7].get()->SetDead();
+	}
 
 	std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [](std::unique_ptr<GameObject>& go) 
 		{ 
