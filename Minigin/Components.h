@@ -55,7 +55,7 @@ namespace dae
 	public:
 		void UpdateWorldPosition();
 		void SetLocalPosition(const glm::vec3& pos);
-		void SetPositionDirty() { m_positionIsDirty = !m_positionIsDirty; };
+		void SetPositionDirty();
 		bool IsPositionDirty() const { return m_positionIsDirty; }
 		glm::vec3 GetLocalPosition() { return m_localPosition; }
 		glm::vec3 GetWorldPosition();

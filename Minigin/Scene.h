@@ -29,6 +29,9 @@ namespace dae
 		std::string m_name;
 		std::vector < std::shared_ptr<GameObject>> m_gameObjects{};
 
+		//float m_accumulatedTime{};
+		//bool m_deleted{ false };
+
 		static unsigned int m_idCounter; 
 	};
 

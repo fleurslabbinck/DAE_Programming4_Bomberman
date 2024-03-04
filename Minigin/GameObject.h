@@ -13,8 +13,9 @@ namespace dae
 	public:
 		GameObject* GetParent() const { return m_parent; }
 		void SetParent(GameObject* parent, bool keepWorldPosition = false);
+		bool IsChild(GameObject* parent);
 		void SetParentOnly(GameObject* parent) { m_parent = parent; };
-		int GetChildCount() const { return m_childCount; }
+		int GetChildCount() const { return m_children.size(); }
 		GameObject* GetChildAt(int index) const { return m_children[index]; }
 
 		void AddComponent(std::shared_ptr<BaseComponent> component) { m_components.push_back(std::move(component)); };
@@ -52,7 +53,6 @@ namespace dae
 	private:
 		GameObject* m_parent{};
 		std::vector<GameObject*> m_children{};
-		int m_childCount{};
 
 		std::shared_ptr<TransformComponent> m_transformComponent;
 
@@ -60,7 +60,6 @@ namespace dae
 
 		bool m_isDead{ false };
 
-		bool IsChild(GameObject* parent);
 		void RemoveChild(GameObject* child);
 		void AddChild(GameObject* child);
 	};

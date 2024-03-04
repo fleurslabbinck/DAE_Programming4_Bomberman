@@ -37,6 +37,19 @@ void dae::TransformComponent::SetLocalPosition(const glm::vec3& pos)
 	SetPositionDirty();
 }
 
+void dae::TransformComponent::SetPositionDirty()
+{
+	m_positionIsDirty = true;
+
+	GameObject* owner{ GetOwner() };
+
+	for (int idx{}; idx < owner->GetChildCount(); ++idx)
+	{
+		owner->GetChildAt(idx)->GetTransform()->SetPositionDirty();
+	}
+
+}
+
 glm::vec3 dae::TransformComponent::GetWorldPosition()
 {
 	if (m_positionIsDirty) UpdateWorldPosition();
@@ -51,7 +64,6 @@ void dae::RotatorComponent::Update()
 {
 	std::shared_ptr<TransformComponent> tranform{ GetOwner()->GetTransform() };
 
-	const glm::vec3 center{ tranform->GetWorldPosition() };
 	const glm::vec3 localPos{tranform->GetLocalPosition() };
 
 	const glm::vec3 rotatedPos{ RotatePoint(localPos) };
