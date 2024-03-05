@@ -16,9 +16,11 @@ void Scene::AddGameObject(std::unique_ptr<GameObject> gameObject)
 	m_gameObjects.emplace_back(std::move(gameObject));
 }
 
-void Scene::RemoveGameObject(std::unique_ptr<GameObject> gameObject)
+void Scene::CleanUpDeadObjects()
 {
-	m_gameObjects.erase(std::remove(m_gameObjects.begin(), m_gameObjects.end(), gameObject), m_gameObjects.end());
+	const auto it = std::stable_partition(m_gameObjects.begin(), m_gameObjects.end(), [](const std::unique_ptr<GameObject>& gameObject) { return !gameObject->IsDead(); });
+
+	m_gameObjects.erase(it, m_gameObjects.end());
 }
 
 void Scene::RemoveAllGameObjects()
@@ -28,47 +30,49 @@ void Scene::RemoveAllGameObjects()
 
 void Scene::FixedUpdate()
 {
-	std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [](std::unique_ptr<GameObject>& go)
-		{
-			if (!go->IsDead()) go->FixedUpdate();
-		}
-	);
+	for (std::unique_ptr<GameObject>& gameObject : m_gameObjects)
+	{
+		if (!gameObject.get()->IsDead()) gameObject.get()->FixedUpdate();
+	}
 }
 
 void Scene::Update()
 {
-	constexpr float maxTime{ 5.f };
-	dae::TimeManager& time = TimeManager::GetInstance();
-	
-	m_accumulatedTime += time.GetDeltaTime();
-	
-	if (m_accumulatedTime >= maxTime && !m_deleted)
-	{
-		m_gameObjects[6]->SetParent(nullptr);
-		m_deleted = true;
-		m_gameObjects[7].get()->SetDead();
-	}
+	//tests
+	//constexpr float maxTime{ 5.f };
+	//dae::TimeManager& time = TimeManager::GetInstance();
+	//
+	//m_accumulatedTime += time.GetDeltaTime();
+	//
+	//if (m_accumulatedTime >= maxTime && !m_deleted)
+	//{
+	//	//m_gameObjects[6]->SetParent(nullptr);
+	//	m_deleted = true;
+	//	//m_gameObjects[3].get()->GetComponent<FPSComponent>()->SetDelete();
+	//	//m_gameObjects[7].get()->SetDead();
+	//}
 
-	std::for_each(m_gameObjects.begin(), m_gameObjects.end(), [](std::unique_ptr<GameObject>& go) 
-		{ 
-			if (!go->IsDead()) go->Update();
-		}
-	);
+	for (std::unique_ptr<GameObject>& gameObject : m_gameObjects)
+	{
+		if (!gameObject.get()->IsDead()) gameObject.get()->Update();
+	}
 }
 
 void Scene::LateUpdate()
 {
-	for (size_t idx{}; idx < m_gameObjects.size(); ++idx)
+	for (std::unique_ptr<GameObject>& gameObject : m_gameObjects)
 	{
-		if (m_gameObjects[idx]->IsDead()) RemoveGameObject(std::move(m_gameObjects[idx]));
+		if (!gameObject.get()->IsDead()) gameObject.get()->LateUpdate();
 	}
+
+	CleanUpDeadObjects();
 }
 
 void Scene::Render() const
 {
-	for (const auto& object : m_gameObjects)
+	for (const std::unique_ptr<GameObject>& gameObject : m_gameObjects)
 	{
-		object->Render();
+		gameObject.get()->Render();
 	}
 }
 

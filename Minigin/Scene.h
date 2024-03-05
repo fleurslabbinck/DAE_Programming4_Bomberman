@@ -10,7 +10,6 @@ namespace dae
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
 		void AddGameObject(std::unique_ptr<GameObject> object);
-		void RemoveGameObject(std::unique_ptr<GameObject> object);
 		void RemoveAllGameObjects();
 
 		void FixedUpdate();
@@ -27,11 +26,13 @@ namespace dae
 	private: 
 		explicit Scene(const std::string& name);
 
+		void CleanUpDeadObjects();
+
 		std::string m_name;
 		std::vector < std::unique_ptr<GameObject>> m_gameObjects{};
 
-		float m_accumulatedTime{};
-		bool m_deleted{ false };
+		//float m_accumulatedTime{};
+		//bool m_deleted{ false };
 
 		static unsigned int m_idCounter; 
 	};

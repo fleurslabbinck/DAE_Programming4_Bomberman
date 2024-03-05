@@ -11,11 +11,18 @@ dae::GameObject::GameObject(float x, float y, float z)
 	m_transformComponent->SetLocalPosition(glm::vec3(x, y, z));
 }
 
-dae::GameObject::~GameObject() = default;
-
-void dae::GameObject::RemoveComponent(std::unique_ptr<BaseComponent> component)
+dae::GameObject::~GameObject()
 {
-	m_components.erase(std::remove(m_components.begin(), m_components.end(), component), m_components.end());
+	m_transformComponent.reset();
+	
+	for (std::unique_ptr<BaseComponent>& component : m_components) component.reset();
+}
+
+void dae::GameObject::RemoveComponent()
+{
+	const auto it = std::stable_partition(m_components.begin(), m_components.end(), [](const std::unique_ptr<BaseComponent>& component) { return !component->ShouldBeDeleted(); });
+
+	m_components.erase(it, m_components.end());
 }
 
 void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
@@ -70,34 +77,44 @@ void dae::GameObject::AddChild(GameObject* child)
 
 void dae::GameObject::FixedUpdate()
 {
-	std::for_each(m_components.begin(), m_components.end(), [](std::unique_ptr<BaseComponent>& component) { component->FixedUpdate(); });
+	for (std::unique_ptr<BaseComponent>& component : m_components) if (!component->ShouldBeDeleted()) component->FixedUpdate();
 }
 
 void dae::GameObject::Update()
 {
-	std::for_each(m_components.begin(), m_components.end(), [](std::unique_ptr<BaseComponent>& component)
-		{
-			if (!component->ShouldBeDeleted()) component->Update();
-		}
-	);
+	for (std::unique_ptr<BaseComponent>& component : m_components) if (!component->ShouldBeDeleted()) component->Update();
 }
 
 void dae::GameObject::LateUpdate()
 {
-	for (size_t idx{}; idx < m_components.size(); ++idx)
-	{
-		if (m_components[idx]->ShouldBeDeleted()) RemoveComponent(std::move(m_components[idx]));
-	}
+	for (std::unique_ptr<BaseComponent>& component : m_components) if (!component->ShouldBeDeleted()) component->LateUpdate();
+
+	RemoveComponent();
 }
 
 void dae::GameObject::Render() const
 {
+	if (!m_transformComponent) return;
+
 	const auto& pos{ m_transformComponent->GetWorldPosition() };
 
-	for (auto& component : m_components) component->Render(pos);
+	for (const std::unique_ptr<BaseComponent>& component : m_components) if (!component->ShouldBeDeleted()) component->Render(pos);
 }
 
 void dae::GameObject::SetPosition(float x, float y, float z)
 {
 	m_transformComponent->SetLocalPosition(glm::vec3(x, y, z));
+}
+
+void dae::GameObject::SetDead()
+{
+	m_isDead = true;
+	SetParent(nullptr);
+
+	for (GameObject* child : m_children)
+	{
+		child->SetDead();
+	}
+
+	for (std::unique_ptr<BaseComponent>& component : m_components) component.get()->SetDelete();
 }

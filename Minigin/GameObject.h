@@ -15,7 +15,6 @@ namespace dae
 		GameObject* GetChildAt(int index) const { return m_children[index]; }
 
 		void AddComponent(std::unique_ptr<BaseComponent> component) { m_components.push_back(std::move(component)); };
-		void RemoveComponent(std::unique_ptr<BaseComponent> component);
 		template <typename C>
 		C* GetComponent() const
 		{
@@ -37,7 +36,7 @@ namespace dae
 		void Render() const;
 
 		void SetPosition(float x, float y, float z = 0);
-		void SetDead() { m_isDead = true; }
+		void SetDead();
 
 		TransformComponent* GetTransform() const { return m_transformComponent.get(); }
 		bool IsDead() const { return m_isDead; }
@@ -61,5 +60,7 @@ namespace dae
 
 		void RemoveChild(GameObject* child);
 		void AddChild(GameObject* child);
+
+		void RemoveComponent();
 	};
 }

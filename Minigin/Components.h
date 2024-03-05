@@ -19,6 +19,7 @@ namespace dae
 	public:
 		virtual void FixedUpdate();
 		virtual void Update();
+		virtual void LateUpdate();
 		virtual void Render(const glm::vec3& pos) const;
 
 		virtual void SetDelete() { m_delete = true; }
