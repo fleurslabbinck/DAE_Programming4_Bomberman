@@ -53,7 +53,7 @@ namespace dae
 		glm::vec3 GetLocalPosition() { return m_localPosition; }
 		glm::vec3 GetWorldPosition();
 
-		explicit TransformComponent(GameObject* pOwner) : BaseComponent(pOwner) {}
+		explicit TransformComponent(GameObject* pOwner, float x = 0, float y = 0) : BaseComponent(pOwner), m_localPosition{ x, y, 0 } {}
 		TransformComponent(const TransformComponent& other) = delete;
 		TransformComponent(TransformComponent&& other) = delete;
 
@@ -76,12 +76,12 @@ namespace dae
 		float GetRotation() const { return m_rotation; };
 		glm::vec3 RotatePoint(const glm::vec3& pos) const;
 
-		explicit RotatorComponent(GameObject* pOwner) : BaseComponent(pOwner) {}
+		explicit RotatorComponent(GameObject* pOwner, float rotation = 0) : BaseComponent(pOwner), m_rotation{ rotation } {}
 		RotatorComponent(const RotatorComponent& other) = delete;
 		RotatorComponent(RotatorComponent&& other) = delete;
 
 	private:
-		float m_rotation{};
+		float m_rotation;
 	};
 
 	//---------------------------------

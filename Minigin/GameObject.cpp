@@ -5,10 +5,9 @@
 #include "Renderer.h"
 #include "TimeManager.h"
 
-dae::GameObject::GameObject(float x, float y, float z)
-	: m_transformComponent{ std::make_unique<TransformComponent>(this) }
+dae::GameObject::GameObject(float x, float y)
+	: m_transformComponent{ std::make_unique<TransformComponent>(this, x, y) }
 {
-	m_transformComponent->SetLocalPosition(glm::vec3(x, y, z));
 }
 
 dae::GameObject::~GameObject()

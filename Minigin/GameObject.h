@@ -41,7 +41,7 @@ namespace dae
 		TransformComponent* GetTransform() const { return m_transformComponent.get(); }
 		bool IsDead() const { return m_isDead; }
 
-		GameObject(float x = 0, float y = 0, float z = 0);
+		GameObject(float x = 0, float y = 0);
 		~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
