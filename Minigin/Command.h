@@ -24,8 +24,13 @@ public:
 	GameObjectCommand(dae::GameObject* gameObject) : m_GameObject{ gameObject } {};
 	virtual ~GameObjectCommand() = default;
 
+	void Enable() { m_enabled = true; }
+	void Disable() { m_enabled = false; }
+	bool IsEnabled() const { return m_enabled; }
+
 protected:
 	dae::GameObject* GetGameObject() const { return m_GameObject; }
+	bool m_enabled{ false };
 };
 
 

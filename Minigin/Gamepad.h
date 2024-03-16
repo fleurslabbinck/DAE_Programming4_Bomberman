@@ -8,16 +8,19 @@
 class Gamepad final
 {
 public:
-	Gamepad(int idx);
+	Gamepad(int gamepadIdx = 0, int playerIdx = 0);
 	~Gamepad() = default;
 
-	bool HandleButtons();
+	int GetPlayerIdx() const { return m_playerIdx; }
+
+	bool UpdateButtons();
 	bool IsDownThisFrame(unsigned int button) const;
 	bool IsUpThisFrame(unsigned int button) const;
 	bool IsPressed(unsigned int button) const;
 
 private:
-	const int m_idx;
+	const int m_gamepadIdx;
+	const int m_playerIdx;
 	XINPUT_STATE m_currentState{};
 	WORD m_buttonsPressedThisFrame{};
 	WORD m_buttonsReleasedThisFrame{};

@@ -1,12 +1,13 @@
 #include "Gamepad.h"
 
-Gamepad::Gamepad(int idx)
-	: m_idx{ idx }
+Gamepad::Gamepad(int gamepadIdx, int playerIdx)
+	: m_gamepadIdx{ gamepadIdx }
+	, m_playerIdx{ playerIdx }
 {
 	XINPUT_STATE state;
 	ZeroMemory(&state, sizeof(XINPUT_STATE));
 	
-	DWORD result{ XInputGetState(m_idx, &state) };
+	DWORD result{ XInputGetState(m_gamepadIdx, &state) };
 
 	if (result == ERROR_SUCCESS)
 	{
@@ -15,12 +16,12 @@ Gamepad::Gamepad(int idx)
 	}
 }
 
-bool Gamepad::HandleButtons()
+bool Gamepad::UpdateButtons()
 {
 	XINPUT_STATE previousState;
 	CopyMemory(&previousState, &m_currentState, sizeof(XINPUT_STATE));
 	ZeroMemory(&m_currentState, sizeof(XINPUT_STATE));
-	XInputGetState(m_idx, &m_currentState);
+	XInputGetState(m_gamepadIdx, &m_currentState);
 
 	WORD buttonChanges = m_currentState.Gamepad.wButtons ^ previousState.Gamepad.wButtons;
 	m_buttonsPressedThisFrame = buttonChanges & m_currentState.Gamepad.wButtons;
