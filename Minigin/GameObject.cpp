@@ -114,10 +114,10 @@ void dae::GameObject::Move(const MoveDirection& moveDirection)
 		pos.x += m_movementSpeed * deltaTime;
 		break;
 	case MoveDirection::Down:
-		pos.y -= m_movementSpeed * deltaTime;
+		pos.y += m_movementSpeed * deltaTime;
 		break;
 	case MoveDirection::Up:
-		pos.y += m_movementSpeed * deltaTime;
+		pos.y -= m_movementSpeed * deltaTime;
 		break;
 	}
 

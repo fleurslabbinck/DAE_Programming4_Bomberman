@@ -1,19 +1,34 @@
-#include <SDL.h>
-#include <Windows.h>
-#include <WinBase.h>
-#include <Xinput.h>
 #include "InputManager.h"
+
+void dae::InputManager::InitGamepads(int amt)
+{
+	for (int i{}; i < amt; ++i)
+	{
+		const Gamepad gamepad{ Gamepad(i) };
+		m_gamepads.push_back(gamepad);
+	}
+}
+
+void dae::InputManager::BindCommand(dae::GameObject* gameObject)
+{
+	m_moveLeftController = MoveLeft(gameObject);
+	m_moveRightController = MoveRight(gameObject);
+	m_moveDownController = MoveDown(gameObject);
+	m_moveUpController = MoveUp(gameObject);
+}
 
 bool dae::InputManager::ProcessInput()
 {
-	DWORD dwResult;
-	for (DWORD i = 0; i < XUSER_MAX_COUNT; i++)
+	for (Gamepad& gamepad : m_gamepads)
 	{
-		XINPUT_STATE state;
-		ZeroMemory(&state, sizeof(XINPUT_STATE));
-	
-		// Simply get the state of the controller from XInput.
-		dwResult = XInputGetState(i, &state);
+		if (gamepad.HandleButtons())
+		{
+			if (gamepad.IsPressed(XINPUT_GAMEPAD_DPAD_LEFT)) m_moveLeftController.Execute();
+			else if (gamepad.IsPressed(XINPUT_GAMEPAD_DPAD_RIGHT)) m_moveRightController.Execute();
+
+			if (gamepad.IsPressed(XINPUT_GAMEPAD_DPAD_DOWN)) m_moveDownController.Execute();
+			else if (gamepad.IsPressed(XINPUT_GAMEPAD_DPAD_UP)) m_moveUpController.Execute();
+		}
 	}
 
 	SDL_Event e;
@@ -30,12 +45,4 @@ bool dae::InputManager::ProcessInput()
 	}
 
 	return false;
-}
-
-void dae::InputManager::BindCommand(dae::GameObject* gameObject)
-{
-	m_moveLeftController = MoveLeft(gameObject);
-	m_moveRightController = MoveRight(gameObject);
-	m_moveDownController = MoveDown(gameObject);
-	m_moveUpController = MoveUp(gameObject);
 }

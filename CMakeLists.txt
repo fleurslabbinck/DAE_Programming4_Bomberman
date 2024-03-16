@@ -19,6 +19,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/GameObject.cpp
   Minigin/InputManager.cpp
   Minigin/Command.cpp
+  Minigin/Gamepad.cpp
   Minigin/Main.cpp
   Minigin/Minigin.cpp
   Minigin/Renderer.cpp

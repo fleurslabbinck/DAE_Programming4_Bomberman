@@ -17,7 +17,7 @@ public:
 //---------------------------------
 class GameObjectCommand : public Command
 {
-	dae::GameObject* m_GameObject;
+	dae::GameObject* m_GameObject{ nullptr };
 
 public:
 	GameObjectCommand() = default;
