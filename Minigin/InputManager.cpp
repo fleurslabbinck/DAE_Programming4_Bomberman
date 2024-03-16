@@ -1,8 +1,21 @@
 #include <SDL.h>
+#include <Windows.h>
+#include <WinBase.h>
+#include <Xinput.h>
 #include "InputManager.h"
 
 bool dae::InputManager::ProcessInput()
 {
+	DWORD dwResult;
+	for (DWORD i = 0; i < XUSER_MAX_COUNT; i++)
+	{
+		XINPUT_STATE state;
+		ZeroMemory(&state, sizeof(XINPUT_STATE));
+	
+		// Simply get the state of the controller from XInput.
+		dwResult = XInputGetState(i, &state);
+	}
+
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		if (e.type == SDL_QUIT) {
@@ -17,4 +30,9 @@ bool dae::InputManager::ProcessInput()
 	}
 
 	return false;
+}
+
+void dae::InputManager::BindCommand()
+{
+
 }

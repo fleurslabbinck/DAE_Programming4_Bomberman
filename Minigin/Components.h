@@ -70,18 +70,24 @@ namespace dae
 	class RotatorComponent : public BaseComponent
 	{
 	public:
+		enum class RotateState {
+			Static,
+			Rotation
+		};
+
 		void Update() override;
 		
 		void SetRotation(float angle) { m_rotation = angle; };
 		float GetRotation() const { return m_rotation; };
 		glm::vec3 RotatePoint(const glm::vec3& pos) const;
 
-		explicit RotatorComponent(GameObject* pOwner) : BaseComponent(pOwner) {}
+		explicit RotatorComponent(GameObject* pOwner, float rotation, const RotateState& state = RotateState::Rotation) : BaseComponent(pOwner), m_rotation{ rotation }, m_rotateState{ state } {}
 		RotatorComponent(const RotatorComponent& other) = delete;
 		RotatorComponent(RotatorComponent&& other) = delete;
 
 	private:
 		float m_rotation{};
+		RotateState m_rotateState{};
 	};
 
 	//---------------------------------

@@ -62,13 +62,16 @@ glm::vec3 dae::TransformComponent::GetWorldPosition()
 //---------------------------------
 void dae::RotatorComponent::Update()
 {
-	dae::TransformComponent* transform = GetOwner()->GetTransform();
+	if (m_rotateState == RotateState::Rotation)
+	{
+		dae::TransformComponent* transform = GetOwner()->GetTransform();
 
-	const glm::vec3 localPos{transform->GetLocalPosition() };
+		const glm::vec3 localPos{ transform->GetLocalPosition() };
 
-	const glm::vec3 rotatedPos{ RotatePoint(localPos) };
+		const glm::vec3 rotatedPos{ RotatePoint(localPos) };
 
-	transform->SetLocalPosition(rotatedPos);
+		transform->SetLocalPosition(rotatedPos);
+	}
 }
 
 glm::vec3 dae::RotatorComponent::RotatePoint(const glm::vec3& pos) const

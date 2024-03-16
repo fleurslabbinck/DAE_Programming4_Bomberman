@@ -16,28 +16,18 @@ endif()
 # list source files here
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Font.cpp
-  Minigin/Font.h
   Minigin/GameObject.cpp
-  Minigin/GameObject.h
   Minigin/InputManager.cpp
-  Minigin/InputManager.h
+  Minigin/Command.cpp
   Minigin/Main.cpp
   Minigin/Minigin.cpp
-  Minigin/Minigin.h
   Minigin/Renderer.cpp
-  Minigin/Renderer.h
   Minigin/ResourceManager.cpp
-  Minigin/ResourceManager.h
   Minigin/Scene.cpp
-  Minigin/Scene.h
   Minigin/SceneManager.cpp
-  Minigin/SceneManager.h
-  Minigin/Components.h
   Minigin/Components.cpp
   Minigin/Texture2D.cpp
-  Minigin/Texture2D.h
   Minigin/Transform.cpp
-  Minigin/Transform.h
   Minigin/TimeManager.h
   
 )
@@ -146,6 +136,8 @@ if (WIN32)
     ${SDL2_TTF_LIBRARIES} 
     ${VLD_LIBRARY}
   )
+
+  target_link_libraries(${TARGET_NAME} PRIVATE XInput.lib)
 
 elseif(NOT EMSCRIPTEN)
 
