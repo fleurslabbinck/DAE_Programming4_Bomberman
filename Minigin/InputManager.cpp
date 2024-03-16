@@ -32,7 +32,10 @@ bool dae::InputManager::ProcessInput()
 	return false;
 }
 
-void dae::InputManager::BindCommand()
+void dae::InputManager::BindCommand(dae::GameObject* gameObject)
 {
-
+	m_moveLeftController = MoveLeft(gameObject);
+	m_moveRightController = MoveRight(gameObject);
+	m_moveDownController = MoveDown(gameObject);
+	m_moveUpController = MoveUp(gameObject);
 }

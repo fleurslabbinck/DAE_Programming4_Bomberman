@@ -2,9 +2,17 @@
 #include <memory>
 #include <vector>
 #include "Components.h"
+#include "TimeManager.h"
 
 namespace dae
 {
+	enum class MoveDirection {
+		Left,
+		Right,
+		Down,
+		Up
+	};
+
 	class GameObject final
 	{
 	public:
@@ -35,9 +43,10 @@ namespace dae
 		void LateUpdate();
 		void Render() const;
 
-		void Move();
+		void Move(const MoveDirection& moveDirection);
 
 		void SetPosition(float x, float y, float z = 0);
+		void SetMovementSpeed(float speed) { m_movementSpeed = speed; }
 		void SetDead();
 
 		TransformComponent* GetTransform() const { return m_transformComponent.get(); }
@@ -53,11 +62,11 @@ namespace dae
 	private:
 		GameObject* m_parent{};
 		std::vector<GameObject*> m_children{};
-
+		dae::TimeManager& m_time = TimeManager::GetInstance();
 		std::unique_ptr<TransformComponent> m_transformComponent;
-
 		std::vector <std::unique_ptr<BaseComponent>> m_components{};
 
+		float m_movementSpeed{};
 		bool m_isDead{ false };
 
 		void RemoveChild(GameObject* child);

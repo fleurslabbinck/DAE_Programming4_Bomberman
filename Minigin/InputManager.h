@@ -1,5 +1,6 @@
 #pragma once
 #include "Singleton.h"
+#include "Command.h"
 
 namespace dae
 {
@@ -7,8 +8,13 @@ namespace dae
 	{
 	public:
 		bool ProcessInput();
+		void BindCommand(dae::GameObject* gameObject);
 
-		void BindCommand();
+	private:
+		MoveLeft m_moveLeftController{};
+		MoveRight m_moveRightController{};
+		MoveDown m_moveDownController{};
+		MoveUp m_moveUpController{};
 	};
 
 }
