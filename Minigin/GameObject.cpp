@@ -100,6 +100,11 @@ void dae::GameObject::Render() const
 	for (const std::unique_ptr<BaseComponent>& component : m_components) if (!component->ShouldBeDeleted()) component->Render(pos);
 }
 
+void dae::GameObject::Move()
+{
+
+}
+
 void dae::GameObject::SetPosition(float x, float y, float z)
 {
 	m_transformComponent->SetLocalPosition(glm::vec3(x, y, z));

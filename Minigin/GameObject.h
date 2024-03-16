@@ -35,6 +35,8 @@ namespace dae
 		void LateUpdate();
 		void Render() const;
 
+		void Move();
+
 		void SetPosition(float x, float y, float z = 0);
 		void SetDead();
 
