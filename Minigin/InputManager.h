@@ -6,39 +6,18 @@
 
 namespace dae
 {
-	enum class InputMethod {
-		Gamepad,
-		Keyboard,
-	};
-
 	struct Controller
 	{
-		MoveLeft moveLeft{};
-		MoveRight moveRight{};
-		MoveDown moveDown{};
-		MoveUp moveUp{};
-
-		InputMethod inputMethod;
+		Move move{};
 
 		void Bind(GameObject* gameObject)
 		{
-			moveLeft = MoveLeft(gameObject);
-			moveRight = MoveRight(gameObject);
-			moveDown = MoveDown(gameObject);
-			moveUp = MoveUp(gameObject);
-		}
-
-		void Update()
-		{
-
+			move = Move(gameObject);
 		}
 
 		void Execute()
 		{
-			if (moveLeft.IsEnabled()) moveLeft.Execute();
-			if (moveRight.IsEnabled()) moveRight.Execute();
-			if (moveDown.IsEnabled()) moveDown.Execute();
-			if (moveUp.IsEnabled()) moveUp.Execute();
+			if (move.GetSet()) move.Execute();
 		}
 	};
 

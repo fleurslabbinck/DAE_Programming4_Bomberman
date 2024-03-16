@@ -50,17 +50,20 @@ void dae::InputManager::UpdateGamepadInput()
 	{
 		if (gamepad.UpdateButtons())
 		{
-			if (gamepad.IsDownThisFrame(XINPUT_GAMEPAD_DPAD_LEFT)) m_controllers[gamepad.GetPlayerIdx()].moveLeft.Enable();
-			if (gamepad.IsUpThisFrame(XINPUT_GAMEPAD_DPAD_LEFT)) m_controllers[gamepad.GetPlayerIdx()].moveLeft.Disable();
+			glm::vec3 direction{};
 
-			if (gamepad.IsDownThisFrame(XINPUT_GAMEPAD_DPAD_RIGHT)) m_controllers[gamepad.GetPlayerIdx()].moveRight.Enable();
-			if (gamepad.IsUpThisFrame(XINPUT_GAMEPAD_DPAD_RIGHT)) m_controllers[gamepad.GetPlayerIdx()].moveRight.Disable();
+			if (!gamepad.IsDown(XINPUT_GAMEPAD_DPAD_LEFT) && !gamepad.IsDown(XINPUT_GAMEPAD_DPAD_RIGHT) && !gamepad.IsDown(XINPUT_GAMEPAD_DPAD_DOWN) && !gamepad.IsDown(XINPUT_GAMEPAD_DPAD_UP))
+			{
+				m_controllers[gamepad.GetPlayerIdx()].move.Reset();
+				break;
+			}
 
-			if (gamepad.IsDownThisFrame(XINPUT_GAMEPAD_DPAD_DOWN)) m_controllers[gamepad.GetPlayerIdx()].moveDown.Enable();
-			if (gamepad.IsUpThisFrame(XINPUT_GAMEPAD_DPAD_DOWN)) m_controllers[gamepad.GetPlayerIdx()].moveDown.Disable();
+			if (gamepad.IsDown(XINPUT_GAMEPAD_DPAD_LEFT)) direction.x -= 1;
+			if (gamepad.IsDown(XINPUT_GAMEPAD_DPAD_RIGHT)) direction.x += 1;
+			if (gamepad.IsDown(XINPUT_GAMEPAD_DPAD_DOWN)) direction.y += 1;
+			if (gamepad.IsDown(XINPUT_GAMEPAD_DPAD_UP)) direction.y -= 1;
 
-			if (gamepad.IsDownThisFrame(XINPUT_GAMEPAD_DPAD_UP)) m_controllers[gamepad.GetPlayerIdx()].moveUp.Enable();
-			if (gamepad.IsUpThisFrame(XINPUT_GAMEPAD_DPAD_UP)) m_controllers[gamepad.GetPlayerIdx()].moveUp.Disable();
+			m_controllers[gamepad.GetPlayerIdx()].move.SetDirection(direction);
 		}
 	}
 }
@@ -76,10 +79,20 @@ void dae::InputManager::UpdateKeyboardInput()
 
 	for (idx; idx < m_controllers.size(); ++idx)
 	{
-		if (currentKeyStates[SDL_SCANCODE_A]) m_controllers[idx].moveLeft.Execute();
-		if (currentKeyStates[SDL_SCANCODE_D]) m_controllers[idx].moveRight.Execute();
-		if (currentKeyStates[SDL_SCANCODE_S]) m_controllers[idx].moveDown.Execute();
-		if (currentKeyStates[SDL_SCANCODE_W]) m_controllers[idx].moveUp.Execute();
+		glm::vec3 direction{};
+
+		if (!currentKeyStates[SDL_SCANCODE_A] && !currentKeyStates[SDL_SCANCODE_D] && !currentKeyStates[SDL_SCANCODE_S] && !currentKeyStates[SDL_SCANCODE_W])
+		{
+			m_controllers[idx].move.Reset();
+			break;
+		}
+
+		if (currentKeyStates[SDL_SCANCODE_A]) direction.x -= 1;
+		if (currentKeyStates[SDL_SCANCODE_D]) direction.x += 1;
+		if (currentKeyStates[SDL_SCANCODE_S]) direction.y += 1;
+		if (currentKeyStates[SDL_SCANCODE_W]) direction.y -= 1;
+
+		m_controllers[idx].move.SetDirection(direction);
 	}
 }
 

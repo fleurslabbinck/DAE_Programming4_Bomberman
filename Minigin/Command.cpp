@@ -1,49 +1,18 @@
 #include "Command.h"
 
 //---------------------------------
-// MOVELEFT
+// MOVE
 //---------------------------------
-void MoveLeft::Execute()
+void Move::Execute()
 {
 	dae::GameObject* gameObject{ GetGameObject() };
-
 	if (!gameObject) return;
-	
-	gameObject->Move(dae::MoveDirection::Left);
+
+	gameObject->Move(m_direction);
 }
 
-//---------------------------------
-// MOVERIGHT
-//---------------------------------
-void MoveRight::Execute()
+void Move::SetDirection(const glm::vec3& dir)
 {
-	dae::GameObject* gameObject{ GetGameObject() };
-
-	if (!gameObject) return;
-
-	gameObject->Move(dae::MoveDirection::Right);
-}
-
-//---------------------------------
-// MOVEDOWN
-//---------------------------------
-void MoveDown::Execute()
-{
-	dae::GameObject* gameObject{ GetGameObject() };
-
-	if (!gameObject) return;
-
-	gameObject->Move(dae::MoveDirection::Down);
-}
-
-//---------------------------------
-// MOVEUP
-//---------------------------------
-void MoveUp::Execute()
-{
-	dae::GameObject* gameObject{ GetGameObject() };
-
-	if (!gameObject) return;
-
-	gameObject->Move(dae::MoveDirection::Up);
+	m_direction = dir;
+	m_set = true;
 }

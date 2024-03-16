@@ -6,13 +6,6 @@
 
 namespace dae
 {
-	enum class MoveDirection {
-		Left,
-		Right,
-		Down,
-		Up
-	};
-
 	class GameObject final
 	{
 	public:
@@ -43,7 +36,7 @@ namespace dae
 		void LateUpdate();
 		void Render() const;
 
-		void Move(const MoveDirection& moveDirection);
+		void Move(const glm::vec3& direction);
 
 		void SetPosition(float x, float y, float z = 0);
 		void SetMovementSpeed(float speed) { m_movementSpeed = speed; }

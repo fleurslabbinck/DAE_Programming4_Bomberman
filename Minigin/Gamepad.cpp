@@ -30,6 +30,16 @@ bool Gamepad::UpdateButtons()
 	return m_buttonsPressedThisFrame || m_buttonsReleasedThisFrame;
 }
 
+bool Gamepad::IsDown(unsigned int button) const
+{
+	return m_currentState.Gamepad.wButtons & button;
+}
+
+bool Gamepad::IsPressed(unsigned int button) const
+{
+	return m_currentState.Gamepad.wButtons & button;
+}
+
 bool Gamepad::IsDownThisFrame(unsigned int button) const
 {
 	return m_buttonsPressedThisFrame & button;
@@ -38,9 +48,4 @@ bool Gamepad::IsDownThisFrame(unsigned int button) const
 bool Gamepad::IsUpThisFrame(unsigned int button) const
 {
 	return m_buttonsReleasedThisFrame & button;
-}
-
-bool Gamepad::IsPressed(unsigned int button) const
-{
-	return m_currentState.Gamepad.wButtons & button;
 }

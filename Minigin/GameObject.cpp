@@ -100,26 +100,14 @@ void dae::GameObject::Render() const
 	for (const std::unique_ptr<BaseComponent>& component : m_components) if (!component->ShouldBeDeleted()) component->Render(pos);
 }
 
-void dae::GameObject::Move(const MoveDirection& moveDirection)
+void dae::GameObject::Move(const glm::vec3& direction)
 {
 	auto pos{ m_transformComponent->GetLocalPosition() };
 	const float deltaTime{ m_time.GetDeltaTime() };
 
-	switch (moveDirection)
-	{
-	case MoveDirection::Left:
-		pos.x -= m_movementSpeed * deltaTime;
-		break;
-	case MoveDirection::Right:
-		pos.x += m_movementSpeed * deltaTime;
-		break;
-	case MoveDirection::Down:
-		pos.y += m_movementSpeed * deltaTime;
-		break;
-	case MoveDirection::Up:
-		pos.y -= m_movementSpeed * deltaTime;
-		break;
-	}
+	const glm::vec3 dirNormalized{ glm::normalize(direction) };
+
+	pos += dirNormalized * m_movementSpeed * deltaTime;
 
 	m_transformComponent->SetLocalPosition(pos);
 }
