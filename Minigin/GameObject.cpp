@@ -105,9 +105,7 @@ void dae::GameObject::Move(const glm::vec3& direction)
 	auto pos{ m_transformComponent->GetLocalPosition() };
 	const float deltaTime{ m_time.GetDeltaTime() };
 
-	const glm::vec3 dirNormalized{ glm::normalize(direction) };
-
-	pos += dirNormalized * m_movementSpeed * deltaTime;
+	pos += direction * m_movementSpeed * deltaTime;
 
 	m_transformComponent->SetLocalPosition(pos);
 }

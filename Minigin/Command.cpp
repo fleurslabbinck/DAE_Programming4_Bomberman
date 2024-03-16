@@ -8,7 +8,7 @@ void Move::Execute()
 	dae::GameObject* gameObject{ GetGameObject() };
 	if (!gameObject) return;
 
-	gameObject->Move(m_direction);
+	if (m_direction != glm::vec3{}) gameObject->Move(glm::normalize(m_direction));
 }
 
 void Move::SetDirection(const glm::vec3& dir)

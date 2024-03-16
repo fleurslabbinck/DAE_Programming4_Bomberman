@@ -1,3 +1,4 @@
+#include <SDL.h>
 #include "InputManager.h"
 
 int dae::InputManager::controllerCount{};
@@ -11,8 +12,8 @@ void dae::InputManager::Init(int nrControllers, int nrGamepads)
 
 	for (int i{}; i < nrGamepads; ++i)
 	{
-		const Gamepad gamepad{ Gamepad(i) };
-		m_gamepads.push_back(gamepad);
+		//const Gamepad gamepad{ Gamepad(i) };
+		m_gamepads.push_back(i);
 	}
 }
 
@@ -52,16 +53,16 @@ void dae::InputManager::UpdateGamepadInput()
 		{
 			glm::vec3 direction{};
 
-			if (!gamepad.IsDown(XINPUT_GAMEPAD_DPAD_LEFT) && !gamepad.IsDown(XINPUT_GAMEPAD_DPAD_RIGHT) && !gamepad.IsDown(XINPUT_GAMEPAD_DPAD_DOWN) && !gamepad.IsDown(XINPUT_GAMEPAD_DPAD_UP))
+			if (!gamepad.IsPressed(GamepadButton::DPadLeft) && !gamepad.IsPressed(GamepadButton::DPadRight) && !gamepad.IsPressed(GamepadButton::DPadDown) && !gamepad.IsPressed(GamepadButton::DPadUp))
 			{
 				m_controllers[gamepad.GetPlayerIdx()].move.Reset();
 				break;
 			}
 
-			if (gamepad.IsDown(XINPUT_GAMEPAD_DPAD_LEFT)) direction.x -= 1;
-			if (gamepad.IsDown(XINPUT_GAMEPAD_DPAD_RIGHT)) direction.x += 1;
-			if (gamepad.IsDown(XINPUT_GAMEPAD_DPAD_DOWN)) direction.y += 1;
-			if (gamepad.IsDown(XINPUT_GAMEPAD_DPAD_UP)) direction.y -= 1;
+			if (gamepad.IsPressed(GamepadButton::DPadLeft)) direction.x -= 1;
+			if (gamepad.IsPressed(GamepadButton::DPadRight)) direction.x += 1;
+			if (gamepad.IsPressed(GamepadButton::DPadDown)) direction.y += 1;
+			if (gamepad.IsPressed(GamepadButton::DPadUp)) direction.y -= 1;
 
 			m_controllers[gamepad.GetPlayerIdx()].move.SetDirection(direction);
 		}

@@ -1,28 +1,24 @@
 #pragma once
-#include <SDL.h>
-#include <Windows.h>
-#include <WinBase.h>
-#include <Xinput.h>
-#include <vector>
+#include "GamepadInterface.h"
+#include <memory>
 
 class Gamepad final
 {
 public:
 	Gamepad(int gamepadIdx = 0, int playerIdx = 0);
 	~Gamepad() = default;
+	Gamepad(const Gamepad&) = delete;
+	Gamepad& operator=(const Gamepad&) = delete;
+	Gamepad(Gamepad&&) noexcept = default;
+	Gamepad& operator=(Gamepad&&) noexcept = default;
 
-	int GetPlayerIdx() const { return m_playerIdx; }
+	int GetPlayerIdx() const;
 
 	bool UpdateButtons();
-	bool IsDown(unsigned int button) const;
-	bool IsPressed(unsigned int button) const;
-	bool IsDownThisFrame(unsigned int button) const;
-	bool IsUpThisFrame(unsigned int button) const;
+	bool IsPressed(GamepadButton button) const;
+	bool IsDownThisFrame(GamepadButton button) const;
+	bool IsUpThisFrame(GamepadButton button) const;
 
 private:
-	const int m_gamepadIdx;
-	const int m_playerIdx;
-	XINPUT_STATE m_currentState{};
-	WORD m_buttonsPressedThisFrame{};
-	WORD m_buttonsReleasedThisFrame{};
+	std::unique_ptr<GamepadInterface> m_pImpl;
 };
