@@ -1,5 +1,5 @@
 #include "Gamepad.h"
-#include "GamepadImpl.h"
+//#include "GamepadImpl.cpp"
 
 Gamepad::Gamepad(int gamepadIdx, int playerIdx)
 	: m_pImpl{ std::make_unique<GamepadImpl>(gamepadIdx, playerIdx) }

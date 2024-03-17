@@ -1,4 +1,6 @@
 #include "GamepadImpl.h"
+#include <Windows.h>
+#include <Xinput.h>
 
 GamepadImpl::GamepadImpl(int gamepadIdx, int playerIdx)
 	: m_gamepadIdx{ gamepadIdx }, m_playerIdx{ playerIdx }
@@ -10,28 +12,32 @@ GamepadImpl::GamepadImpl(int gamepadIdx, int playerIdx)
 
 	if (result == ERROR_SUCCESS)
 	{
-		m_currentState = state;
-		m_currentState.dwPacketNumber = result;
+		//m_currentState = state;
+		//m_currentState.dwPacketNumber = result;
+		m_previousButtons = state.Gamepad.wButtons;
 	}
 }
 
 bool GamepadImpl::UpdateButtons()
 {
-	XINPUT_STATE previousState;
-	CopyMemory(&previousState, &m_currentState, sizeof(XINPUT_STATE));
-	ZeroMemory(&m_currentState, sizeof(XINPUT_STATE));
-	XInputGetState(m_gamepadIdx, &m_currentState);
+	XINPUT_STATE currentState;
+	//CopyMemory(&currentState, &m_currentState, sizeof(XINPUT_STATE));
+	ZeroMemory(&currentState, sizeof(XINPUT_STATE));
+	XInputGetState(m_gamepadIdx, &currentState);
 
-	WORD buttonChanges = m_currentState.Gamepad.wButtons ^ previousState.Gamepad.wButtons;
-	m_buttonsPressedThisFrame = buttonChanges & m_currentState.Gamepad.wButtons;
-	m_buttonsReleasedThisFrame = buttonChanges & (~m_currentState.Gamepad.wButtons);
+	WORD buttonChanges = m_previousButtons ^ currentState.Gamepad.wButtons;
+
+	m_buttonsPressedThisFrame = buttonChanges & currentState.Gamepad.wButtons;
+	m_buttonsReleasedThisFrame = buttonChanges & (~currentState.Gamepad.wButtons);
+
+	m_previousButtons = currentState.Gamepad.wButtons;
 
 	return m_buttonsPressedThisFrame || m_buttonsReleasedThisFrame;
 }
 
 bool GamepadImpl::IsPressed(GamepadButton button) const
 {
-	return m_currentState.Gamepad.wButtons & GetGamepadInput(button);
+	return m_previousButtons & GetGamepadInput(button);
 }
 
 bool GamepadImpl::IsDownThisFrame(GamepadButton button) const
