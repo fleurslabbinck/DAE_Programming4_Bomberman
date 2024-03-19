@@ -1,5 +1,7 @@
-#pragma once
-#include "SceneManager.h"
+#ifndef SCENE_H
+#define SCENE_H
+
+#include "Singletons/SceneManager.h"
 #include "GameObject.h"
 
 namespace dae
@@ -38,3 +40,4 @@ namespace dae
 	};
 
 }
+#endif

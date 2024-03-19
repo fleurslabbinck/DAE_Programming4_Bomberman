@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include "Texture2D.h"
+#include "Resources/Texture2D.h"
 
 dae::Texture2D::~Texture2D()
 {

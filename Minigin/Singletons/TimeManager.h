@@ -1,4 +1,6 @@
-#pragma once
+#ifndef TIMEMANAGER_H
+#define TIMEMANAGER_H
+
 #include <chrono>
 #include "Singleton.h"
 
@@ -36,3 +38,4 @@ namespace dae
 		milliseconds m_msPerFrame{};
 	};
 }
+#endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SINGLETON_H
+#define SINGLETON_H
+
 namespace dae
 {
 	template <typename T>
@@ -21,3 +23,4 @@ namespace dae
 		Singleton() = default;
 	};
 }
+#endif

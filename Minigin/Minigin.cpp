@@ -12,7 +12,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "Minigin.h"
-#include "ResourceManager.h"
+#include "Singletons/ResourceManager.h"
 
 
 SDL_Window* g_window{};

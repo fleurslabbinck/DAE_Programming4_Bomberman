@@ -1,8 +1,8 @@
-#pragma once
-#include <memory>
-#include <vector>
-#include "Components.h"
-#include "TimeManager.h"
+#ifndef GAMEOBJECT_H
+#define GAMEOBJECT_H
+
+#include "Components/Components.h"
+#include "Singletons/TimeManager.h"
 
 namespace dae
 {
@@ -36,10 +36,7 @@ namespace dae
 		void LateUpdate();
 		void Render() const;
 
-		void Move(const glm::vec3& direction);
-
 		void SetPosition(float x, float y, float z = 0);
-		void SetMovementSpeed(float speed) { m_movementSpeed = speed; }
 		void SetDead();
 
 		TransformComponent* GetTransform() const { return m_transformComponent.get(); }
@@ -59,7 +56,6 @@ namespace dae
 		std::unique_ptr<TransformComponent> m_transformComponent;
 		std::vector <std::unique_ptr<BaseComponent>> m_components{};
 
-		float m_movementSpeed{};
 		bool m_isDead{ false };
 
 		void RemoveChild(GameObject* child);
@@ -68,3 +64,4 @@ namespace dae
 		void RemoveComponent();
 	};
 }
+#endif

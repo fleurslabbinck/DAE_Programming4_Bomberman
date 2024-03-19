@@ -1,9 +1,5 @@
-#include <string>
 #include <algorithm>
 #include "GameObject.h"
-#include "Components.h"
-#include "Renderer.h"
-#include "TimeManager.h"
 
 dae::GameObject::GameObject(float x, float y)
 	: m_transformComponent{ std::make_unique<TransformComponent>(this, x, y) }
@@ -100,15 +96,16 @@ void dae::GameObject::Render() const
 	for (const std::unique_ptr<BaseComponent>& component : m_components) if (!component->ShouldBeDeleted()) component->Render(pos);
 }
 
-void dae::GameObject::Move(const glm::vec3& direction)
-{
-	auto pos{ m_transformComponent->GetLocalPosition() };
-	const float deltaTime{ m_time.GetDeltaTime() };
-
-	pos += direction * m_movementSpeed * deltaTime;
-
-	m_transformComponent->SetLocalPosition(pos);
-}
+//void dae::GameObject::Move(const glm::vec3& direction)
+//{
+//	//put in tranformcomponent + no deltaTime!
+//	auto pos{ m_transformComponent->GetLocalPosition() };
+//	const float deltaTime{ m_time.GetDeltaTime() };
+//
+//	pos += direction * m_movementSpeed * deltaTime;
+//
+//	m_transformComponent->SetLocalPosition(pos);
+//}
 
 void dae::GameObject::SetPosition(float x, float y, float z)
 {

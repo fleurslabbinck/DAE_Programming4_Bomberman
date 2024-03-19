@@ -3,9 +3,8 @@
 #include <iomanip>
 #include <sstream>
 #include "Components.h"
-#include "ResourceManager.h"
-#include "Renderer.h"
-#include "TimeManager.h"
+#include "Singletons/ResourceManager.h"
+#include "Singletons/Renderer.h"
 #include "GameObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -18,11 +17,17 @@ void dae::BaseComponent::Update() { for (auto& component : m_subComponents) comp
 
 void dae::BaseComponent::LateUpdate() { for (auto& component : m_subComponents) component->LateUpdate(); }
 
-void dae::BaseComponent::Render(const glm::vec3& pos) const { for (auto& component : m_subComponents) component->Render(pos); }
+void dae::BaseComponent::Render(const glm::vec2& pos) const { for (auto& component : m_subComponents) component->Render(pos); }
 
 //---------------------------------
 //TRANSFORMCOMPONENT
 //---------------------------------
+void dae::TransformComponent::Translate(const glm::vec2& offset)
+{
+	m_localPosition += offset;
+	SetLocalPosition(m_localPosition);
+}
+
 void dae::TransformComponent::UpdateWorldPosition()
 {
 	if (GetOwner()->GetParent() == nullptr) m_worldPosition = m_localPosition;
@@ -31,7 +36,7 @@ void dae::TransformComponent::UpdateWorldPosition()
 	m_positionIsDirty = false;
 }
 
-void dae::TransformComponent::SetLocalPosition(const glm::vec3& pos)
+void dae::TransformComponent::SetLocalPosition(const glm::vec2& pos)
 {
 	m_localPosition = pos;
 	SetPositionDirty();
@@ -50,7 +55,7 @@ void dae::TransformComponent::SetPositionDirty()
 
 }
 
-glm::vec3 dae::TransformComponent::GetWorldPosition()
+glm::vec2 dae::TransformComponent::GetWorldPosition()
 {
 	if (m_positionIsDirty) UpdateWorldPosition();
 
@@ -66,15 +71,15 @@ void dae::RotatorComponent::Update()
 	{
 		dae::TransformComponent* transform = GetOwner()->GetTransform();
 
-		const glm::vec3 localPos{ transform->GetLocalPosition() };
+		const glm::vec2 localPos{ transform->GetLocalPosition() };
 
-		const glm::vec3 rotatedPos{ RotatePoint(localPos) };
+		const glm::vec2 rotatedPos{ RotatePoint(localPos) };
 
 		transform->SetLocalPosition(rotatedPos);
 	}
 }
 
-glm::vec3 dae::RotatorComponent::RotatePoint(const glm::vec3& pos) const
+glm::vec2 dae::RotatorComponent::RotatePoint(const glm::vec2& pos) const
 {
 	const float radians = glm::radians(m_rotation);
 
@@ -83,13 +88,15 @@ glm::vec3 dae::RotatorComponent::RotatePoint(const glm::vec3& pos) const
 			glm::vec3(sin(radians), cos(radians), 0.0f),
 			glm::vec3(0.0f, 0.0f, 1.0f));
 
-	return rotationMatrix * pos;
+	const glm::vec3 newPos{ rotationMatrix * glm::vec3{ pos.x, pos.y, 0 } };
+
+	return { newPos.x, newPos.y };
 }
 
 //---------------------------------
 //RENDERCOMPONENT
 //---------------------------------
-void dae::RenderComponent::Render(const glm::vec3& pos) const
+void dae::RenderComponent::Render(const glm::vec2& pos) const
 {
 	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
 }

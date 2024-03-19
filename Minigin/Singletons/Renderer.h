@@ -1,4 +1,6 @@
-#pragma once
+#ifndef RENDERER_H
+#define RENDERER_H
+
 #include <SDL.h>
 #include "Singleton.h"
 
@@ -27,4 +29,4 @@ namespace dae
 		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
 	};
 }
-
+#endif

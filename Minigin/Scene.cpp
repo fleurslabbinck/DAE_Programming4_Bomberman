@@ -1,7 +1,4 @@
 #include "Scene.h"
-#include "TimeManager.h"
-
-#include <algorithm>
 
 using namespace dae;
 

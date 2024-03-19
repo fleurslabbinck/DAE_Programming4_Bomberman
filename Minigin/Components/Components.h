@@ -1,10 +1,12 @@
-#pragma once
+#ifndef BASECOMPONENT_H
+#define BASECOMPONENT_H
+
 #include <string>
 #include <vector>
 #include <memory>
 #include <glm/glm.hpp>
-#include "Font.h"
-#include "Texture2D.h"
+#include "Resources/Font.h"
+#include "Resources/Texture2D.h"
 
 namespace dae
 {
@@ -20,7 +22,7 @@ namespace dae
 		virtual void FixedUpdate();
 		virtual void Update();
 		virtual void LateUpdate();
-		virtual void Render(const glm::vec3& pos) const;
+		virtual void Render(const glm::vec2& pos) const;
 
 		virtual void SetDelete() { m_delete = true; }
 		virtual bool ShouldBeDeleted() const { return m_delete; }
@@ -46,20 +48,21 @@ namespace dae
 	class TransformComponent : public BaseComponent
 	{
 	public:
+		void Translate(const glm::vec2& offset);
 		void UpdateWorldPosition();
-		void SetLocalPosition(const glm::vec3& pos);
+		void SetLocalPosition(const glm::vec2& pos);
 		void SetPositionDirty();
 		bool IsPositionDirty() const { return m_positionIsDirty; }
-		glm::vec3 GetLocalPosition() { return m_localPosition; }
-		glm::vec3 GetWorldPosition();
+		glm::vec2 GetLocalPosition() { return m_localPosition; }
+		glm::vec2 GetWorldPosition();
 
-		explicit TransformComponent(GameObject* pOwner, float x = 0, float y = 0) : BaseComponent(pOwner), m_localPosition{ x, y, 0 } {}
+		explicit TransformComponent(GameObject* pOwner, float x = 0, float y = 0) : BaseComponent(pOwner), m_localPosition{ x, y } {}
 		TransformComponent(const TransformComponent& other) = delete;
 		TransformComponent(TransformComponent&& other) = delete;
 
 	private:
-		glm::vec3 m_localPosition{};
-		glm::vec3 m_worldPosition{};
+		glm::vec2 m_localPosition{};
+		glm::vec2 m_worldPosition{};
 
 		bool m_positionIsDirty{ true };
 	};
@@ -78,8 +81,6 @@ namespace dae
 		void Update() override;
 		
 		void SetRotation(float angle) { m_rotation = angle; };
-		float GetRotation() const { return m_rotation; };
-		glm::vec3 RotatePoint(const glm::vec3& pos) const;
 
 		explicit RotatorComponent(GameObject* pOwner, float rotation = 0, const RotateState& state = RotateState::Rotation) : BaseComponent(pOwner), m_rotation{ rotation }, m_rotateState{ state } {}
 		RotatorComponent(const RotatorComponent& other) = delete;
@@ -88,6 +89,8 @@ namespace dae
 	private:
 		float m_rotation{};
 		RotateState m_rotateState{};
+
+		glm::vec2 RotatePoint(const glm::vec2& pos) const;
 	};
 
 	//---------------------------------
@@ -96,7 +99,7 @@ namespace dae
 	class RenderComponent : public BaseComponent
 	{
 	public:
-		void Render(const glm::vec3& pos) const override;
+		void Render(const glm::vec2& pos) const override;
 
 		virtual void SetTexture(const std::string& filename);
 		virtual void SetTexture(std::unique_ptr<Texture2D> texture);
@@ -153,3 +156,4 @@ namespace dae
 		float m_accumulatedTime{};
 	};
 }
+#endif

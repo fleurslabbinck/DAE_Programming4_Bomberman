@@ -1,10 +1,17 @@
+#ifndef GAMEPADIMPL_CPP
+#define GAMEPADIMPL_CPP
+
 #include "GamepadImpl.h"
 #include <Windows.h>
 #include <Xinput.h>
 
-GamepadImpl::GamepadImpl(int gamepadIdx, int playerIdx)
-	: m_gamepadIdx{ gamepadIdx }, m_playerIdx{ playerIdx }
+int dae::GamepadImpl::gamepadCount{};
+
+dae::GamepadImpl::GamepadImpl(int playerIdx)
+	: m_gamepadIdx{ gamepadCount }, m_playerIdx{ playerIdx }
 {
+	++gamepadCount;
+
 	XINPUT_STATE state;
 	ZeroMemory(&state, sizeof(XINPUT_STATE));
 
@@ -12,16 +19,13 @@ GamepadImpl::GamepadImpl(int gamepadIdx, int playerIdx)
 
 	if (result == ERROR_SUCCESS)
 	{
-		//m_currentState = state;
-		//m_currentState.dwPacketNumber = result;
 		m_previousButtons = state.Gamepad.wButtons;
 	}
 }
 
-bool GamepadImpl::UpdateButtons()
+bool dae::GamepadImpl::UpdateButtons()
 {
 	XINPUT_STATE currentState;
-	//CopyMemory(&currentState, &m_currentState, sizeof(XINPUT_STATE));
 	ZeroMemory(&currentState, sizeof(XINPUT_STATE));
 	XInputGetState(m_gamepadIdx, &currentState);
 
@@ -35,22 +39,22 @@ bool GamepadImpl::UpdateButtons()
 	return m_buttonsPressedThisFrame || m_buttonsReleasedThisFrame;
 }
 
-bool GamepadImpl::IsPressed(GamepadButton button) const
+bool dae::GamepadImpl::IsPressed(GamepadButton button) const
 {
 	return m_previousButtons & GetGamepadInput(button);
 }
 
-bool GamepadImpl::IsDownThisFrame(GamepadButton button) const
+bool dae::GamepadImpl::IsDownThisFrame(GamepadButton button) const
 {
 	return m_buttonsPressedThisFrame & GetGamepadInput(button);
 }
 
-bool GamepadImpl::IsUpThisFrame(GamepadButton button) const
+bool dae::GamepadImpl::IsUpThisFrame(GamepadButton button) const
 {
 	return m_buttonsReleasedThisFrame & GetGamepadInput(button);
 }
 
-unsigned int GamepadImpl::GetGamepadInput(GamepadButton button) const
+unsigned int dae::GamepadImpl::GetGamepadInput(GamepadButton button) const
 {
 	unsigned int gamepadInput{};
 
@@ -72,3 +76,4 @@ unsigned int GamepadImpl::GetGamepadInput(GamepadButton button) const
 	
 	return gamepadInput;
 }
+#endif

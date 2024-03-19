@@ -1,13 +1,15 @@
-#pragma once
+#ifndef MINIGIN_H
+#define MINIGIN_H
+
 #include <string>
 #include <functional>
 #include <chrono>
 #include <filesystem>
 
-#include "TimeManager.h"
-#include "InputManager.h"
-#include "SceneManager.h"
-#include "Renderer.h"
+#include "Input/InputManager.h"
+#include "Singletons/TimeManager.h"
+#include "Singletons/SceneManager.h"
+#include "Singletons/Renderer.h"
 
 namespace dae
 {
@@ -34,3 +36,4 @@ namespace dae
 		void RunOneFrame();
 	};
 }
+#endif

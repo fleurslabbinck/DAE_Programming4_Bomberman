@@ -1,4 +1,6 @@
-#pragma once
+#ifndef RESOURCEMANAGER_H
+#define RESOURCEMANAGER_H
+
 #include <string>
 #include <memory>
 #include <filesystem>
@@ -20,3 +22,4 @@ namespace dae
 		std::filesystem::path m_dataPath;
 	};
 }
+#endif
