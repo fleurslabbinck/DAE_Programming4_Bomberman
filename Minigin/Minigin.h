@@ -6,6 +6,7 @@
 #include <chrono>
 #include <filesystem>
 
+#include "MiniginUtil.h"
 #include "Input/InputManager.h"
 #include "Singletons/TimeManager.h"
 #include "Singletons/SceneManager.h"

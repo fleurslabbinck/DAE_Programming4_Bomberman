@@ -107,9 +107,9 @@ void dae::GameObject::Render() const
 //	m_transformComponent->SetLocalPosition(pos);
 //}
 
-void dae::GameObject::SetPosition(float x, float y, float z)
+void dae::GameObject::SetPosition(float x, float y)
 {
-	m_transformComponent->SetLocalPosition(glm::vec3(x, y, z));
+	m_transformComponent->SetLocalPosition(glm::vec2(x, y));
 }
 
 void dae::GameObject::SetDead()

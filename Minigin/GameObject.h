@@ -36,7 +36,7 @@ namespace dae
 		void LateUpdate();
 		void Render() const;
 
-		void SetPosition(float x, float y, float z = 0);
+		void SetPosition(float x, float y);
 		void SetDead();
 
 		TransformComponent* GetTransform() const { return m_transformComponent.get(); }

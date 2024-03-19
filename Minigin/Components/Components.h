@@ -101,8 +101,9 @@ namespace dae
 	public:
 		void Render(const glm::vec2& pos) const override;
 
-		virtual void SetTexture(const std::string& filename);
-		virtual void SetTexture(std::unique_ptr<Texture2D> texture);
+		void SetTexture(const std::string& filename);
+		void SetTexture(std::unique_ptr<Texture2D> texture);
+		const Texture2D* GetTexture() const { return m_texture.get(); }
 
 		explicit RenderComponent(GameObject* pOwner) : BaseComponent(pOwner) {}
 		RenderComponent(const RenderComponent& other) = delete;

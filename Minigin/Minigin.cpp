@@ -75,8 +75,10 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 		"Programming 4 assignment - Fleur Slabbinck",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		640,
-		480,
+		//640,
+		//480,
+		WINDOW_WIDTH * GRAPHICS_SCALE,
+		WINDOW_HEIGHT * GRAPHICS_SCALE,
 		SDL_WINDOW_OPENGL
 	);
 	if (g_window == nullptr)
