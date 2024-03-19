@@ -27,7 +27,12 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Singletons/ResourceManager.cpp
   Minigin/Scene.cpp
   Minigin/Singletons/SceneManager.cpp
-  Minigin/Components/Components.cpp
+  Minigin/Components/BaseComponent.cpp
+  Minigin/Components/TransformComponent.cpp
+  Minigin/Components/RotatorComponent.cpp
+  Minigin/Components/RenderComponent.cpp
+  Minigin/Components/TextComponent.cpp
+  Minigin/Components/FPSComponent.cpp
   Minigin/Resources/Texture2D.cpp
   
 )
