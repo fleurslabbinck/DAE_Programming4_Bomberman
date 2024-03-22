@@ -3,18 +3,51 @@
 //---------------------------------
 // MOVE
 //---------------------------------
-void dae::Move::Execute()
+float dae::MoveCommand::CalculateOffset() const
+{
+	return m_speed * dae::TimeManager::GetInstance().GetDeltaTime();
+}
+
+void dae::MoveLeft::Execute()
 {
 	dae::GameObject* gameObject{ GetGameObject() };
 	if (!gameObject) return;
 
-	m_direction = glm::normalize(m_direction);
+	glm::vec2 offset{};
+	offset.x -= CalculateOffset();
 
-	if (glm::length(m_direction) >= FLT_EPSILON) gameObject->GetTransform()->Translate(m_direction * m_speed * dae::TimeManager::GetInstance().GetDeltaTime());
+	gameObject->GetTransform()->Translate(offset);
 }
 
-void dae::Move::SetDirection(const glm::vec2& dir)
+void dae::MoveRight::Execute()
 {
-	m_direction = dir;
-	m_set = true;
+	dae::GameObject* gameObject{ GetGameObject() };
+	if (!gameObject) return;
+
+	glm::vec2 offset{};
+	offset.x += CalculateOffset();
+
+	gameObject->GetTransform()->Translate(offset);
+}
+
+void dae::MoveDown::Execute()
+{
+	dae::GameObject* gameObject{ GetGameObject() };
+	if (!gameObject) return;
+
+	glm::vec2 offset{};
+	offset.y += CalculateOffset();
+
+	gameObject->GetTransform()->Translate(offset);
+}
+
+void dae::MoveUp::Execute()
+{
+	dae::GameObject* gameObject{ GetGameObject() };
+	if (!gameObject) return;
+
+	glm::vec2 offset{};
+	offset.y -= CalculateOffset();
+
+	gameObject->GetTransform()->Translate(offset);
 }

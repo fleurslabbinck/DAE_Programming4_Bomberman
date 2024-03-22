@@ -1,22 +1,24 @@
 #include <SDL.h>
 #include "InputManager.h"
 
-void dae::InputManager::AddPlayerController(dae::GameObject* gameObject, float speed, ControlMethod controlMethod)
+dae::PlayerController* dae::InputManager::AddPlayerController(ControlMethod controlMethod)
 {
 	std::unique_ptr<Gamepad> gamepad{};
 
 	if (controlMethod == ControlMethod::Gamepad) gamepad = std::make_unique<Gamepad>(m_playerControllerCount);
 	else gamepad = nullptr;
 
-	m_playerControllers.push_back(PlayerController((controlMethod), std::move(gamepad)));
+	std::unique_ptr<PlayerController> newPlayerController{ std::make_unique<PlayerController>(controlMethod, std::move(gamepad)) };
 
-	m_playerControllers[m_playerControllerCount].Bind(gameObject, speed);
+	m_playerControllers.push_back(std::move(newPlayerController));
+
 	++m_playerControllerCount;
+
+	return m_playerControllers[m_playerControllerCount - 1].get();
 }
 
 bool dae::InputManager::ProcessInput()
 {
-	UpdateInput();
 	ExecuteCommands();
 
 	SDL_Event e;
@@ -29,110 +31,76 @@ bool dae::InputManager::ProcessInput()
 	return false;
 }
 
-void dae::InputManager::UpdateInput()
+std::vector<dae::Command*> dae::InputManager::HandleInput(std::unique_ptr<PlayerController>& playerController)
 {
-	for (PlayerController& playerController : m_playerControllers)
+	std::vector<Command*> commands{};
+
+	for (int i{}; i <= static_cast<int>(Input::Used); ++i)
 	{
-		glm::vec2 direction{};
+		Input input{ static_cast<Input>(i) };
 
-		switch (playerController.controlMethod)
+		if (IsPressed(playerController, input))
 		{
-		case ControlMethod::Gamepad:
-
-			if (playerController.gamepad->UpdateButtons())
-			{
-				if (!playerController.gamepad->IsPressed(GamepadButton::DPadLeft) && !playerController.gamepad->IsPressed(GamepadButton::DPadRight) &&
-					!playerController.gamepad->IsPressed(GamepadButton::DPadDown) && !playerController.gamepad->IsPressed(GamepadButton::DPadUp))
-				{
-					playerController.move.Reset();
-					break;
-				}
-
-				if (playerController.gamepad->IsPressed(GamepadButton::DPadLeft)) direction.x -= 1;
-				if (playerController.gamepad->IsPressed(GamepadButton::DPadRight)) direction.x += 1;
-				if (playerController.gamepad->IsPressed(GamepadButton::DPadDown)) direction.y += 1;
-				if (playerController.gamepad->IsPressed(GamepadButton::DPadUp)) direction.y -= 1;
-
-				playerController.move.SetDirection(direction);
-			}
-
-			break;
-		case ControlMethod::Keyboard:
-		{
-			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-
-			if (!currentKeyStates[SDL_SCANCODE_A] && !currentKeyStates[SDL_SCANCODE_D] && !currentKeyStates[SDL_SCANCODE_S] && !currentKeyStates[SDL_SCANCODE_W])
-			{
-				playerController.move.Reset();
-				break;
-			}
-
-			if (currentKeyStates[SDL_SCANCODE_A]) direction.x -= 1;
-			if (currentKeyStates[SDL_SCANCODE_D]) direction.x += 1;
-			if (currentKeyStates[SDL_SCANCODE_S]) direction.y += 1;
-			if (currentKeyStates[SDL_SCANCODE_W]) direction.y -= 1;
-
-			playerController.move.SetDirection(direction);
-
-			break;
-		}
+			auto it = playerController->bindings.find(input);
+			if (it != playerController->bindings.end()) commands.push_back(it->second.get());
 		}
 	}
+
+	return commands;
 }
 
-//void dae::InputManager::UpdateGamepadInput()
-//{
-//	for (Gamepad& gamepad : m_gamepads)
-//	{
-//		if (gamepad.UpdateButtons())
-//		{
-//			glm::vec2 direction{};
-//
-//			if (!gamepad.IsPressed(GamepadButton::DPadLeft) && !gamepad.IsPressed(GamepadButton::DPadRight) && !gamepad.IsPressed(GamepadButton::DPadDown) && !gamepad.IsPressed(GamepadButton::DPadUp))
-//			{
-//				m_controllers[gamepad.GetPlayerIdx()].move.Reset();
-//				break;
-//			}
-//
-//			if (gamepad.IsPressed(GamepadButton::DPadLeft)) direction.x -= 1;
-//			if (gamepad.IsPressed(GamepadButton::DPadRight)) direction.x += 1;
-//			if (gamepad.IsPressed(GamepadButton::DPadDown)) direction.y += 1;
-//			if (gamepad.IsPressed(GamepadButton::DPadUp)) direction.y -= 1;
-//
-//			m_controllers[gamepad.GetPlayerIdx()].move.SetDirection(direction);
-//		}
-//	}
-//}
+bool dae::InputManager::IsPressed(const std::unique_ptr<PlayerController>& playerController, Input input)
+{
+	switch (playerController->controlMethod)
+	{
+	case ControlMethod::Gamepad:
 
-//void dae::InputManager::UpdateKeyboardInput()
-//{
-//	const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-//
-//	size_t idx{};
-//
-//	if (m_gamepads.empty()) idx = 0;
-//	else idx = m_gamepads.size();
-//
-//	for (idx; idx < m_controllers.size(); ++idx)
-//	{
-//		glm::vec2 direction{};
-//
-//		if (!currentKeyStates[SDL_SCANCODE_A] && !currentKeyStates[SDL_SCANCODE_D] && !currentKeyStates[SDL_SCANCODE_S] && !currentKeyStates[SDL_SCANCODE_W])
-//		{
-//			m_controllers[idx].move.Reset();
-//			break;
-//		}
-//
-//		if (currentKeyStates[SDL_SCANCODE_A]) direction.x -= 1;
-//		if (currentKeyStates[SDL_SCANCODE_D]) direction.x += 1;
-//		if (currentKeyStates[SDL_SCANCODE_S]) direction.y += 1;
-//		if (currentKeyStates[SDL_SCANCODE_W]) direction.y -= 1;
-//
-//		m_controllers[idx].move.SetDirection(direction);
-//	}
-//}
+		switch (input)
+		{
+		case dae::Input::Left:
+			return playerController->gamepad->IsPressed(GamepadButton::DPadLeft);
+			break;
+		case dae::Input::Right:
+			return playerController->gamepad->IsPressed(GamepadButton::DPadRight);
+			break;
+		case dae::Input::Down:
+			return playerController->gamepad->IsPressed(GamepadButton::DPadDown);
+			break;
+		case dae::Input::Up:
+			return playerController->gamepad->IsPressed(GamepadButton::DPadUp);
+			break;
+		}
+
+		break;
+	case ControlMethod::Keyboard:
+	{
+		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+
+		switch (input)
+		{
+		case dae::Input::Left:
+			return currentKeyStates[SDL_SCANCODE_A];
+			break;
+		case dae::Input::Right:
+			return currentKeyStates[SDL_SCANCODE_D];
+			break;
+		case dae::Input::Down:
+			return currentKeyStates[SDL_SCANCODE_S];
+			break;
+		case dae::Input::Up:
+			return currentKeyStates[SDL_SCANCODE_W];
+			break;
+		}
+	}
+	}
+
+	return false;
+}
 
 void dae::InputManager::ExecuteCommands()
 {
-	for (PlayerController& playerController : m_playerControllers) playerController.Execute();
+	for (std::unique_ptr<PlayerController>& playerController : m_playerControllers)
+	{
+		for (Command* command : HandleInput(playerController)) command->Execute();
+	}
 }

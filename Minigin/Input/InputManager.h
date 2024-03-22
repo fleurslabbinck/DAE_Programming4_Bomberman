@@ -5,6 +5,7 @@
 #include "Singletons/Singleton.h"
 #include "Command.h"
 #include "Gamepad.h"
+#include <unordered_map>
 
 namespace dae
 {
@@ -13,20 +14,27 @@ namespace dae
 		Keyboard,
 	};
 
+	enum class Input {
+		Left = 0,
+		Right = 1,
+		Down = 2,
+		Up = 4,
+
+		Used = 4,
+	};
+
 	struct PlayerController
 	{
 		ControlMethod controlMethod{ ControlMethod::Gamepad };
 		std::unique_ptr<Gamepad> gamepad;
-		Move move{};
 
-		void Bind(GameObject* gameObject, float speed)
-		{
-			move = Move(gameObject, speed);
-		}
+		std::unordered_map<Input, std::unique_ptr<Command>> bindings{};
+
+		void BindCommand(Input input, std::unique_ptr<Command> command) { bindings[input] = std::move(command); };
 
 		void Execute()
 		{
-			if (move.GetSet()) move.Execute();
+			
 		}
 	};
 
@@ -40,16 +48,15 @@ namespace dae
 		InputManager& operator=(const InputManager& other) = delete;
 		InputManager& operator=(InputManager&& other) = delete;
 
-		void AddPlayerController(dae::GameObject* gameObject, float speed, ControlMethod controlMethod);
 		bool ProcessInput();
+		PlayerController* AddPlayerController(ControlMethod controlMethod);
 
 	private:
 		int m_playerControllerCount{};
-		std::vector<PlayerController> m_playerControllers;
+		std::vector<std::unique_ptr<PlayerController>> m_playerControllers;
 
-		void UpdateInput();
-		//void UpdateGamepadInput();
-		//void UpdateKeyboardInput();
+		std::vector<Command*> HandleInput(std::unique_ptr<PlayerController>& playerController);
+		bool IsPressed(const std::unique_ptr<PlayerController>& playerController, Input input);
 		void ExecuteCommands();
 	};
 }

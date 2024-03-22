@@ -21,38 +21,69 @@ namespace dae
 	//---------------------------------
 	class GameObjectCommand : public Command
 	{
-		dae::GameObject* m_GameObject{ nullptr };
+		dae::GameObject* m_gameObject{ nullptr };
 
 	public:
 		GameObjectCommand() = default;
-		GameObjectCommand(dae::GameObject* gameObject) : m_GameObject{ gameObject } {};
+		GameObjectCommand(dae::GameObject* gameObject) : m_gameObject{ gameObject } {};
 		virtual ~GameObjectCommand() = default;
 
 	protected:
-		dae::GameObject* GetGameObject() const { return m_GameObject; }
+		dae::GameObject* GetGameObject() const { return m_gameObject; }
+	};
+
+
+	//---------------------------------
+	// MOVECOMMAND
+	//---------------------------------
+	class MoveCommand : public GameObjectCommand
+	{
+	public:
+		MoveCommand(dae::GameObject* gameObject) : GameObjectCommand(gameObject) {}
+	protected:
+		virtual float CalculateOffset() const;
+	private:
+		const float m_speed{ 150.f };
 	};
 
 	//---------------------------------
-	// MOVE
+	// MOVELEFT
 	//---------------------------------
-	class Move final : public GameObjectCommand
+	class MoveLeft final : public MoveCommand
 	{
 	public:
-		Move() = default;
-		Move(dae::GameObject* gameObject, float speed) : GameObjectCommand(gameObject), m_speed{ speed } {}
+		MoveLeft(dae::GameObject* gameObject) : MoveCommand(gameObject) {}
 		void Execute() override;
+	};
 
-		void SetSpeed(float speed) { m_speed = speed; }
-		void SetDirection(const glm::vec2& dir);
-		void Reset() { m_set = false; }
+	//---------------------------------
+	// MOVERIGHT
+	//---------------------------------
+	class MoveRight final : public MoveCommand
+	{
+	public:
+		MoveRight(dae::GameObject* gameObject) : MoveCommand(gameObject) {}
+		void Execute() override;
+	};
 
-		bool GetSet() const { return m_set; }
+	//---------------------------------
+	// MOVEDOWN
+	//---------------------------------
+	class MoveDown final : public MoveCommand
+	{
+	public:
+		MoveDown(dae::GameObject* gameObject) : MoveCommand(gameObject) {}
+		void Execute() override;
+	};
 
-	private:
-		float m_speed{};
-		glm::vec2 m_direction{};
-		bool m_set{ false };
-		bool m_setY{ false };
+	//---------------------------------
+	// MOVEUP
+	//---------------------------------
+	class MoveUp final : public MoveCommand
+	{
+	public:
+		MoveUp(dae::GameObject* gameObject) : MoveCommand(gameObject) {}
+		void Execute() override;
 	};
 }
 #endif
