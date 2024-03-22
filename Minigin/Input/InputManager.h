@@ -55,9 +55,9 @@ namespace dae
 		int m_playerControllerCount{};
 		std::vector<std::unique_ptr<PlayerController>> m_playerControllers;
 
+		void ExecuteCommands();
 		std::vector<Command*> HandleInput(std::unique_ptr<PlayerController>& playerController);
 		bool IsPressed(const std::unique_ptr<PlayerController>& playerController, Input input);
-		void ExecuteCommands();
 	};
 }
 #endif

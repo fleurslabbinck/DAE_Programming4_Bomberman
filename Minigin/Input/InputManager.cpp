@@ -31,8 +31,18 @@ bool dae::InputManager::ProcessInput()
 	return false;
 }
 
+void dae::InputManager::ExecuteCommands()
+{
+	for (std::unique_ptr<PlayerController>& playerController : m_playerControllers)
+	{
+		for (Command* command : HandleInput(playerController)) command->Execute();
+	}
+}
+
 std::vector<dae::Command*> dae::InputManager::HandleInput(std::unique_ptr<PlayerController>& playerController)
 {
+	if (playerController->gamepad) playerController->gamepad->UpdateButtons();
+
 	std::vector<Command*> commands{};
 
 	for (int i{}; i <= static_cast<int>(Input::Used); ++i)
@@ -95,12 +105,4 @@ bool dae::InputManager::IsPressed(const std::unique_ptr<PlayerController>& playe
 	}
 
 	return false;
-}
-
-void dae::InputManager::ExecuteCommands()
-{
-	for (std::unique_ptr<PlayerController>& playerController : m_playerControllers)
-	{
-		for (Command* command : HandleInput(playerController)) command->Execute();
-	}
 }
