@@ -75,10 +75,8 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 		"Bomberman - Fleur Slabbinck",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		//640,
-		//480,
-		WINDOW_WIDTH * GRAPHICS_SCALE,
-		WINDOW_HEIGHT * GRAPHICS_SCALE,
+		WINDOW_WIDTH,
+		WINDOW_HEIGHT,
 		SDL_WINDOW_OPENGL
 	);
 	if (g_window == nullptr)

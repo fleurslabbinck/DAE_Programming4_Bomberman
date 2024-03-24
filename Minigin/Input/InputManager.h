@@ -14,27 +14,16 @@ namespace dae
 		Keyboard,
 	};
 
-	enum class Input {
-		Left = 0,
-		Right = 1,
-		Down = 2,
-		Up = 4,
-
-		Used = 4,
-	};
-
 	struct PlayerController
 	{
 		ControlMethod controlMethod{ ControlMethod::Gamepad };
 		std::unique_ptr<Gamepad> gamepad;
 
-		std::unordered_map<Input, std::unique_ptr<Command>> bindings{};
+		std::vector<std::tuple<int, std::unique_ptr<Command>>> bindings{};
 
-		void BindCommand(Input input, std::unique_ptr<Command> command) { bindings[input] = std::move(command); };
-
-		void Execute()
+		void BindCommand(int input, std::unique_ptr<Command> command)
 		{
-			
+			bindings.push_back(std::tuple<int, std::unique_ptr<Command>>{ input, std::move(command) });
 		}
 	};
 
@@ -56,8 +45,8 @@ namespace dae
 		std::vector<std::unique_ptr<PlayerController>> m_playerControllers;
 
 		void ExecuteCommands();
-		std::vector<Command*> HandleInput(std::unique_ptr<PlayerController>& playerController);
-		bool IsPressed(const std::unique_ptr<PlayerController>& playerController, Input input);
+		std::vector<Command*> HandleInput(const std::unique_ptr<PlayerController>& playerController) const;
+		bool IsPressed(const std::unique_ptr<PlayerController>& playerController, int input) const;
 	};
 }
 #endif

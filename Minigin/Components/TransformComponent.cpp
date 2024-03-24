@@ -1,3 +1,4 @@
+#include "TransformComponent.h"
 #include "GameObject.h"
 
 //---------------------------------

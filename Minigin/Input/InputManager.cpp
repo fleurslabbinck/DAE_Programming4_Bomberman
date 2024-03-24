@@ -5,13 +5,11 @@ dae::PlayerController* dae::InputManager::AddPlayerController(ControlMethod cont
 {
 	std::unique_ptr<Gamepad> gamepad{};
 
-	if (controlMethod == ControlMethod::Gamepad) gamepad = std::make_unique<Gamepad>(m_playerControllerCount);
+	if (controlMethod == ControlMethod::Gamepad) gamepad = std::make_unique<Gamepad>();
 	else gamepad = nullptr;
 
 	std::unique_ptr<PlayerController> newPlayerController{ std::make_unique<PlayerController>(controlMethod, std::move(gamepad)) };
-
 	m_playerControllers.push_back(std::move(newPlayerController));
-
 	++m_playerControllerCount;
 
 	return m_playerControllers[m_playerControllerCount - 1].get();
@@ -39,69 +37,33 @@ void dae::InputManager::ExecuteCommands()
 	}
 }
 
-std::vector<dae::Command*> dae::InputManager::HandleInput(std::unique_ptr<PlayerController>& playerController)
+std::vector<dae::Command*> dae::InputManager::HandleInput(const std::unique_ptr<PlayerController>& playerController) const
 {
 	if (playerController->gamepad) playerController->gamepad->UpdateButtons();
 
 	std::vector<Command*> commands{};
 
-	for (int i{}; i <= static_cast<int>(Input::Used); ++i)
+	for (const std::tuple<int, std::unique_ptr<Command>>& binding : playerController->bindings)
 	{
-		Input input{ static_cast<Input>(i) };
-
-		if (IsPressed(playerController, input))
-		{
-			auto it = playerController->bindings.find(input);
-			if (it != playerController->bindings.end()) commands.push_back(it->second.get());
-		}
+		if (IsPressed(playerController, std::get<0>(binding))) commands.push_back(std::get<1>(binding).get());
 	}
 
 	return commands;
 }
 
-bool dae::InputManager::IsPressed(const std::unique_ptr<PlayerController>& playerController, Input input)
+bool dae::InputManager::IsPressed(const std::unique_ptr<PlayerController>& playerController, int input) const
 {
 	switch (playerController->controlMethod)
 	{
 	case ControlMethod::Gamepad:
-
-		switch (input)
-		{
-		case dae::Input::Left:
-			return playerController->gamepad->IsPressed(GamepadButton::DPadLeft);
-			break;
-		case dae::Input::Right:
-			return playerController->gamepad->IsPressed(GamepadButton::DPadRight);
-			break;
-		case dae::Input::Down:
-			return playerController->gamepad->IsPressed(GamepadButton::DPadDown);
-			break;
-		case dae::Input::Up:
-			return playerController->gamepad->IsPressed(GamepadButton::DPadUp);
-			break;
-		}
-
+		return playerController->gamepad->IsPressed(static_cast<GamepadButton>(input));
 		break;
 	case ControlMethod::Keyboard:
 	{
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-
-		switch (input)
-		{
-		case dae::Input::Left:
-			return currentKeyStates[SDL_SCANCODE_A];
-			break;
-		case dae::Input::Right:
-			return currentKeyStates[SDL_SCANCODE_D];
-			break;
-		case dae::Input::Down:
-			return currentKeyStates[SDL_SCANCODE_S];
-			break;
-		case dae::Input::Up:
-			return currentKeyStates[SDL_SCANCODE_W];
-			break;
-		}
+		return currentKeyStates[input];
 	}
+		break;
 	}
 
 	return false;

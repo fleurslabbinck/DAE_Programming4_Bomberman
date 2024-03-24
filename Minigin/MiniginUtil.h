@@ -1,11 +1,20 @@
 #ifndef MINIGINUTIL_H
 #define MINIGINUTIL_H
 
-//window dimensions
-#define WINDOW_WIDTH 256
-#define WINDOW_HEIGHT 240
+#include <glm/glm.hpp>
 
-//graphics scale
-#define GRAPHICS_SCALE 4
+//window dimensions
+constexpr int WINDOW_WIDTH = 1024;
+constexpr int WINDOW_HEIGHT = 960;
+constexpr int GRIDCELL = 64;
+
+namespace dae
+{
+	struct Cell {
+		int size{ GRIDCELL };
+		glm::vec2 startPos;
+		glm::vec2 center;
+	};
+}
 
 #endif

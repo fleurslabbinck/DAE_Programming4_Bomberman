@@ -7,15 +7,17 @@ namespace dae
 		DPadLeft,
 		DPadRight,
 		DPadDown,
-		DPadUp
+		DPadUp,
+		A,
+		B,
+		X,
+		Y,
 	};
 
 	class GamepadInterface
 	{
 	public:
 		virtual ~GamepadInterface() = default;
-
-		virtual int GetPlayerIdx() const = 0;
 
 		virtual bool UpdateButtons() = 0;
 		virtual bool IsPressed(GamepadButton button) const = 0;

@@ -9,14 +9,12 @@ namespace dae
 	class Gamepad final
 	{
 	public:
-		Gamepad(int playerIdx);
+		Gamepad();
 		~Gamepad() = default;
 		Gamepad(const Gamepad&) = delete;
 		Gamepad& operator=(const Gamepad&) = delete;
 		Gamepad(Gamepad&&) noexcept = default;
 		Gamepad& operator=(Gamepad&&) noexcept = default;
-
-		int GetPlayerIdx() const;
 
 		bool UpdateButtons();
 		bool IsPressed(GamepadButton button) const;

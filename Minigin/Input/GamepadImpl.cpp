@@ -7,8 +7,8 @@
 
 int dae::GamepadImpl::gamepadCount{};
 
-dae::GamepadImpl::GamepadImpl(int playerIdx)
-	: m_gamepadIdx{ gamepadCount }, m_playerIdx{ playerIdx }
+dae::GamepadImpl::GamepadImpl()
+	: m_gamepadIdx{ gamepadCount }
 {
 	++gamepadCount;
 
@@ -71,6 +71,18 @@ unsigned int dae::GamepadImpl::GetGamepadInput(GamepadButton button) const
 		break;
 	case GamepadButton::DPadUp:
 		gamepadInput = XINPUT_GAMEPAD_DPAD_UP;
+		break;
+	case GamepadButton::A:
+		gamepadInput = XINPUT_GAMEPAD_A;
+		break;
+	case GamepadButton::B:
+		gamepadInput = XINPUT_GAMEPAD_B;
+		break;
+	case GamepadButton::X:
+		gamepadInput = XINPUT_GAMEPAD_X;
+		break;
+	case GamepadButton::Y:
+		gamepadInput = XINPUT_GAMEPAD_Y;
 		break;
 	}
 	

@@ -1,13 +1,8 @@
 #include "Gamepad.h"
 
-dae::Gamepad::Gamepad(int playerIdx)
-	: m_pImpl{ std::make_unique<GamepadImpl>(playerIdx) }
+dae::Gamepad::Gamepad()
+	: m_pImpl{ std::make_unique<GamepadImpl>() }
 {}
-
-int dae::Gamepad::GetPlayerIdx() const
-{
-	return m_pImpl->GetPlayerIdx();
-}
 
 bool dae::Gamepad::UpdateButtons()
 {

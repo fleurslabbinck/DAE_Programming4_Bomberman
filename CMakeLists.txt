@@ -33,6 +33,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Components/RenderComponent.cpp
   Minigin/Components/TextComponent.cpp
   Minigin/Components/FPSComponent.cpp
+  Minigin/Components/HealthComponent.cpp
+  Minigin/Components/GridComponent.cpp
   Minigin/Resources/Texture2D.cpp
   
 )
