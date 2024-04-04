@@ -5,7 +5,7 @@
 //---------------------------------
 // MOVE
 //---------------------------------
-void dae::MoveCommand::MoveObject(glm::vec2& direction)
+void dae::MoveCommand::MoveObject(const glm::vec2& direction) const
 {
 	dae::GameObject* gameObject{ GetGameObject() };
 	if (!gameObject) return;
@@ -31,26 +31,31 @@ void dae::MoveCommand::MoveObject(glm::vec2& direction)
 	gameObject->GetTransform()->Translate(dir * m_speed * dae::TimeManager::GetInstance().GetDeltaTime());
 }
 
-void dae::MoveLeft::Execute()
+void dae::MoveCommand::Execute()
 {
-	glm::vec2 direction{ -1, 0 };
-	MoveObject(direction);
+	MoveObject(m_direction);
 }
 
-void dae::MoveRight::Execute()
-{
-	glm::vec2 direction{ 1, 0 };
-	MoveObject(direction);
-}
-
-void dae::MoveDown::Execute()
-{
-	glm::vec2 direction{ 0, 1 };
-	MoveObject(direction);
-}
-
-void dae::MoveUp::Execute()
-{
-	glm::vec2 direction{ 0, -1 };
-	MoveObject(direction);
-}
+//void dae::MoveLeft::Execute()
+//{
+//	glm::vec2 direction{ -1, 0 };
+//	MoveObject(direction);
+//}
+//
+//void dae::MoveRight::Execute()
+//{
+//	glm::vec2 direction{ 1, 0 };
+//	MoveObject(direction);
+//}
+//
+//void dae::MoveDown::Execute()
+//{
+//	glm::vec2 direction{ 0, 1 };
+//	MoveObject(direction);
+//}
+//
+//void dae::MoveUp::Execute()
+//{
+//	glm::vec2 direction{ 0, -1 };
+//	MoveObject(direction);
+//}
