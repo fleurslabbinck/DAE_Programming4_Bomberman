@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "Singletons/SceneManager.h"
+#include "SceneManager.h"
 #include "GameObject.h"
 
 namespace dae

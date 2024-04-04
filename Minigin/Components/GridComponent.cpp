@@ -1,5 +1,5 @@
 #include "GridComponent.h"
-#include "Singletons/Renderer.h"
+#include "Render/Renderer.h"
 #include "glm/glm.hpp"
 
 //---------------------------------

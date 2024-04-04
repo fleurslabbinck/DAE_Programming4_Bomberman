@@ -1,6 +1,6 @@
 #include "Components/TextComponent.h"
-#include "Singletons/ResourceManager.h"
-#include "Singletons/Renderer.h"
+#include "Render/ResourceManager.h"
+#include "Render/Renderer.h"
 #include <SDL_ttf.h>
 #include <sstream>
 

@@ -14,30 +14,9 @@ else()
 endif()
 
 # list source files here
-add_executable(${TARGET_NAME} ${TARGET_PARAM}
-  Minigin/Resources/Font.cpp
-  Minigin/GameObject.cpp
-  Minigin/Input/InputManager.cpp
-  Minigin/Input/Command.cpp
-  Minigin/Input/Gamepad.cpp
-  Minigin/Input/GamepadImpl.cpp
-  Minigin/Main.cpp
-  Minigin/Minigin.cpp
-  Minigin/Singletons/Renderer.cpp
-  Minigin/Singletons/ResourceManager.cpp
-  Minigin/Scene.cpp
-  Minigin/Singletons/SceneManager.cpp
-  Minigin/Components/BaseComponent.cpp
-  Minigin/Components/TransformComponent.cpp
-  Minigin/Components/RotatorComponent.cpp
-  Minigin/Components/RenderComponent.cpp
-  Minigin/Components/TextComponent.cpp
-  Minigin/Components/FPSComponent.cpp
-  Minigin/Components/HealthComponent.cpp
-  Minigin/Components/GridComponent.cpp
-  Minigin/Resources/Texture2D.cpp
-  
-)
+file(GLOB_RECURSE  SOURCES "Minigin/*.cpp")
+
+add_executable(${TARGET_NAME} ${TARGET_PARAM} ${SOURCES})
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)

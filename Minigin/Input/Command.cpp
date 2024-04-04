@@ -24,7 +24,7 @@ void dae::MoveCommand::MoveObject(glm::vec2& direction)
 
 		if (targetPos == currentPos) return;
 
-		dir = targetPos - currentPos;
+		dir = glm::normalize(targetPos - currentPos);
 	}
 	else dir = direction;
 

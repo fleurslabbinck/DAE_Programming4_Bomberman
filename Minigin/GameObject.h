@@ -2,7 +2,7 @@
 #define GAMEOBJECT_H
 
 #include "Components/TransformComponent.h"
-#include "Singletons/TimeManager.h"
+#include "TimeManager.h"
 
 namespace dae
 {

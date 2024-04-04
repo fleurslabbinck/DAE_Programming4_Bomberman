@@ -1,28 +1,37 @@
 #ifndef GAMEPAD_H
 #define GAMEPAD_H
 
-#include "GamepadImpl.h"
 #include <memory>
 
 namespace dae
 {
-	class Gamepad final
+	enum class GamepadButton {
+		DPadLeft,
+		DPadRight,
+		DPadDown,
+		DPadUp,
+		A,
+		B,
+		X,
+		Y,
+	};
+
+	class Gamepad
 	{
 	public:
 		Gamepad();
-		~Gamepad() = default;
-		Gamepad(const Gamepad&) = delete;
-		Gamepad& operator=(const Gamepad&) = delete;
-		Gamepad(Gamepad&&) noexcept = default;
-		Gamepad& operator=(Gamepad&&) noexcept = default;
+		virtual ~Gamepad() = default;
 
-		bool UpdateButtons();
-		bool IsPressed(GamepadButton button) const;
-		bool IsDownThisFrame(GamepadButton button) const;
-		bool IsUpThisFrame(GamepadButton button) const;
+		virtual bool UpdateButtons();
+		virtual bool IsPressed(GamepadButton button) const;
+		virtual bool IsDownThisFrame(GamepadButton button) const;
+		virtual bool IsUpThisFrame(GamepadButton button) const;
 
 	private:
-		std::unique_ptr<GamepadInterface> m_pImpl;
+		class GamepadImpl;
+		std::unique_ptr<GamepadImpl> m_Pimpl;
+
+		static int gamepadCount;
 	};
 }
 #endif

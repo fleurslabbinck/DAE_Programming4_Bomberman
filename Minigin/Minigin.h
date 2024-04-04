@@ -8,9 +8,9 @@
 
 #include "MiniginUtil.h"
 #include "Input/InputManager.h"
-#include "Singletons/TimeManager.h"
-#include "Singletons/SceneManager.h"
-#include "Singletons/Renderer.h"
+#include "TimeManager.h"
+#include "SceneManager.h"
+#include "Render/Renderer.h"
 
 namespace dae
 {

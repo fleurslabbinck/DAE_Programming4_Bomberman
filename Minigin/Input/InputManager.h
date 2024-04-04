@@ -2,7 +2,7 @@
 #define INPUTMANAGER_H
 
 #include <vector>
-#include "Singletons/Singleton.h"
+#include "Singleton.h"
 #include "Command.h"
 #include "Gamepad.h"
 #include <unordered_map>
