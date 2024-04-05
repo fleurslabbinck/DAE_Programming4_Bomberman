@@ -14,9 +14,8 @@ namespace dae
 	class GridComponent : public BaseComponent
 	{
 	public:
-		void Render(const glm::vec2& pos) const override;
-
 		glm::vec2 GetNextPosition(const glm::vec2& currentPos, const glm::vec2& direction) const;
+		std::vector<GameObject*> GetEntitiesClose(const glm::vec2& pos) const;
 
 		explicit GridComponent(GameObject* pOwner, int cols, int rows);
 		GridComponent(const GridComponent& other) = delete;
@@ -28,6 +27,8 @@ namespace dae
 		std::vector<Cell> m_cells{};
 
 		int PositionToIndex(const glm::vec2& pos) const;
+		std::vector<int> GetSurroundingIndices(int idx) const;
+		std::vector<GameObject*> GetChildren(const GameObject* parent) const;
 	};
 }
 #endif

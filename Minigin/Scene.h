@@ -7,6 +7,7 @@
 namespace dae
 {
 	class GameObject;
+
 	class Scene final
 	{
 		friend Scene& SceneManager::CreateScene(const std::string& name);
@@ -32,9 +33,6 @@ namespace dae
 
 		std::string m_name;
 		std::vector < std::unique_ptr<GameObject>> m_gameObjects{};
-
-		//float m_accumulatedTime{};
-		//bool m_deleted{ false };
 
 		static unsigned int m_idCounter; 
 	};

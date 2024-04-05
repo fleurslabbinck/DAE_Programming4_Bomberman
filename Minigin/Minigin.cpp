@@ -62,82 +62,82 @@ void PrintSDLVersion()
 	LogSDLVersion("We linked against SDL_ttf version ", version);
 }
 
-dae::Minigin::Minigin(const std::filesystem::path& dataPath)
+namespace dae
 {
-	PrintSDLVersion();
-
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	Minigin::Minigin(const std::filesystem::path& dataPath)
 	{
-		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
+		PrintSDLVersion();
+
+		if (SDL_Init(SDL_INIT_VIDEO) != 0)
+		{
+			throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
+		}
+
+		g_window = SDL_CreateWindow(
+			"Bomberman - Fleur Slabbinck",
+			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED,
+			WINDOW_WIDTH,
+			WINDOW_HEIGHT,
+			SDL_WINDOW_OPENGL
+		);
+		if (g_window == nullptr)
+		{
+			throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
+		}
+
+		m_renderer.Init(g_window);
+		ResourceManager::GetInstance().Init(dataPath);
 	}
 
-	g_window = SDL_CreateWindow(
-		"Bomberman - Fleur Slabbinck",
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		WINDOW_WIDTH,
-		WINDOW_HEIGHT,
-		SDL_WINDOW_OPENGL
-	);
-	if (g_window == nullptr)
+	Minigin::~Minigin()
 	{
-		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
+		m_renderer.Destroy();
+		SDL_DestroyWindow(g_window);
+		g_window = nullptr;
+		SDL_Quit();
 	}
 
-	m_renderer.Init(g_window);
-	ResourceManager::GetInstance().Init(dataPath);
-}
+	void Minigin::Run(const std::function<void()>& load)
+	{
+		load();
 
-dae::Minigin::~Minigin()
-{
-	m_renderer.Destroy();
-	SDL_DestroyWindow(g_window);
-	g_window = nullptr;
-	SDL_Quit();
-}
+		SDL_RenderSetVSync(m_renderer.GetSDLRenderer(), true);
 
-void dae::Minigin::Run(const std::function<void()>& load)
-{
-	load();
+		constexpr int targetFPS{ 165 };
 
-	SDL_RenderSetVSync(m_renderer.GetSDLRenderer(), true);
+		m_time.SetTargetFPS(targetFPS);
 
-	constexpr int targetFPS{ 165 };
-
-	m_time.SetTargetFPS(targetFPS);
-
-	m_time.SetCurrTime();
-	m_time.SetLastTime();
+		m_time.SetCurrTime();
+		m_time.SetLastTime();
 
 #ifndef __EMSCRIPTEN__
-	while (!m_quit)
-		RunOneFrame();
+		while (!m_quit)
+			RunOneFrame();
 #else
-	emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
+		emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
 #endif
-}
-
-void dae::Minigin::RunOneFrame()
-{
-	m_time.SetCurrTime();
-	m_time.CalculateDeltaTime();
-	m_time.SetLastTime();
-	m_time.SetLag(m_time.GetDeltaTime());
-
-	m_quit = m_input.ProcessInput();
-
-	const float m_fixedTimeStep{ m_time.GetFixedTimeStep() };
-
-	while (m_time.GetLag() >= m_fixedTimeStep)
-	{
-		m_sceneManager.FixedUpdate();
-		m_time.SetLag(-m_fixedTimeStep);
 	}
 
-	m_sceneManager.Update();
-	m_sceneManager.LateUpdate();
-	m_renderer.Render();
+	void Minigin::RunOneFrame()
+	{
+		m_time.SetCurrTime();
+		m_time.CalculateDeltaTime();
+		m_time.SetLastTime();
+		m_time.SetLag(m_time.GetDeltaTime());
 
-	//const auto sleepTime{ m_time.GetSleepTime() };
-	//if (sleepTime.count() > 0) std::this_thread::sleep_for(sleepTime);
+		m_quit = m_input.ProcessInput();
+
+		const float m_fixedTimeStep{ m_time.GetFixedTimeStep() };
+
+		while (m_time.GetLag() >= m_fixedTimeStep)
+		{
+			m_sceneManager.FixedUpdate();
+			m_time.SetLag(-m_fixedTimeStep);
+		}
+
+		m_sceneManager.Update();
+		m_sceneManager.LateUpdate();
+		m_renderer.Render();
+	}
 }

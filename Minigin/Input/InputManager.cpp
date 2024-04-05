@@ -1,11 +1,13 @@
 #include <SDL.h>
 #include "InputManager.h"
 
-dae::PlayerController* dae::InputManager::AddPlayerController(ControlMethod controlMethod)
+namespace dae
+{
+	PlayerController* InputManager::AddPlayerController(PlayerController::ControlMethod controlMethod)
 {
 	std::unique_ptr<Gamepad> gamepad{};
 
-	if (controlMethod == ControlMethod::Gamepad) gamepad = std::make_unique<Gamepad>();
+	if (controlMethod == PlayerController::ControlMethod::Gamepad) gamepad = std::make_unique<Gamepad>();
 	else gamepad = nullptr;
 
 	std::unique_ptr<PlayerController> newPlayerController{ std::make_unique<PlayerController>(controlMethod, std::move(gamepad)) };
@@ -15,7 +17,7 @@ dae::PlayerController* dae::InputManager::AddPlayerController(ControlMethod cont
 	return m_playerControllers[m_playerControllerCount - 1].get();
 }
 
-bool dae::InputManager::ProcessInput()
+bool InputManager::ProcessInput()
 {
 	ExecuteCommands();
 
@@ -29,7 +31,7 @@ bool dae::InputManager::ProcessInput()
 	return false;
 }
 
-void dae::InputManager::ExecuteCommands()
+void InputManager::ExecuteCommands()
 {
 	for (std::unique_ptr<PlayerController>& playerController : m_playerControllers)
 	{
@@ -37,7 +39,7 @@ void dae::InputManager::ExecuteCommands()
 	}
 }
 
-std::vector<dae::Command*> dae::InputManager::HandleInput(const std::unique_ptr<PlayerController>& playerController) const
+std::vector<Command*> InputManager::HandleInput(const std::unique_ptr<PlayerController>& playerController) const
 {
 	if (playerController->gamepad) playerController->gamepad->UpdateButtons();
 
@@ -51,14 +53,14 @@ std::vector<dae::Command*> dae::InputManager::HandleInput(const std::unique_ptr<
 	return commands;
 }
 
-bool dae::InputManager::IsPressed(const std::unique_ptr<PlayerController>& playerController, int input) const
+bool InputManager::IsPressed(const std::unique_ptr<PlayerController>& playerController, int input) const
 {
 	switch (playerController->controlMethod)
 	{
-	case ControlMethod::Gamepad:
+	case PlayerController::ControlMethod::Gamepad:
 		return playerController->gamepad->IsPressed(static_cast<GamepadButton>(input));
 		break;
-	case ControlMethod::Keyboard:
+	case PlayerController::ControlMethod::Keyboard:
 	{
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 		return currentKeyStates[input];
@@ -67,4 +69,5 @@ bool dae::InputManager::IsPressed(const std::unique_ptr<PlayerController>& playe
 	}
 
 	return false;
+}
 }

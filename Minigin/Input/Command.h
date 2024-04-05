@@ -41,55 +41,13 @@ namespace dae
 	public:
 		MoveCommand(dae::GameObject* gameObject, float speed, glm::vec2 direction) : GameObjectCommand(gameObject), m_speed{ speed }, m_direction{ direction } {}
 		void Execute() override;
-	protected:
-		virtual void MoveObject(const glm::vec2& direction) const;
+
 	private:
 		const float m_speed;
 		const glm::vec2 m_direction;
+		static glm::vec2 m_lastDirection;
+		glm::vec2 m_targetPos{};
+		const float m_targetOffset{ 0.5f };
 	};
-
-	////---------------------------------
-	//// MOVELEFT
-	////---------------------------------
-	//class MoveLeft final : public MoveCommand
-	//{
-	//public:
-	//	MoveLeft(dae::GameObject* gameObject, float speed) : MoveCommand(gameObject, speed) {}
-	//	void Execute() override;
-	//};
-	//
-	////---------------------------------
-	//// MOVERIGHT
-	////---------------------------------
-	//class MoveRight final : public MoveCommand
-	//{
-	//public:
-	//	MoveRight(dae::GameObject* gameObject, float speed) : MoveCommand(gameObject, speed) {}
-	//	void Execute() override;
-	//};
-	//
-	////---------------------------------
-	//// MOVEDOWN
-	////---------------------------------
-	//class MoveDown final : public MoveCommand
-	//{
-	//public:
-	//	MoveDown(dae::GameObject* gameObject, float speed) : MoveCommand(gameObject, speed) {}
-	//	void Execute() override;
-	//};
-	//
-	////---------------------------------
-	//// MOVEUP
-	////---------------------------------
-	//class MoveUp final : public MoveCommand
-	//{
-	//public:
-	//	MoveUp(dae::GameObject* gameObject, float speed) : MoveCommand(gameObject, speed) {}
-	//	void Execute() override;
-	//};
-	//
-	////---------------------------------
-	//// ATTACKCOMMAND
-	////---------------------------------
 }
 #endif

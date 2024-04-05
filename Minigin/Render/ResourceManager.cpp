@@ -6,28 +6,31 @@
 #include "Resources/Texture2D.h"
 #include "Resources/Font.h"
 
-void dae::ResourceManager::Init(const std::filesystem::path& data)
+namespace dae
 {
-	m_dataPath = data;
-
-	if (TTF_Init() != 0)
+	void ResourceManager::Init(const std::filesystem::path& data)
 	{
-		throw std::runtime_error(std::string("Failed to load support for fonts: ") + SDL_GetError());
-	}
-}
+		m_dataPath = data;
 
-std::unique_ptr<dae::Texture2D> dae::ResourceManager::LoadTexture(const std::string& file) const
-{
-	const auto fullPath = m_dataPath / file;
-	auto texture = IMG_LoadTexture(Renderer::GetInstance().GetSDLRenderer(), fullPath.string().c_str());
-	if (texture == nullptr)
+		if (TTF_Init() != 0)
+		{
+			throw std::runtime_error(std::string("Failed to load support for fonts: ") + SDL_GetError());
+		}
+	}
+
+	std::unique_ptr<Texture2D> ResourceManager::LoadTexture(const std::string& file) const
 	{
-		throw std::runtime_error(std::string("Failed to load texture: ") + SDL_GetError());
+		const auto fullPath = m_dataPath / file;
+		auto texture = IMG_LoadTexture(Renderer::GetInstance().GetSDLRenderer(), fullPath.string().c_str());
+		if (texture == nullptr)
+		{
+			throw std::runtime_error(std::string("Failed to load texture: ") + SDL_GetError());
+		}
+		return std::make_unique<Texture2D>(texture);
 	}
-	return std::make_unique<Texture2D>(texture);
-}
 
-std::unique_ptr<dae::Font> dae::ResourceManager::LoadFont(const std::string& file, unsigned int size) const
-{
-	return std::make_unique<Font>((m_dataPath / file).string(), size);
+	std::unique_ptr<Font> ResourceManager::LoadFont(const std::string& file, unsigned int size) const
+	{
+		return std::make_unique<Font>((m_dataPath / file).string(), size);
+	}
 }

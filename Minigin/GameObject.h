@@ -3,6 +3,7 @@
 
 #include "Components/TransformComponent.h"
 #include "TimeManager.h"
+#include "MiniginUtil.h"
 
 namespace dae
 {
@@ -14,6 +15,7 @@ namespace dae
 		bool IsChild(GameObject* parent);
 		int GetChildCount() const { return static_cast<int>(m_children.size()); }
 		GameObject* GetChildAt(int index) const { return m_children[index]; }
+		const std::vector<GameObject*>& GetChildren() const { return m_children; }
 
 		void AddComponent(std::unique_ptr<BaseComponent> component) { m_components.push_back(std::move(component)); };
 		template <typename C>

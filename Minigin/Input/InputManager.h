@@ -9,13 +9,13 @@
 
 namespace dae
 {
-	enum class ControlMethod {
-		Gamepad,
-		Keyboard,
-	};
-
 	struct PlayerController
 	{
+		enum class ControlMethod {
+			Gamepad,
+			Keyboard,
+		};
+
 		ControlMethod controlMethod{ ControlMethod::Gamepad };
 		std::unique_ptr<Gamepad> gamepad;
 
@@ -38,7 +38,7 @@ namespace dae
 		InputManager& operator=(InputManager&& other) = delete;
 
 		bool ProcessInput();
-		PlayerController* AddPlayerController(ControlMethod controlMethod);
+		PlayerController* AddPlayerController(PlayerController::ControlMethod controlMethod);
 
 	private:
 		int m_playerControllerCount{};

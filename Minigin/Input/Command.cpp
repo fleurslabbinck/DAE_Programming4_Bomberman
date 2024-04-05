@@ -2,60 +2,44 @@
 #include "Components/RenderComponent.h"
 #include "Components/GridComponent.h"
 
-//---------------------------------
-// MOVE
-//---------------------------------
-void dae::MoveCommand::MoveObject(const glm::vec2& direction) const
+namespace dae
 {
-	dae::GameObject* gameObject{ GetGameObject() };
-	if (!gameObject) return;
+	//---------------------------------
+	// MOVE
+	//---------------------------------
+	glm::vec2 MoveCommand::m_lastDirection{};
 
-	glm::vec2 dir{};
-
-	dae::GameObject* grid{ gameObject->GetParent() };
-	if (grid)
+	void MoveCommand::Execute()
 	{
+		dae::GameObject* gameObject{ GetGameObject() };
+
+		// get current pos
 		glm::vec2 currentPos{ gameObject->GetTransform()->GetLocalPosition() };
 		const glm::vec2 textureDimensions{ gameObject->GetComponent<RenderComponent>()->GetDimensions() };
 		currentPos = { currentPos.x + textureDimensions.x / 2, currentPos.y + textureDimensions.y / 2 };
 
+		glm::vec2 dir{};
+
+		// continue to target position if change of direction
+		if (m_direction != m_lastDirection)
+		{
+			m_targetPos = currentPos;
+			m_lastDirection = m_direction;
+		}
+
+		// get grid
+		dae::GameObject* grid{ gameObject->GetParent() };
+		if (!grid) return;
 		dae::GridComponent* gridComponent{ grid->GetComponent<GridComponent>() };
-		const glm::vec2 targetPos{ gridComponent->GetNextPosition(currentPos, direction) };
 
-		if (targetPos == currentPos) return;
+		// check if reached target
+		if (glm::distance(currentPos, m_targetPos) <= m_targetOffset) m_targetPos = gridComponent->GetNextPosition(currentPos, m_direction);
 
-		dir = glm::normalize(targetPos - currentPos);
+		// check if target blocked
+		if (gridComponent->IsPosBlocked(m_targetPos)) return;
+
+		dir = glm::normalize(m_targetPos - currentPos);
+
+		gameObject->GetTransform()->Translate(dir * m_speed * dae::TimeManager::GetInstance().GetDeltaTime());
 	}
-	else dir = direction;
-
-	gameObject->GetTransform()->Translate(dir * m_speed * dae::TimeManager::GetInstance().GetDeltaTime());
 }
-
-void dae::MoveCommand::Execute()
-{
-	MoveObject(m_direction);
-}
-
-//void dae::MoveLeft::Execute()
-//{
-//	glm::vec2 direction{ -1, 0 };
-//	MoveObject(direction);
-//}
-//
-//void dae::MoveRight::Execute()
-//{
-//	glm::vec2 direction{ 1, 0 };
-//	MoveObject(direction);
-//}
-//
-//void dae::MoveDown::Execute()
-//{
-//	glm::vec2 direction{ 0, 1 };
-//	MoveObject(direction);
-//}
-//
-//void dae::MoveUp::Execute()
-//{
-//	glm::vec2 direction{ 0, -1 };
-//	MoveObject(direction);
-//}

@@ -1,19 +1,21 @@
 #include "HealthComponent.h"
 
-//---------------------------------
-//HEALTHCOMPONENT
-//---------------------------------
-
-void dae::HealthComponent::InflictDamage()
+namespace dae
 {
-	if (m_lives > 1)
+	//---------------------------------
+	//HEALTHCOMPONENT
+	//---------------------------------
+	void HealthComponent::InflictDamage()
 	{
-		--m_lives;
+		if (m_lives > 1)
+		{
+			--m_lives;
+		}
+		else Die();
 	}
-	else Die();
-}
 
-void dae::HealthComponent::Die()
-{
+	void HealthComponent::Die()
+	{
 
+	}
 }
