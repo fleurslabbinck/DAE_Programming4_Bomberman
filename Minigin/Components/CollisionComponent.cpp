@@ -20,32 +20,63 @@ namespace dae
 		{
 			if (const CollisionComponent* collisionComp = entity->GetComponent<CollisionComponent>())
 			{
-				if (collisionComp->GetEntity() == EntityType::Block) continue;
+				const EntityType type{ collisionComp->GetEntity() };
+
+				if (type == EntityType::Block) continue;
 
 				const glm::vec2 entityPos{ entity->GetTransform()->GetLocalPosition() };
 				const Sprite entityCollider{ collisionComp->GetCollider() };
 
 				if (IsColliding(pos, entityPos, entityCollider))
 				{
-					switch (collisionComp->GetEntity())
+					switch (m_entityType)
 					{
 					case dae::CollisionComponent::EntityType::Player:
-						if (m_entityType == EntityType::Enemy)
+
+						if (type == EntityType::Enemy || type == EntityType::Bomb)
 						{
-							Notify(GameEvent::HEALTH_CHANGED, entity);
+							Notify(GameEvent::PLAYER_DIED, GetOwner());
 							return true;
 						}
+
 						break;
+
 					case dae::CollisionComponent::EntityType::Enemy:
-						if (m_entityType == EntityType::Player)
+
+						if (type == EntityType::Player)
 						{
-							Notify(GameEvent::HEALTH_CHANGED, GetOwner());
+							Notify(GameEvent::PLAYER_DIED, entity);
 							return true;
 						}
+
+						if (type == EntityType::Bomb)
+						{
+							Notify(GameEvent::ENEMY_KILLED, GetOwner());
+							return true;
+						}
+
 						break;
+
 					case dae::CollisionComponent::EntityType::Bomb:
-						Notify(GameEvent::HEALTH_CHANGED, GetOwner());
-						return true;
+
+						if (type == EntityType::Enemy)
+						{
+							Notify(GameEvent::ENEMY_KILLED, entity);
+							return true;
+						}
+
+						if (type == EntityType::Player)
+						{
+							Notify(GameEvent::PLAYER_DIED, entity);
+							return true;
+						}
+
+						if (type == EntityType::Wall)
+						{
+							Notify(GameEvent::WALL_DESTROYED, entity);
+							return true;
+						}
+
 						break;
 					}
 				}
@@ -59,7 +90,8 @@ namespace dae
 	{
 		for (const GameObject* entity : entities)
 		{
-			if (const CollisionComponent* collisionComp = entity->GetComponent<CollisionComponent>()) if (collisionComp->GetEntity() == EntityType::Block) return false;
+			if (const CollisionComponent* collisionComp = entity->GetComponent<CollisionComponent>())
+				if (collisionComp->GetEntity() == EntityType::Block || collisionComp->GetEntity() == EntityType::Wall) return false;
 		}
 
 		return true;

@@ -12,8 +12,6 @@ namespace dae
 	{
 		Cell cell{};
 
-		//const glm::vec2 gridStartPos{ pOwner->GetTransform()->GetLocalPosition() };
-
 		for (int row{}; row < m_rows; ++row)
 			for (int col{}; col < m_cols; ++col)
 			{

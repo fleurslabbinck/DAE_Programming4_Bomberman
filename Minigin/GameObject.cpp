@@ -22,6 +22,12 @@ namespace dae
 		m_components.erase(it, m_components.end());
 	}
 
+	GameObject* GameObject::GetParent() const
+	{
+		if (m_parent) return m_parent;
+		return nullptr;
+	}
+
 	void GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 	{
 		//check if valid

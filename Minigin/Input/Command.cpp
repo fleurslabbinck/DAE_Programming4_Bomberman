@@ -1,4 +1,5 @@
 #include "Command.h"
+#include "SceneManager.h"
 #include "Components/RenderComponent.h"
 #include "Components/GridComponent.h"
 #include "Components/CollisionComponent.h"
@@ -12,6 +13,8 @@ namespace dae
 
 	void MoveCommand::Execute()
 	{
+		if (SceneManager::GetInstance().GetGameState() != SceneManager::GameState::GAME) return;
+
 		GameObject* gameObject{ GetGameObject() };
 		GridComponent* gridComponent{ gameObject->GetParent()->GetComponent<GridComponent>()};
 		const CollisionComponent* collisionComp{ gameObject->GetComponent<CollisionComponent>() };

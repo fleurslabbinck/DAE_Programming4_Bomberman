@@ -1,5 +1,5 @@
-#ifndef HEALTHCOMPONENT_H
-#define HEALTHCOMPONENT_H
+#ifndef COLLISIONCOMPONENT_H
+#define COLLISIONCOMPONENT_H
 
 #include "BaseComponent.h"
 #include "Observers/Subject.h"
@@ -19,6 +19,7 @@ namespace dae
 			Enemy,
 			Block,
 			Bomb,
+			Wall,
 		};
 
 		struct Sprite {

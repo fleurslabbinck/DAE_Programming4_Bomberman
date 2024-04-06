@@ -2,6 +2,7 @@
 #define HEALTHCOMPONENT_H
 
 #include "BaseComponent.h"
+#include "Observers/Subject.h"
 
 namespace dae
 {
@@ -10,12 +11,12 @@ namespace dae
 	//---------------------------------
 	//HEALTHCOMPONENT
 	//---------------------------------
-	class HealthComponent : public BaseComponent
+	class HealthComponent final : public BaseComponent, public Observer, public Subject
 	{
 	public:
-		void InflictDamage();
+		void OnNotify(GameEvent event, const GameObject* gameObject);
 
-		explicit HealthComponent(GameObject* pOwner, int maxLives = 3) : BaseComponent(pOwner), m_maxLives{ maxLives } {}
+		explicit HealthComponent(GameObject* pOwner, int maxLives = 3);
 		HealthComponent(const HealthComponent& other) = delete;
 		HealthComponent(HealthComponent&& other) = delete;
 
@@ -23,6 +24,10 @@ namespace dae
 		const int m_maxLives;
 		int m_lives{ m_maxLives };
 
+		glm::vec2 m_respawnPos{};
+
+		void InflictDamage(const GameObject* gameObject);
+		void Respawn();
 		void Die();
 	};
 }

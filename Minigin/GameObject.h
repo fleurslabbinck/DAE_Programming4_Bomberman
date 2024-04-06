@@ -10,7 +10,7 @@ namespace dae
 	class GameObject final
 	{
 	public:
-		GameObject* GetParent() const { return m_parent; }
+		GameObject* GetParent() const;
 		void SetParent(GameObject* parent, bool keepWorldPosition = false);
 		bool IsChild(GameObject* parent);
 		int GetChildCount() const { return static_cast<int>(m_children.size()); }

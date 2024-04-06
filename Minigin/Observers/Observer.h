@@ -4,7 +4,12 @@
 namespace dae
 {
 	enum class GameEvent {
+		WALL_DESTROYED,
+		ENEMY_KILLED,
+		PLAYER_DIED,
 		HEALTH_CHANGED,
+		SCORE_CHANGED,
+		GAME_OVER,
 	};
 
 	class GameObject;
