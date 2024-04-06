@@ -90,7 +90,7 @@ namespace dae
 		const std::vector<int> indices{
 			idx + m_cols - 1,	idx + m_cols,		idx + m_cols + 1,
 			idx - 1,			idx,				idx + 1,
-			idx - m_cols - 1,	idx + m_cols,		idx - m_cols + 1,
+			idx - m_cols - 1,	idx - m_cols,		idx - m_cols + 1,
 		};
 
 		return indices;

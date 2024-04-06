@@ -22,7 +22,7 @@ namespace dae
 			{
 				if (collisionComp->GetEntity() == EntityType::Block) continue;
 
-				const glm::vec2 entityPos{ entity->GetTransform()->GetWorldPosition() };
+				const glm::vec2 entityPos{ entity->GetTransform()->GetLocalPosition() };
 				const Sprite entityCollider{ collisionComp->GetCollider() };
 
 				if (IsColliding(pos, entityPos, entityCollider))

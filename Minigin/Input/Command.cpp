@@ -20,7 +20,7 @@ namespace dae
 		glm::vec2 dir{};
 
 		// get current pos
-		glm::vec2 bottomLeft{ gameObject->GetTransform()->GetWorldPosition() };
+		glm::vec2 bottomLeft{ gameObject->GetTransform()->GetLocalPosition() };
 		glm::vec2 centeredPos{ bottomLeft + collisionComp->GetCenter() };
 
 		// check entity collision
