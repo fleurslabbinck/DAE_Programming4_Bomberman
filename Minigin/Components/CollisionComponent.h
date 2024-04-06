@@ -2,6 +2,7 @@
 #define HEALTHCOMPONENT_H
 
 #include "BaseComponent.h"
+#include "Observers/Subject.h"
 
 namespace dae
 {
@@ -10,7 +11,7 @@ namespace dae
 	//---------------------------------
 	//COLLISIONCOMPONENT
 	//---------------------------------
-	class CollisionComponent : public BaseComponent
+	class CollisionComponent final : public BaseComponent, public Subject
 	{
 	public:
 		enum class EntityType {
@@ -20,18 +21,26 @@ namespace dae
 			Bomb,
 		};
 
-		EntityType GetEntityType() { return m_entityType; }
+		struct Sprite {
+			float width, height;
+			glm::vec2 center{};
+		};
 
-		explicit CollisionComponent(GameObject* pOwner, int width, int height) : BaseComponent(pOwner), m_entityType{ EntityType::Player }, m_width { widht }, m_height{ height } {}
+		glm::vec2 GetCenter() const { return m_collider.center; }
+		bool HandleCollision(const glm::vec2 pos, const std::vector<GameObject*>& entities) const;
+		bool CanMove(const std::vector<GameObject*>& entities) const;
+		Sprite GetCollider() const { return m_collider; }
+		EntityType GetEntity() const { return m_entityType; }
+
+		explicit CollisionComponent(GameObject* pOwner, EntityType entityType, glm::vec2 dimensions);
 		CollisionComponent(const CollisionComponent& other) = delete;
 		CollisionComponent(CollisionComponent&& other) = delete;
 
 	private:
-		EntityType m_entityType{};
-		const int m_width;
-		const int m_height;
+		EntityType m_entityType;
+		Sprite m_collider;
 
-		void HandleCollision();
+		bool IsColliding(const glm::vec2 pos, const glm::vec2 entityPos, const Sprite& collider) const;
 	};
 }
 #endif

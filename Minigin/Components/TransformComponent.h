@@ -22,7 +22,7 @@ namespace dae
 		glm::vec2 GetLocalPosition() { return m_localPosition; }
 		glm::vec2 GetWorldPosition();
 
-		explicit TransformComponent(GameObject* pOwner, float x = 0, float y = 0) : BaseComponent(pOwner), m_localPosition{ x, y } {}
+		explicit TransformComponent(GameObject* pOwner, float x = 0, float y = 0);
 		TransformComponent(const TransformComponent& other) = delete;
 		TransformComponent(TransformComponent&& other) = delete;
 

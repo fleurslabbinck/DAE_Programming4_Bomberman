@@ -7,6 +7,12 @@ namespace dae
 	//---------------------------------
 	//ROTATORCOMPONENT
 	//---------------------------------
+	RotatorComponent::RotatorComponent(GameObject* pOwner, float rotation, const RotateState& state)
+		: BaseComponent(pOwner), m_rotation{ rotation }, m_rotateState{ state }
+	{
+	
+	}
+
 	void RotatorComponent::Update()
 	{
 		if (m_rotateState == RotateState::Rotation)

@@ -9,15 +9,18 @@ namespace dae
 	//---------------------------------
 	//TEXTCOMPONENT
 	//---------------------------------
+	TextComponent::TextComponent(GameObject* pOwner, const std::string& fontPath, int fontSize, const std::string& text)
+		: BaseComponent(pOwner), m_text{ text }
+	{
+		m_font = std::move(dae::ResourceManager::GetInstance().LoadFont(fontPath, fontSize));
+		m_renderComponent = std::make_unique<RenderComponent>(pOwner, std::make_unique<Texture2D>(GetTexture()));
+
+		m_subComponents.push_back(m_renderComponent.get());
+	}
+
 	void TextComponent::Update()
 	{
 		if (m_needsUpdate) UpdateText();
-	}
-
-	void TextComponent::Initialize(const std::string& fontPath, int fontSize, const std::string& text)
-	{
-		m_font = std::move(dae::ResourceManager::GetInstance().LoadFont(fontPath, fontSize));
-		m_text = text;
 	}
 
 	void TextComponent::SetText(const std::string& text)
@@ -27,6 +30,12 @@ namespace dae
 	}
 
 	void TextComponent::UpdateText()
+	{
+		m_renderComponent->SetTexture(std::make_unique<Texture2D>(GetTexture()));
+		m_needsUpdate = false;
+	}
+
+	SDL_Texture* TextComponent::GetTexture()
 	{
 		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
 		const auto surf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), color);
@@ -40,7 +49,7 @@ namespace dae
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		}
 		SDL_FreeSurface(surf);
-		m_renderComponent->SetTexture(std::make_unique<Texture2D>(texture));
-		m_needsUpdate = false;
+
+		return texture;
 	}
 }

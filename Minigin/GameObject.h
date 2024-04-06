@@ -17,20 +17,28 @@ namespace dae
 		GameObject* GetChildAt(int index) const { return m_children[index]; }
 		const std::vector<GameObject*>& GetChildren() const { return m_children; }
 
-		void AddComponent(std::unique_ptr<BaseComponent> component) { m_components.push_back(std::move(component)); };
-		template <typename C>
-		C* GetComponent() const
+		template <typename ComponentType, typename... Args>
+		ComponentType* AddComponent(const Args&... args)
+		{
+			m_components.push_back(std::make_unique<ComponentType>(args...));
+
+			return reinterpret_cast<ComponentType*>(m_components.back().get());
+		}
+
+		template <typename ComponentType>
+		ComponentType* GetComponent() const
 		{
 			for (const auto& component : m_components)
 			{
-				if (C* castedComponent = dynamic_cast<C*>(component.get()))
+				if (ComponentType* castedComponent = dynamic_cast<ComponentType*>(component.get()))
 				{
 					return castedComponent;
 				}
 			}
 
 			return nullptr;
-		};
+		}
+
 		bool HasComponent() const { return m_components.empty(); };
 
 		void FixedUpdate();

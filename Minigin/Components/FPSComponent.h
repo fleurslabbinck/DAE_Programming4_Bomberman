@@ -16,9 +16,7 @@ namespace dae
 	public:
 		void Update() override;
 
-		void Initialize(const std::string& fontPath, int fontSize, const std::string& text = " ");
-
-		explicit FPSComponent(GameObject* pOwner) : BaseComponent(pOwner), m_textComponent{ std::make_unique<TextComponent>(pOwner) } { m_subComponents.push_back(m_textComponent.get()); }
+		explicit FPSComponent(GameObject* pOwner, const std::string& fontPath, int fontSize, const std::string& text = " ");
 		FPSComponent(const FPSComponent& other) = delete;
 		FPSComponent(FPSComponent&& other) = delete;
 

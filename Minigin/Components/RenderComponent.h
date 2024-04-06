@@ -17,11 +17,11 @@ namespace dae
 		void Render(const glm::vec2& pos) const override;
 
 		glm::vec2 GetDimensions() const;
-		void SetTexture(const std::string& filename);
 		void SetTexture(std::unique_ptr<Texture2D> texture);
 		const Texture2D* GetTexture() const { return m_texture.get(); }
 
-		explicit RenderComponent(GameObject* pOwner) : BaseComponent(pOwner) {}
+		explicit RenderComponent(GameObject* pOwner, const std::string& filename);
+		explicit RenderComponent(GameObject* pOwner, std::unique_ptr<Texture2D>&& texture);
 		RenderComponent(const RenderComponent& other) = delete;
 		RenderComponent(RenderComponent&& other) = delete;
 

@@ -6,6 +6,12 @@ namespace dae
 	//---------------------------------
 	//FPSCOMPONENT
 	//---------------------------------
+	FPSComponent::FPSComponent(GameObject* pOwner, const std::string& fontPath, int fontSize, const std::string& text)
+		: BaseComponent(pOwner), m_textComponent{ std::make_unique<TextComponent>(pOwner, fontPath, fontSize, text) }
+	{
+		m_subComponents.push_back(m_textComponent.get());
+	}
+
 	void FPSComponent::Update()
 	{
 		constexpr float maxTime{ 0.1f };
@@ -24,10 +30,5 @@ namespace dae
 		}
 
 		if (m_textComponent->NeedsUpdate()) m_textComponent->UpdateText();
-	}
-
-	void FPSComponent::Initialize(const std::string& fontPath, int fontSize, const std::string& text)
-	{
-		m_textComponent->Initialize(fontPath, fontSize, text);
 	}
 }

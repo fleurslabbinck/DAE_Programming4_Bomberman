@@ -6,6 +6,12 @@ namespace dae
 	//---------------------------------
 	//TRANSFORMCOMPONENT
 	//---------------------------------
+	TransformComponent::TransformComponent(GameObject* pOwner, float x, float y)
+		: BaseComponent(pOwner), m_localPosition{ x, y }
+	{
+	
+	}
+
 	void TransformComponent::Translate(const glm::vec2& offset)
 	{
 		m_localPosition += offset;

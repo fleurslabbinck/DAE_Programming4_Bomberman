@@ -23,7 +23,7 @@ namespace dae
 		
 		void SetRotation(float angle) { m_rotation = angle; };
 
-		explicit RotatorComponent(GameObject* pOwner, float rotation = 0, const RotateState& state = RotateState::Rotation) : BaseComponent(pOwner), m_rotation{ rotation }, m_rotateState{ state } {}
+		explicit RotatorComponent(GameObject* pOwner, float rotation = 0, const RotateState& state = RotateState::Rotation);
 		RotatorComponent(const RotatorComponent& other) = delete;
 		RotatorComponent(RotatorComponent&& other) = delete;
 

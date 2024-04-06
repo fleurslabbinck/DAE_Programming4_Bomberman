@@ -12,13 +12,13 @@ namespace dae
 	{
 		Cell cell{};
 
-		const glm::vec2 gridStartPos{ pOwner->GetTransform()->GetLocalPosition() };
+		//const glm::vec2 gridStartPos{ pOwner->GetTransform()->GetLocalPosition() };
 
 		for (int row{}; row < m_rows; ++row)
 			for (int col{}; col < m_cols; ++col)
 			{
-				cell.startPos.x = gridStartPos.x + cell.size * col;
-				cell.startPos.y = gridStartPos.y + cell.size * row;
+				cell.startPos.x = cell.size * col;
+				cell.startPos.y = cell.size * row;
 				cell.center = { cell.startPos.x + cell.size / 2, cell.startPos.y + cell.size / 2 };
 				m_cells.push_back(cell);
 			}
@@ -49,6 +49,25 @@ namespace dae
 			const glm::vec2 childPos{ child->GetTransform()->GetLocalPosition()};
 
 			for (int i : indices) if (PositionToIndex(childPos) == i) entities.push_back(child);
+		}
+
+		return entities;
+	}
+
+	std::vector<GameObject*> GridComponent::GetEntitiesInCell(const glm::vec2& pos) const
+	{
+		const GameObject* owner{ GetOwner() };
+
+		std::vector<GameObject*> children{ GetChildren(owner) };
+		const int idx{ PositionToIndex(pos) };
+
+		std::vector<GameObject*> entities{};
+
+		for (GameObject* child : children)
+		{
+			const glm::vec2 childPos{ child->GetTransform()->GetLocalPosition() };
+
+			if (PositionToIndex(childPos) == idx) entities.push_back(child);
 		}
 
 		return entities;
