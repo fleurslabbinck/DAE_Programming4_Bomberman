@@ -13,25 +13,29 @@ namespace dae
 		{
 			m_startFrameLeft = { 0, 0 };
 			m_startFrameRight = { 0, 1 };
-			m_startFrameDown = { 3, 0 };
-			m_startFrameUp = { 3, 1 };
+			m_startFrameDown = { m_movementFrames, 0 };
+			m_startFrameUp = { m_movementFrames, 1 };
+
+			m_startFrameIndex = m_startFrameRight;
+			m_framesPerSecond *= 2;
 		}
 		else
 		{
 			m_startFrameRight = { 0, 0 };
-			m_startFrameLeft = { 3, 0 };
-			m_startFrameUp = { 3, 0 };
+			m_startFrameLeft = { m_movementFrames, 0 };
 			m_startFrameDown = { 0, 0 };
+			m_startFrameUp = { m_movementFrames, 0 };
+
+			m_startFrameIndex = m_startFrameLeft;
 		}
 
 
-		m_startFrameIndex = m_startFrameLeft;
 		m_subComponents.push_back(m_renderComponent.get());
 	}
 
 	void SpriteComponent::Update()
 	{
-		AnimateDying();
+		if (m_dead) AnimateDying();
 	}
 
 	void SpriteComponent::Render(const glm::vec2& pos) const

@@ -30,13 +30,15 @@ namespace dae
 		const int m_rows;
 		const int m_movementFrames;
 		const int m_deathFrames;
-		const int m_framesPerSecond{ 5 };
+		int m_framesPerSecond{ 5 };
 
 		FrameIndex m_startFrameLeft{}, m_startFrameRight{}, m_startFrameDown{}, m_startFrameUp{};
 
 		FrameIndex m_startFrameIndex{};
 		int m_currentIndex{};
 		float m_accumulatedTime{};
+
+		bool m_dead{ false };
 	};
 }
 
