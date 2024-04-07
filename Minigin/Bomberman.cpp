@@ -108,11 +108,11 @@ namespace dae
 		if (type == CollisionComponent::EntityType::Player) 
 		{
 			player->AddComponent<SpriteComponent>(filename, 7, 3, 3, 7);
-			healthComp = player->AddComponent<HealthComponent>(3);
+			healthComp = player->AddComponent<HealthComponent>(4);
 		}
 		else
 		{
-			player->AddComponent<SpriteComponent>(filename, 6, 2, 3, 5);
+			player->AddComponent<SpriteComponent>(filename, 6, 2, 3, 6);
 			healthComp = player->AddComponent<HealthComponent>(1);
 		}
 
