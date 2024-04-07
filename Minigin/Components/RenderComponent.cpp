@@ -1,6 +1,7 @@
 #include "Components/RenderComponent.h"
 #include "Render/ResourceManager.h"
 #include "Render/Renderer.h"
+#include "BombermanUtil.h"
 
 namespace dae
 {
@@ -21,15 +22,8 @@ namespace dae
 
 	void RenderComponent::Render(const glm::vec2& pos) const
 	{
-		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
-	}
-
-	glm::vec2 RenderComponent::GetDimensions() const
-	{
-		int textureWidth, textureHeight;
-		SDL_QueryTexture(GetTexture()->GetSDLTexture(), NULL, NULL, &textureWidth, &textureHeight);
-		
-		return { static_cast<float>(textureWidth), static_cast<float>(textureHeight) };
+		const glm::vec2 dimensions{ m_texture->GetSize() };
+		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y, dimensions.x * WINDOW_SCALE, dimensions.y * WINDOW_SCALE);
 	}
 
 	void RenderComponent::SetTexture(std::unique_ptr<Texture2D> texture)

@@ -14,35 +14,35 @@ namespace dae
 		m_respawnPos = GetOwner()->GetTransform()->GetLocalPosition();
 	}
 
-	void HealthComponent::OnNotify(GameEvent event, const GameObject* gameObject)
+	void HealthComponent::OnNotify(GameEvent event, GameObject* gameObject)
 	{
 		switch (event)
 		{
 		case dae::GameEvent::WALL_DESTROYED:
-			Die();
+			gameObject->SetDead();
 			break;
 		case dae::GameEvent::ENEMY_KILLED:
-			InflictDamage(gameObject);
+			gameObject->SetDead();
 			break;
 		case dae::GameEvent::PLAYER_DIED:
-			InflictDamage(gameObject);
+			gameObject->GetComponent<HealthComponent>()->InflictDamage();
 			break;
 		}
 	}
 
-	void HealthComponent::InflictDamage(const GameObject* gameObject)
+	void HealthComponent::InflictDamage()
 	{
 		if (m_lives > 1)
 		{
+			Notify(GameEvent::HEALTH_CHANGED, GetOwner());
 			--m_lives;
-			Notify(GameEvent::HEALTH_CHANGED, gameObject);
 			Respawn();
 		}
 		else
 		{
-			Die();
-			Notify(GameEvent::GAME_OVER, gameObject);
+			Notify(GameEvent::GAME_OVER, GetOwner());
 			SceneManager::GetInstance().SetGameState(SceneManager::GameState::GAME_OVER);
+			Die();
 		}
 	}
 

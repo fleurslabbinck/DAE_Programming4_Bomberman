@@ -39,6 +39,7 @@ namespace dae
 
 		bool ProcessInput();
 		PlayerController* AddPlayerController(PlayerController::ControlMethod controlMethod);
+		void RemovePlayerControllers();
 
 	private:
 		int m_playerControllerCount{};

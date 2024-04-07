@@ -5,10 +5,12 @@
 #include <string>
 #include <memory>
 #include "Singleton.h"
+#include "Scene.h"
 
 namespace dae
 {
 	class Scene;
+
 	class SceneManager final : public Singleton<SceneManager>
 	{
 	public:
@@ -20,6 +22,7 @@ namespace dae
 		};
 
 		Scene& CreateScene(const std::string& name);
+
 		GameState GetGameState() const { return m_gameState; }
 		void SetGameState(GameState newGameState) { m_gameState = newGameState; }
 
@@ -30,7 +33,9 @@ namespace dae
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;
-		std::vector<std::shared_ptr<Scene>> m_scenes;
+		~SceneManager() = default;
+		std::vector<std::unique_ptr<Scene>> m_scenes;
+
 		GameState m_gameState{ GameState::GAME };
 	};
 }

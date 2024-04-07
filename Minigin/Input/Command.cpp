@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "Components/RenderComponent.h"
 #include "Components/GridComponent.h"
+#include "Components/SpriteComponent.h"
 #include "Components/CollisionComponent.h"
 
 namespace dae
@@ -17,6 +18,7 @@ namespace dae
 
 		GameObject* gameObject{ GetGameObject() };
 		GridComponent* gridComponent{ gameObject->GetParent()->GetComponent<GridComponent>()};
+		SpriteComponent* spriteComp{ gameObject->GetComponent<SpriteComponent>() };
 		const CollisionComponent* collisionComp{ gameObject->GetComponent<CollisionComponent>() };
 		if (!collisionComp) return;
 
@@ -34,6 +36,7 @@ namespace dae
 		{
 			m_targetPos = centeredPos;
 			m_lastDirection = m_direction;
+			spriteComp->SetDirection(m_direction);
 		}
 
 		// check if reached target
@@ -42,8 +45,12 @@ namespace dae
 			m_targetPos = gridComponent->GetNextPosition(centeredPos, m_direction);
 		}
 
+		// set animation frame
+		spriteComp->AnimateMovement();
+
 		// check for block
 		if (!collisionComp->CanMove(gridComponent->GetEntitiesInCell(m_targetPos))) return;
+
 
 		dir = glm::normalize(m_targetPos - centeredPos);
 

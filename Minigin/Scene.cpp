@@ -5,13 +5,15 @@ namespace dae
 {
 	unsigned int Scene::m_idCounter = 0;
 
-	Scene::Scene(const std::string& name) : m_name(name) {}
+	Scene::Scene(const std::string& name) : m_name(name)
+	{
+	
+	}
 
-	Scene::~Scene() = default;
-
-	void Scene::AddGameObject(std::unique_ptr<GameObject> gameObject)
+	GameObject* Scene::AddGameObject(std::unique_ptr<GameObject> gameObject)
 	{
 		m_gameObjects.emplace_back(std::move(gameObject));
+		return m_gameObjects.back().get();
 	}
 
 	void Scene::CleanUpDeadObjects()

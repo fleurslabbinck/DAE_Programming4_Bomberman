@@ -8,15 +8,15 @@
 //---------------------------------
 namespace dae
 {
-	CollisionComponent::CollisionComponent(GameObject* pOwner, EntityType entityType, glm::vec2 dimensions)
-		: BaseComponent(pOwner), m_entityType{ entityType }, m_collider{ dimensions.x, dimensions.y, {dimensions.x / 2.f, dimensions.y / 2.f } }
+	CollisionComponent::CollisionComponent(GameObject* pOwner, EntityType entityType, float offset, const glm::vec2& dimensions)
+		: BaseComponent(pOwner), m_entityType{ entityType }, m_collider{ offset, dimensions.x, dimensions.y, { (dimensions.x / 2.f) + offset, dimensions.y / 2.f } }
 	{
 
 	}
 
 	bool CollisionComponent::HandleCollision(const glm::vec2 pos, const std::vector<GameObject*>& entities) const
 	{
-		for (const GameObject* entity : entities)
+		for (GameObject* entity : entities)
 		{
 			if (const CollisionComponent* collisionComp = entity->GetComponent<CollisionComponent>())
 			{
@@ -99,10 +99,8 @@ namespace dae
 
 	bool CollisionComponent::IsColliding(const glm::vec2 pos, const glm::vec2 entityPos, const Sprite& collider) const
 	{
-		constexpr float collisionOffset{ 0.2f };
-
-		bool horizontalCollision = pos.x + collisionOffset <= entityPos.x + collider.width && pos.x - collisionOffset + m_collider.width >= entityPos.x;
-		bool verticalCollision = pos.y + collisionOffset <= entityPos.y + collider.height && pos.y - collisionOffset + m_collider.height >= entityPos.y;
+		bool horizontalCollision = pos.x + m_collider.offset <= entityPos.x + collider.width && pos.x + m_collider.width >= entityPos.x;
+		bool verticalCollision = pos.y + m_collider.offset <= entityPos.y + collider.height && pos.y + m_collider.height >= entityPos.y;
 
 		return horizontalCollision && verticalCollision;
 	}

@@ -14,8 +14,13 @@ namespace dae
 	m_playerControllers.push_back(std::move(newPlayerController));
 	++m_playerControllerCount;
 
-	return m_playerControllers[m_playerControllerCount - 1].get();
+	return m_playerControllers.back().get();
 }
+
+	void InputManager::RemovePlayerControllers()
+	{
+		m_playerControllers.clear();
+	}
 
 bool InputManager::ProcessInput()
 {

@@ -1,18 +1,19 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "SceneManager.h"
+//#include "SceneManager.h"
 #include "GameObject.h"
 
 namespace dae
 {
 	class GameObject;
+	class SceneManager;
 
 	class Scene final
 	{
-		friend Scene& SceneManager::CreateScene(const std::string& name);
+		friend class SceneManager;
 	public:
-		void AddGameObject(std::unique_ptr<GameObject> object);
+		GameObject* AddGameObject(std::unique_ptr<GameObject> object);
 		void RemoveAllGameObjects();
 
 		void FixedUpdate();
@@ -20,7 +21,7 @@ namespace dae
 		void LateUpdate();
 		void Render() const;
 
-		~Scene();
+		~Scene() = default;
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
 		Scene& operator=(const Scene& other) = delete;

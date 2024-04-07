@@ -37,8 +37,7 @@ namespace dae
 
 	Scene& SceneManager::CreateScene(const std::string& name)
 	{
-		const auto& scene = std::shared_ptr<Scene>(new Scene(name));
-		m_scenes.push_back(scene);
-		return *scene;
+		m_scenes.push_back(std::unique_ptr<Scene>(new Scene{ name }));
+		return *m_scenes.back();
 	}
 }

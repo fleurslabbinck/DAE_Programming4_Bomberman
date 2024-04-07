@@ -21,11 +21,11 @@ namespace dae
 		float GetFixedTimeStep() const { return m_fixedTimeStep; }
 		nanoseconds GetSleepTime() const { return m_currentTime + m_msPerFrame - high_resolution_clock::now(); }
 
-		void SetTargetFPS(int fps)
-		{
-			m_targetFPS = fps;
-			m_msPerFrame = (milliseconds)static_cast<long long>(1000.f / m_targetFPS);
-		}
+		//void SetTargetFPS(int fps)
+		//{
+		//	m_targetFPS = fps;
+		//	m_msPerFrame = (milliseconds)static_cast<long long>(1000.f / m_targetFPS);
+		//}
 
 	private:
 		high_resolution_clock::time_point m_lastTime{};
@@ -34,7 +34,7 @@ namespace dae
 		const float m_fixedTimeStep{ 0.3f };
 		float m_lag{};
 
-		int m_targetFPS{};
+		//int m_targetFPS{};
 		milliseconds m_msPerFrame{};
 	};
 }

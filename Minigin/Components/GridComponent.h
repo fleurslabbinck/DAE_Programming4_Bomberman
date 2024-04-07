@@ -2,7 +2,7 @@
 #define GRIDCOMPONENT_H
 
 #include "BaseComponent.h"
-#include "MiniginUtil.h"
+#include "BombermanUtil.h"
 
 namespace dae
 {

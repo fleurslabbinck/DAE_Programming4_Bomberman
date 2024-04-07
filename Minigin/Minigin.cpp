@@ -56,7 +56,7 @@ void PrintSDLVersion()
 	LogSDLVersion("We linked against SDL_image version ", version);
 
 	SDL_TTF_VERSION(&version)
-		LogSDLVersion("We compiled against SDL_ttf version ", version);
+	LogSDLVersion("We compiled against SDL_ttf version ", version);
 
 	version = *TTF_Linked_Version();
 	LogSDLVersion("We linked against SDL_ttf version ", version);
@@ -98,15 +98,15 @@ namespace dae
 		SDL_Quit();
 	}
 
-	void Minigin::Run(const std::function<void()>& load)
+	void Minigin::Run()
 	{
-		load();
+		m_bomberman.LoadMainScene();
 
 		SDL_RenderSetVSync(m_renderer.GetSDLRenderer(), true);
 
-		constexpr int targetFPS{ 165 };
-
-		m_time.SetTargetFPS(targetFPS);
+		//constexpr int targetFPS{ 165 };
+		//
+		//m_time.SetTargetFPS(targetFPS);
 
 		m_time.SetCurrTime();
 		m_time.SetLastTime();

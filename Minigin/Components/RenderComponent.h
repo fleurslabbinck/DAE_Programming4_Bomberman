@@ -16,7 +16,6 @@ namespace dae
 	public:
 		void Render(const glm::vec2& pos) const override;
 
-		glm::vec2 GetDimensions() const;
 		void SetTexture(std::unique_ptr<Texture2D> texture);
 		const Texture2D* GetTexture() const { return m_texture.get(); }
 

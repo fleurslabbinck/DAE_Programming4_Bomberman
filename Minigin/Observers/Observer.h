@@ -17,7 +17,7 @@ namespace dae
 	class Observer
 	{
 	public:
-		virtual void OnNotify(GameEvent event, const GameObject* gameObject) = 0;
+		virtual void OnNotify(GameEvent event, GameObject* gameObject) = 0;
 
 		Observer() = default;
 		~Observer() = default;

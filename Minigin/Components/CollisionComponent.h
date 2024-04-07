@@ -23,7 +23,7 @@ namespace dae
 		};
 
 		struct Sprite {
-			float width, height;
+			const float offset, width, height;
 			glm::vec2 center{};
 		};
 
@@ -33,7 +33,7 @@ namespace dae
 		Sprite GetCollider() const { return m_collider; }
 		EntityType GetEntity() const { return m_entityType; }
 
-		explicit CollisionComponent(GameObject* pOwner, EntityType entityType, glm::vec2 dimensions);
+		explicit CollisionComponent(GameObject* pOwner, EntityType entityType, float offset, const glm::vec2& dimensions);
 		CollisionComponent(const CollisionComponent& other) = delete;
 		CollisionComponent(CollisionComponent&& other) = delete;
 

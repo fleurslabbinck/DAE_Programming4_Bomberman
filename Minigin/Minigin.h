@@ -6,7 +6,7 @@
 #include <chrono>
 #include <filesystem>
 
-#include "MiniginUtil.h"
+#include "Bomberman.h"
 #include "Input/InputManager.h"
 #include "TimeManager.h"
 #include "SceneManager.h"
@@ -19,7 +19,7 @@ namespace dae
 	public:
 		explicit Minigin(const std::filesystem::path& dataPath);
 		~Minigin();
-		void Run(const std::function<void()>& load);
+		void Run();
 
 		Minigin(const Minigin& other) = delete;
 		Minigin(Minigin&& other) = delete;
@@ -27,10 +27,12 @@ namespace dae
 		Minigin& operator=(Minigin&& other) = delete;
 
 	private:
-		dae::TimeManager& m_time = TimeManager::GetInstance();
-		dae::Renderer& m_renderer = Renderer::GetInstance();
-		dae::SceneManager& m_sceneManager = SceneManager::GetInstance();
-		dae::InputManager& m_input = InputManager::GetInstance();
+		Bomberman m_bomberman{};
+
+		TimeManager& m_time = TimeManager::GetInstance();
+		Renderer& m_renderer = Renderer::GetInstance();
+		SceneManager& m_sceneManager = SceneManager::GetInstance();
+		InputManager& m_input = InputManager::GetInstance();
 
 		bool m_quit{ false };
 

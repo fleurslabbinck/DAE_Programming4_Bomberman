@@ -3,7 +3,7 @@
 
 #include "Components/TransformComponent.h"
 #include "TimeManager.h"
-#include "MiniginUtil.h"
+#include "BombermanUtil.h"
 
 namespace dae
 {
@@ -20,9 +20,11 @@ namespace dae
 		template <typename ComponentType, typename... Args>
 		ComponentType* AddComponent(const Args&... args)
 		{
-			m_components.push_back(std::make_unique<ComponentType>(args...));
+			std::unique_ptr<ComponentType> component{ std::make_unique<ComponentType>(this, args...) };
+			ComponentType* ptr{ component.get() };
+			m_components.push_back(std::move(component));
 
-			return reinterpret_cast<ComponentType*>(m_components.back().get());
+			return ptr;
 		}
 
 		template <typename ComponentType>
@@ -53,7 +55,7 @@ namespace dae
 		bool IsDead() const { return m_isDead; }
 
 		GameObject(float x = 0, float y = 0);
-		~GameObject();
+		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;

@@ -6,13 +6,7 @@ namespace dae
 	GameObject::GameObject(float x, float y)
 		: m_transformComponent{ std::make_unique<TransformComponent>(this, x, y) }
 	{
-	}
 
-	GameObject::~GameObject()
-	{
-		m_transformComponent.reset();
-
-		for (std::unique_ptr<BaseComponent>& component : m_components) component.reset();
 	}
 
 	void GameObject::RemoveComponent()
