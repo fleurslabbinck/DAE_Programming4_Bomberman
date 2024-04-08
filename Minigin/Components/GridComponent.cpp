@@ -1,14 +1,15 @@
 #include "GridComponent.h"
+
+#include "Render/Renderer.h"
 #include "GameObject.h"
-#include "glm/glm.hpp"
 
 namespace dae
 {
 	//---------------------------------
 	//GRIDCOMPONENT
 	//---------------------------------
-	GridComponent::GridComponent(GameObject* pOwner, int cols, int rows)
-		: BaseComponent(pOwner), m_cols{ cols }, m_rows{ rows }
+	GridComponent::GridComponent(GameObject* pOwner, int cols, int rows, bool setBackgroundColor, const SDL_Color& color)
+		: BaseComponent(pOwner), m_cols{ cols }, m_rows{ rows }, m_hasBackgroundColor{ setBackgroundColor }, m_BackgroundColor{ color }, m_background{ 0, 0, cols * GRIDCELL, rows * GRIDCELL }
 	{
 		Cell cell{};
 
@@ -20,6 +21,15 @@ namespace dae
 				cell.center = { cell.startPos.x + cell.size / 2, cell.startPos.y + cell.size / 2 };
 				m_cells.push_back(cell);
 			}
+	}
+
+	void GridComponent::Render(const glm::vec2& pos) const
+	{
+		if (!m_hasBackgroundColor) return;
+
+		SDL_Rect background{ static_cast<int>(pos.x), static_cast<int>(pos.y), m_background.w, m_background.h };
+
+		Renderer::GetInstance().RenderRectangle(background, m_BackgroundColor);
 	}
 
 	glm::vec2 GridComponent::GetNextPosition(const glm::vec2& currentPos, const glm::vec2& direction) const

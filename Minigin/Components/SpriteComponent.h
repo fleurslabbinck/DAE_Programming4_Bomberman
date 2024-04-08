@@ -23,7 +23,7 @@ namespace dae
 		explicit SpriteComponent(GameObject* pOwner, const std::string& filename, int cols, int rows, int movementFrames, int deathFrames);
 		SpriteComponent(const SpriteComponent& other) = delete;
 		SpriteComponent(SpriteComponent&& other) = delete;
-	protected:
+	private:
 		std::unique_ptr<RenderComponent> m_renderComponent;
 
 		const int m_cols;
@@ -41,5 +41,4 @@ namespace dae
 		bool m_dead{ false };
 	};
 }
-
 #endif

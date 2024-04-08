@@ -1,6 +1,7 @@
 #ifndef BOMBERMAN_H
 #define BOMBERMAN_H
 
+#include <SDL.h>
 #include <memory>
 #include <string>
 #include "BombermanUtil.h"
@@ -25,6 +26,7 @@ namespace dae
 		Bomberman& operator=(Bomberman&& other) = delete;
 
 	private:
+		const SDL_Color m_backgroundColor{ 0, 147, 0 };
 		const glm::vec2 m_fpsComponentPos{ 10.f, WINDOW_HEIGHT - (10.f * WINDOW_SCALE) };
 		const float m_speed{ 40 * WINDOW_SCALE };
 

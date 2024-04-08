@@ -23,6 +23,14 @@ namespace dae
 		if (m_needsUpdate) UpdateText();
 	}
 
+	void TextComponent::Render(const glm::vec2& pos) const
+	{
+		const SDL_Rect viewport{ Renderer::GetInstance().GetViewport() };
+		const glm::vec2 renderPos{ -viewport.x + pos.x, viewport.y + pos.y };
+
+		m_renderComponent->Render(renderPos);
+	}
+
 	void TextComponent::SetText(const std::string& text)
 	{
 		m_text = text;

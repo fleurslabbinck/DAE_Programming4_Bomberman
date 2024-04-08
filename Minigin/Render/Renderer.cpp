@@ -49,13 +49,25 @@ namespace dae
 		}
 	}
 
+	void Renderer::SetViewport(const SDL_Rect& view)
+	{
+		m_viewport = view;
+		SDL_RenderSetViewport(m_renderer, &m_viewport);
+	}
+
+	void Renderer::RenderRectangle(const SDL_Rect& rect, const SDL_Color& color) const
+	{
+		SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+		SDL_RenderFillRect(m_renderer, &rect);
+	}
+
 	void Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
 	{
 		SDL_Rect dst{};
 		dst.x = static_cast<int>(x);
 		dst.y = static_cast<int>(y);
 		SDL_QueryTexture(texture.GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
-		SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
+		SDL_RenderCopy(m_renderer, texture.GetSDLTexture(), nullptr, &dst);
 	}
 
 	void Renderer::RenderTexture(const Texture2D& texture, const float x, const float y, const float width, const float height) const
@@ -65,12 +77,12 @@ namespace dae
 		dst.y = static_cast<int>(y);
 		dst.w = static_cast<int>(width);
 		dst.h = static_cast<int>(height);
-		SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
+		SDL_RenderCopy(m_renderer, texture.GetSDLTexture(), nullptr, &dst);
 	}
 
 	void Renderer::RenderTexture(const Texture2D& texture, const SDL_Rect& srcRect, const SDL_Rect& dstRect) const
 	{
-		SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), &srcRect, &dstRect);
+		SDL_RenderCopy(m_renderer, texture.GetSDLTexture(), &srcRect, &dstRect);
 	}
 
 	SDL_Renderer* Renderer::GetSDLRenderer() const { return m_renderer; }

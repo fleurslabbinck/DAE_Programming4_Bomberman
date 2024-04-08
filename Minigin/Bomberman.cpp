@@ -1,6 +1,5 @@
 #include "Bomberman.h"
 
-#include <SDL.h>
 #include "SceneManager.h"
 #include "GameObject.h"
 #include "Components/RotatorComponent.h"
@@ -10,6 +9,7 @@
 #include "Components/FPSComponent.h"
 #include "Components/GridComponent.h"
 #include "Components/HealthComponent.h"
+#include "Components/CameraComponent.h"
 
 namespace dae
 {
@@ -29,7 +29,7 @@ namespace dae
 
 		// Playfield
 		GameObject* playfield{ scene.AddGameObject(std::make_unique<GameObject>(0.f, static_cast<float>(WINDOW_HEIGHT - GRIDCELL * GRID_ROWS))) };
-		playfield->AddComponent<GridComponent>(GRID_COLS, GRID_ROWS);
+		playfield->AddComponent<GridComponent>(GRID_COLS, GRID_ROWS, true, m_backgroundColor);
 		InitializePlayfield(playfield, scene, GRID_COLS, GRID_ROWS);
 
 		// Player1
@@ -37,6 +37,7 @@ namespace dae
 		const glm::vec2 playerCollisionBox{ 10 * WINDOW_SCALE, 1.f * GRIDCELL };
 
 		GameObject* bomberman{ InitializePlayer(playfield, scene, playerStartPos, CollisionComponent::EntityType::Player, playerCollisionBox, "Sprites/Bomberman.png") };
+		bomberman->AddComponent<CameraComponent>(GRID_COLS * GRIDCELL, 0, GRID_COLS * GRIDCELL - WINDOW_WIDTH);
 		HealthComponent* bombermanHealthComp{ bomberman->GetComponent<HealthComponent>() };
 		
 		// Enemy1

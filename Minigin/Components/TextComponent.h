@@ -16,10 +16,11 @@ namespace dae
 	{
 	public:
 		void Update() override;
+		void Render(const glm::vec2& pos) const override;
 
 		void SetText(const std::string& text);
 		void UpdateText();
-		SDL_Texture* GetTexture();
+
 		bool NeedsUpdate() const { return m_needsUpdate; };
 
 		explicit TextComponent(GameObject* pOwner, const std::string& fontPath, int fontSize, const std::string& text);
@@ -31,6 +32,8 @@ namespace dae
 		bool m_needsUpdate{ true };
 		std::string m_text;
 		std::unique_ptr<Font> m_font{};
+
+		SDL_Texture* GetTexture();
 	};
 }
 #endif
