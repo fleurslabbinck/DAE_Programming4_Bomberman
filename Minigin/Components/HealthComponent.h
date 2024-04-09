@@ -14,8 +14,10 @@ namespace dae
 	class HealthComponent final : public BaseComponent, public Observer, public Subject
 	{
 	public:
-		void OnNotify(GameEvent event, GameObject* gameObject);
-		void InflictDamage();
+		void OnNotify(GameEvent event, GameObject* gameObject) override;
+
+		int GetLives() const { return m_lives; }
+		int GetScore() const { return m_score; }
 
 		explicit HealthComponent(GameObject* pOwner, int maxLives = 3);
 		HealthComponent(const HealthComponent& other) = delete;
@@ -24,9 +26,11 @@ namespace dae
 	private:
 		const int m_maxLives;
 		int m_lives{ m_maxLives };
+		int m_score{};
 
 		glm::vec2 m_respawnPos{};
 
+		void InflictDamage();
 		void Respawn();
 		void Die();
 	};

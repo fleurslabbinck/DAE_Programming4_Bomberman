@@ -10,6 +10,7 @@
 #include "Components/GridComponent.h"
 #include "Components/HealthComponent.h"
 #include "Components/CameraComponent.h"
+#include "Components/HUDComponent.h"
 
 namespace dae
 {
@@ -21,11 +22,11 @@ namespace dae
 		constexpr int fontSize{ 2 * WINDOW_SCALE };
 
 		// Instructions
-		GameObject* dpadDescr{ scene.AddGameObject(std::make_unique<dae::GameObject>(10.f, 10.f)) };
-		dpadDescr->AddComponent<dae::TextComponent>(font, fontSize, "USE D-PAD TO MOVE BOMBERMAN");
-
-		GameObject* wasdDescr{ scene.AddGameObject(std::make_unique<dae::GameObject>(10.f, 12.f * WINDOW_SCALE)) };
-		wasdDescr->AddComponent<dae::TextComponent>(font, fontSize, "USE WASD TO MOVE BALLOOM");
+		//GameObject* dpadDescr{ scene.AddGameObject(std::make_unique<dae::GameObject>(10.f, 10.f)) };
+		//dpadDescr->AddComponent<dae::TextComponent>(font, fontSize, "USE D-PAD TO MOVE BOMBERMAN");
+		//
+		//GameObject* wasdDescr{ scene.AddGameObject(std::make_unique<dae::GameObject>(10.f, 12.f * WINDOW_SCALE)) };
+		//wasdDescr->AddComponent<dae::TextComponent>(font, fontSize, "USE WASD TO MOVE BALLOOM");
 
 		// Playfield
 		GameObject* playfield{ scene.AddGameObject(std::make_unique<GameObject>(0.f, static_cast<float>(WINDOW_HEIGHT - GRIDCELL * GRID_ROWS))) };
@@ -39,6 +40,11 @@ namespace dae
 		GameObject* bomberman{ InitializePlayer(playfield, scene, playerStartPos, CollisionComponent::EntityType::Player, playerCollisionBox, "Sprites/Bomberman.png") };
 		bomberman->AddComponent<CameraComponent>(GRID_COLS * GRIDCELL, 0, GRID_COLS * GRIDCELL - WINDOW_WIDTH);
 		HealthComponent* bombermanHealthComp{ bomberman->GetComponent<HealthComponent>() };
+
+		// PlayerHUD
+		//GameObject* hud{ scene.AddGameObject(std::make_unique<GameObject>(0.f, 0.f)) };
+		HUDComponent* hudComp{ bomberman->AddComponent<HUDComponent>(font, fontSize) };
+		bombermanHealthComp->AddObserver(hudComp);
 		
 		// Enemy1
 		const glm::vec2 enemyStartPos{ 10.f * GRIDCELL, 1.f * GRIDCELL };
@@ -109,12 +115,12 @@ namespace dae
 		if (type == CollisionComponent::EntityType::Player) 
 		{
 			player->AddComponent<SpriteComponent>(filename, 7, 3, 3, 7);
-			healthComp = player->AddComponent<HealthComponent>(4);
+			healthComp = player->AddComponent<HealthComponent>(3);
 		}
 		else
 		{
 			player->AddComponent<SpriteComponent>(filename, 6, 2, 3, 6);
-			healthComp = player->AddComponent<HealthComponent>(1);
+			healthComp = player->AddComponent<HealthComponent>(0);
 		}
 
 		collisionComp->AddObserver(healthComp);

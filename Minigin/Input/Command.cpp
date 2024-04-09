@@ -40,10 +40,15 @@ namespace dae
 			spriteComponent->SetDirection(m_direction);
 		}
 
+		const float distToTarget{ glm::distance(centeredPos, m_targetPos) };
+
+		//if (distToTarget >= GRIDCELL) m_targetPos = centeredPos;
+		// check if target not too far away (death)
+
 		// check if reached target
-		if (glm::distance(centeredPos, m_targetPos) <= m_targetOffset)
+		if (distToTarget <= m_targetOffset)
 		{
-			m_targetPos = gridComponent->GetNextPosition(centeredPos, m_direction);
+			m_targetPos = gridComponent->GetNextPosition(centeredPos, m_lastDirection);
 		}
 
 		// set animation frame

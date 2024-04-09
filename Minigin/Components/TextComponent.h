@@ -22,11 +22,12 @@ namespace dae
 		void UpdateText();
 
 		bool NeedsUpdate() const { return m_needsUpdate; };
+		RenderComponent* GetRenderComponent() const { return m_renderComponent.get(); }
 
 		explicit TextComponent(GameObject* pOwner, const std::string& fontPath, int fontSize, const std::string& text);
 		TextComponent(const TextComponent& other) = delete;
 		TextComponent(TextComponent&& other) = delete;
-	protected:
+	private:
 		std::unique_ptr<RenderComponent> m_renderComponent{ nullptr };
 
 		bool m_needsUpdate{ true };

@@ -32,10 +32,10 @@ namespace dae
 
 	void HealthComponent::InflictDamage()
 	{
-		if (m_lives > 1)
+		if (m_lives > 0)
 		{
-			Notify(GameEvent::HEALTH_CHANGED, GetOwner());
 			--m_lives;
+			Notify(GameEvent::HEALTH_CHANGED, GetOwner());
 			Respawn();
 		}
 		else
@@ -54,5 +54,6 @@ namespace dae
 	void HealthComponent::Die()
 	{
 		GetOwner()->SetDead();
+		Notify(GameEvent::SCORE_CHANGED, GetOwner());
 	}
 }

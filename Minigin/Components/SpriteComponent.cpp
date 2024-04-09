@@ -29,7 +29,7 @@ namespace dae
 
 		m_startFrameIndex = m_startFrameLeft;
 
-		m_subComponents.push_back(m_renderComponent.get());
+		m_subComponents.push_back(std::move(m_renderComponent.get()));
 	}
 
 	void SpriteComponent::Update()
