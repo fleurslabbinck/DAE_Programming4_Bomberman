@@ -29,13 +29,13 @@ namespace dae
 
 				if (IsColliding(pos, entityPos, entityCollider))
 				{
-					switch (m_entityType)
+					switch (type)
 					{
 					case dae::CollisionComponent::EntityType::Player:
 
-						if (type == EntityType::Enemy || type == EntityType::Bomb)
+						if (m_entityType != EntityType::Player)
 						{
-							Notify(GameEvent::PLAYER_DIED, GetOwner());
+							Notify(GameEvent::PLAYER_HIT, entity);
 							return true;
 						}
 
@@ -43,37 +43,25 @@ namespace dae
 
 					case dae::CollisionComponent::EntityType::Enemy:
 
-						if (type == EntityType::Player)
+						if (m_entityType == EntityType::Player)
 						{
-							Notify(GameEvent::PLAYER_DIED, entity);
+							Notify(GameEvent::PLAYER_HIT, GetOwner());
 							return true;
 						}
 
-						if (type == EntityType::Bomb)
+						if (m_entityType == EntityType::Bomb)
 						{
-							Notify(GameEvent::ENEMY_KILLED, GetOwner());
+							Notify(GameEvent::ENEMY_HIT, entity);
 							return true;
 						}
 
 						break;
 
-					case dae::CollisionComponent::EntityType::Bomb:
+					case dae::CollisionComponent::EntityType::Wall:
 
-						if (type == EntityType::Enemy)
+						if (m_entityType == EntityType::Bomb)
 						{
-							Notify(GameEvent::ENEMY_KILLED, entity);
-							return true;
-						}
-
-						if (type == EntityType::Player)
-						{
-							Notify(GameEvent::PLAYER_DIED, entity);
-							return true;
-						}
-
-						if (type == EntityType::Wall)
-						{
-							Notify(GameEvent::WALL_DESTROYED, entity);
+							Notify(GameEvent::PLAYER_HIT, entity);
 							return true;
 						}
 
@@ -99,8 +87,10 @@ namespace dae
 
 	bool CollisionComponent::IsColliding(const glm::vec2 pos, const glm::vec2 entityPos, const Sprite& collider) const
 	{
-		bool horizontalCollision = pos.x + m_collider.offset <= entityPos.x + collider.width && pos.x + m_collider.width >= entityPos.x;
-		bool verticalCollision = pos.y + m_collider.offset <= entityPos.y + collider.height && pos.y + m_collider.height >= entityPos.y;
+		constexpr float verticalOffset{ 5.f };
+
+		bool horizontalCollision = pos.x + m_collider.offset <= entityPos.x + collider.width + collider.offset && pos.x + m_collider.offset + m_collider.width >= entityPos.x + collider.offset;
+		bool verticalCollision = pos.y + verticalOffset <= entityPos.y + collider.height - verticalOffset && pos.y + m_collider.height - verticalOffset >= entityPos.y + verticalOffset;
 
 		return horizontalCollision && verticalCollision;
 	}

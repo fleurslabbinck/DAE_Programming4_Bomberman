@@ -2,34 +2,56 @@
 
 #include "BombermanUtil.h"
 #include "Render/Renderer.h"
+#include "GameObject.h"
 #include "TimeManager.h"
 
 namespace dae
 {
-	SpriteComponent::SpriteComponent(GameObject* pOwner, const std::string& filename, int cols, int rows, int movementFrames, int deathFrames)
-		: BaseComponent(pOwner), m_renderComponent{ std::make_unique<RenderComponent>(pOwner, filename) }, m_cols{ cols }, m_rows{ rows }, m_movementFrames{ movementFrames }, m_deathFrames{ deathFrames }
+	SpriteComponent::SpriteComponent(GameObject* pOwner, const std::string& filename, SpriteType type, int score)
+		: BaseComponent(pOwner), m_renderComponent{ std::make_unique<RenderComponent>(pOwner, filename) }
 	{
-		if (m_rows == 3)
-		{
-			m_startFrameLeft = { 0, 0 };
-			m_startFrameRight = { 0, 1 };
-			m_startFrameDown = { m_movementFrames, 0 };
-			m_startFrameUp = { m_movementFrames, 1 };
+		m_sprite.type = type;
 
-			m_framesPerSecond *= 2;
-		}
-		else
+		if (m_sprite.type == SpriteType::BOMBERMAN)
 		{
-			m_startFrameRight = { 0, 0 };
-			m_startFrameLeft = { m_movementFrames, 0 };
-			m_startFrameDown = { 0, 0 };
-			m_startFrameUp = { m_movementFrames, 0 };
+			m_sprite.cols = 7;
+			m_sprite.rows = 3;
+			m_sprite.deathFrames = m_sprite.cols;
+			m_sprite.framesPerSecond = 10;
 
+			m_sprite.hasDirection = true;
+			m_sprite.startFrameLeft = { 0, 0 };
+			m_sprite.startFrameRight = { 0, 1 };
+			m_sprite.startFrameDown = { m_sprite.movementFrames, 0 };
+			m_sprite.startFrameUp = { m_sprite.movementFrames, 1 };
 		}
 
-		m_startFrameIndex = m_startFrameLeft;
+		if (m_sprite.type == SpriteType::BALLOOM || m_sprite.type == SpriteType::ONEAL || m_sprite.type == SpriteType::DOLL || m_sprite.type == SpriteType::MINVO)
+		{
+			m_sprite.cols = 6;
+			m_sprite.rows = 2;
+			m_sprite.deathFrames = m_sprite.cols;
+			m_sprite.framesPerSecond = 5;
 
-		m_subComponents.push_back(std::move(m_renderComponent.get()));
+			m_sprite.hasDirection = true;
+			m_sprite.startFrameRight = { 0, 0 };
+			m_sprite.startFrameLeft = { m_sprite.movementFrames, 0 };
+			m_sprite.startFrameDown = { 0, 0 };
+			m_sprite.startFrameUp = { m_sprite.movementFrames, 0 };
+
+			m_sprite.enemy = true;
+			m_sprite.score = score;
+		}
+
+		if (m_sprite.type == SpriteType::WALL)
+		{
+			m_sprite.cols = 7;
+			m_sprite.rows = 1;
+			m_sprite.deathFrames = m_sprite.cols;
+			m_sprite.framesPerSecond = 5;
+
+			m_sprite.hasDirection = false;
+		}
 	}
 
 	void SpriteComponent::Update()
@@ -47,27 +69,95 @@ namespace dae
 		Renderer::GetInstance().RenderTexture(*m_renderComponent->GetTexture(), srcRect, dstRect);
 	}
 
+	void SpriteComponent::OnNotify(GameEvent event, GameObject*)
+	{
+		switch (event)
+		{
+		case dae::GameEvent::PLAYER_DEATH:
+			if (m_sprite.type != SpriteType::BOMBERMAN) return;
+			SetDead();
+			break;
+		case dae::GameEvent::ENEMY_DEATH:
+			if (!m_sprite.enemy) return;
+			SetDead();
+			break;
+		case dae::GameEvent::WALL_DEATH:
+			if (m_sprite.type != SpriteType::WALL) return;
+			SetDead();
+			break;
+		}
+	}
+
 	void SpriteComponent::SetDirection(const glm::vec2& direction)
 	{
-		if (direction.x < 0) m_startFrameIndex = m_startFrameLeft;
-		if (direction.x > 0) m_startFrameIndex = m_startFrameRight;
-		if (direction.y > 0) m_startFrameIndex = m_startFrameDown;
-		if (direction.y < 0) m_startFrameIndex = m_startFrameUp;
+		if (m_sprite.hasDirection)
+		{
+			if (direction.x < 0) m_startFrameIndex = m_sprite.startFrameLeft;
+			if (direction.x > 0) m_startFrameIndex = m_sprite.startFrameRight;
+			if (direction.y > 0) m_startFrameIndex = m_sprite.startFrameDown;
+			if (direction.y < 0) m_startFrameIndex = m_sprite.startFrameUp;
+		}
 	}
 
 	void SpriteComponent::AnimateMovement()
 	{
 		m_accumulatedTime += TimeManager::GetInstance().GetDeltaTime();
 
-		if (m_accumulatedTime >= 1.f / m_framesPerSecond)
+		if (m_accumulatedTime >= 1.f / m_sprite.framesPerSecond)
 		{
-			m_currentIndex = m_startFrameIndex.colIdx + (m_currentIndex + 1) % m_movementFrames;
+			m_currentIndex = m_startFrameIndex.colIdx + (m_currentIndex + 1) % m_sprite.movementFrames;
 			m_accumulatedTime = 0;
 		}
 	}
 
 	void SpriteComponent::AnimateDying()
 	{
+		m_accumulatedTime += TimeManager::GetInstance().GetDeltaTime();
 
+		if (m_accumulatedTime >= 1.f / 3)
+		{
+			m_currentIndex = m_startFrameIndex.colIdx + (m_currentIndex + 1);
+			m_accumulatedTime = 0;
+
+			if (m_currentIndex >= m_sprite.deathFrames)
+			{
+				GameObject* owner{ GetOwner() };
+
+				switch (m_sprite.type)
+				{
+				case SpriteType::BOMBERMAN:
+					Notify(GameEvent::PLAYER_RESPAWN, owner);
+					m_dead = false;
+					m_startFrameIndex = m_sprite.startFrameLeft;
+					break;
+				case SpriteType::BALLOOM:
+					Notify(GameEvent::SCORE_CHANGED, owner);
+					owner->SetDead();
+					break;
+				case SpriteType::ONEAL:
+					Notify(GameEvent::SCORE_CHANGED, owner);
+					owner->SetDead();
+					break;
+				case SpriteType::DOLL:
+					Notify(GameEvent::SCORE_CHANGED, owner);
+					owner->SetDead();
+					break;
+				case SpriteType::MINVO:
+					Notify(GameEvent::SCORE_CHANGED, owner);
+					owner->SetDead();
+					break;
+				case SpriteType::WALL:
+					owner->SetDead();
+					break;
+				}
+			}
+		}
+	}
+
+	void SpriteComponent::SetDead()
+	{
+		m_dead = true;
+		m_startFrameIndex.colIdx = 0;
+		m_startFrameIndex.rowIdx = m_sprite.rows - 1;
 	}
 }

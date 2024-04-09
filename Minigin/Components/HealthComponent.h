@@ -30,9 +30,8 @@ namespace dae
 
 		glm::vec2 m_respawnPos{};
 
-		void InflictDamage();
+		void HandleHealth();
 		void Respawn();
-		void Die();
 	};
 }
 #endif

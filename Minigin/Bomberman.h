@@ -8,6 +8,8 @@
 #include "Scene.h"
 #include "Input/InputManager.h"
 #include "Components/CollisionComponent.h"
+#include "Components/HealthComponent.h"
+#include "Components/SpriteComponent.h"
 
 namespace dae
 {
@@ -31,7 +33,8 @@ namespace dae
 		const float m_speed{ 40 * WINDOW_SCALE };
 
 		void InitializePlayfield(GameObject* parent, Scene& scene, int totalCols, int totalRows) const;
-		GameObject* InitializePlayer(GameObject* parent, Scene& scene, const glm::vec2& startPos, CollisionComponent::EntityType type, const glm::vec2& collisionBox, const std::string& filename) const;
+		GameObject* InitializePlayer(Scene& scene, GameObject* parent, const glm::vec2& startPos, const glm::vec2& collisionBox, const std::string& filename) const;
+		GameObject* InitializeEnemy(Scene& scene, GameObject* parent, const glm::vec2& startPos, const glm::vec2& collisionBox, const std::string& filename, SpriteComponent::SpriteType type, HealthComponent* playerHealthComp) const;
 		void AddControls(GameObject* gameObject, dae::PlayerController::ControlMethod controlMethod, float speed) const;
 
 		std::unique_ptr<GameObject> GetFPSComponent(const std::string& font, int fontSize, const glm::vec2& pos) const;

@@ -3,36 +3,58 @@
 
 #include "Components/BaseComponent.h"
 #include "Components/RenderComponent.h"
+#include "Observers/Subject.h"
 
 namespace dae
 {
-	class SpriteComponent final : public BaseComponent
+	class SpriteComponent final : public BaseComponent, public Observer, public Subject
 	{
 	public:
+		enum class SpriteType {
+			BOMBERMAN,
+			BALLOOM,
+			ONEAL,
+			DOLL,
+			MINVO,
+			WALL,
+		};
+
 		struct FrameIndex {
 			int colIdx, rowIdx;
+		};
+
+		struct Sprite {
+			SpriteType type{ SpriteType::BOMBERMAN };
+			int cols{}, rows{};
+			const int movementFrames{ 3 };
+			int deathFrames{};
+			int framesPerSecond{};
+			bool hasDirection{ true };
+			FrameIndex startFrameLeft{}, startFrameRight{}, startFrameDown{}, startFrameUp{};
+			bool enemy{ false };
+			int score{};
 		};
 
 		void Update() override;
 		void Render(const glm::vec2& pos) const override;
 
+		void OnNotify(GameEvent event, GameObject* gameObject) override;
+
 		void SetDirection(const glm::vec2& direction);
 		void AnimateMovement();
 		void AnimateDying();
+		void SetDead();
 
-		explicit SpriteComponent(GameObject* pOwner, const std::string& filename, int cols, int rows, int movementFrames, int deathFrames);
+		bool IsDead() const { return m_dead; };
+		int GetScore() const { return m_sprite.score; }
+
+		explicit SpriteComponent(GameObject* pOwner, const std::string& filename, SpriteType type, int score = 0);
 		SpriteComponent(const SpriteComponent& other) = delete;
 		SpriteComponent(SpriteComponent&& other) = delete;
 	private:
 		std::unique_ptr<RenderComponent> m_renderComponent;
 
-		const int m_cols;
-		const int m_rows;
-		const int m_movementFrames;
-		const int m_deathFrames;
-		int m_framesPerSecond{ 5 };
-
-		FrameIndex m_startFrameLeft{}, m_startFrameRight{}, m_startFrameDown{}, m_startFrameUp{};
+		Sprite m_sprite{};
 
 		FrameIndex m_startFrameIndex{};
 		int m_currentIndex{};

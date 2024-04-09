@@ -1,5 +1,4 @@
 #include "Command.h"
-#include "SceneManager.h"
 #include "Components/RenderComponent.h"
 #include "Components/GridComponent.h"
 #include "Components/SpriteComponent.h"
@@ -15,13 +14,12 @@ namespace dae
 
 	void MoveCommand::Execute()
 	{
-		if (SceneManager::GetInstance().GetGameState() != SceneManager::GameState::GAME) return;
-
 		GameObject* gameObject{ GetGameObject() };
 		GridComponent* gridComponent{ gameObject->GetParent()->GetComponent<GridComponent>()};
 		SpriteComponent* spriteComponent{ gameObject->GetComponent<SpriteComponent>() };
 		const CollisionComponent* collisionComp{ gameObject->GetComponent<CollisionComponent>() };
-		if (!collisionComp) return;
+
+		if (spriteComponent->IsDead()) return;
 
 		glm::vec2 dir{};
 
