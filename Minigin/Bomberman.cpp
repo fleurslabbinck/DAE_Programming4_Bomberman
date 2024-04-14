@@ -36,7 +36,6 @@ namespace dae
 		const glm::vec2 playerCollisionBox{ 10.f * WINDOW_SCALE, 1.f * GRIDCELL };
 
 		GameObject* bomberman{ InitializePlayer(scene, playfield, playerStartPos,  playerCollisionBox, "Sprites/Bomberman.png") };
-		bomberman->AddComponent<CameraComponent>(GRID_COLS * GRIDCELL, 0, GRID_COLS * GRIDCELL - WINDOW_WIDTH);
 		HealthComponent* bombermanHealthComp{ bomberman->GetComponent<HealthComponent>() };
 
 		// PlayerHUD
@@ -109,6 +108,7 @@ namespace dae
 		CollisionComponent* collisionComp{ player->AddComponent<CollisionComponent>(CollisionComponent::EntityType::Player, offset, collisionBox) };
 		SpriteComponent* spriteComp{ player->AddComponent<SpriteComponent>(filename, SpriteComponent::SpriteType::BOMBERMAN) };
 		HealthComponent* healthComp{ player->AddComponent<HealthComponent>(3) };
+		player->AddComponent<CameraComponent>(GRID_COLS * GRIDCELL, 0, GRID_COLS * GRIDCELL - WINDOW_WIDTH);
 		collisionComp->AddObserver(healthComp);
 		healthComp->AddObserver(spriteComp);
 		spriteComp->AddObserver(collisionComp);
