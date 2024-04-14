@@ -25,6 +25,7 @@ namespace dae
 
 		glm::vec2 GetCelPosAtIdx(int idx) { return m_cells[idx].startPos; }
 		glm::vec2 GetNextPosition(const glm::vec2& currentPos, const glm::vec2& direction) const;
+		glm::vec2 GetGridStartPos(const glm::vec2& pos) const;
 		std::vector<GameObject*> GetEntitiesClose(const glm::vec2& pos) const;
 		std::vector<GameObject*> GetEntitiesInCell(const glm::vec2& pos) const;
 

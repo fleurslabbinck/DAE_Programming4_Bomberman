@@ -3,6 +3,8 @@
 #include "Components/GridComponent.h"
 #include "Components/SpriteComponent.h"
 #include "Components/CollisionComponent.h"
+#include "Components/BomberComponent.h"
+#include "Components/HealthComponent.h"
 #include "Components/CameraComponent.h"
 
 namespace dae
@@ -63,5 +65,21 @@ namespace dae
 
 		// update camera when moving
 		if (offset.x * offset.x > FLT_EPSILON) if (CameraComponent* cameraComponent = gameObject->GetComponent<CameraComponent>()) cameraComponent->FollowPlayer();
+	}
+
+	//---------------------------------
+	// BOMBCOMMAND
+	//---------------------------------
+	void BombCommand::Execute()
+	{
+		GameObject* gameObject{ GetGameObject() };
+		GridComponent* gridComponent{ gameObject->GetParent()->GetComponent<GridComponent>() };
+		const CollisionComponent* collisionComp{ gameObject->GetComponent<CollisionComponent>() };
+
+		// get current pos
+		glm::vec2 bottomLeft{ gameObject->GetTransform()->GetLocalPosition() };
+		glm::vec2 centeredPos{ bottomLeft + collisionComp->GetCenter() };
+
+		gameObject->GetComponent<BomberComponent>()->DropBomb(gameObject->GetParent(), gameObject->GetComponent<HealthComponent>(), gridComponent->GetGridStartPos(centeredPos));
 	}
 }

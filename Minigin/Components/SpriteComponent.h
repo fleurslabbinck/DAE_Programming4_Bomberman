@@ -16,6 +16,8 @@ namespace dae
 			ONEAL,
 			DOLL,
 			MINVO,
+			BOMB,
+			EXPLOSION,
 			WALL,
 		};
 

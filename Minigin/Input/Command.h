@@ -49,5 +49,15 @@ namespace dae
 		glm::vec2 m_targetPos{};
 		const float m_targetOffset{ 0.5f };
 	};
+
+	//---------------------------------
+	// BOMBCOMMAND
+	//---------------------------------
+	class BombCommand : public GameObjectCommand
+	{
+	public:
+		BombCommand(dae::GameObject* gameObject) : GameObjectCommand(gameObject) {}
+		void Execute() override;
+	};
 }
 #endif

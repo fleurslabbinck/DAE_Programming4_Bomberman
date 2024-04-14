@@ -1,6 +1,7 @@
 #ifndef COLLISIONCOMPONENT_H
 #define COLLISIONCOMPONENT_H
 
+#include "BombermanUtil.h"
 #include "BaseComponent.h"
 #include "Observers/Subject.h"
 
@@ -11,7 +12,7 @@ namespace dae
 	//---------------------------------
 	//COLLISIONCOMPONENT
 	//---------------------------------
-	class CollisionComponent final : public BaseComponent, public Subject, public Observer
+	class CollisionComponent final : public BaseComponent, public Observer, public Subject
 	{
 	public:
 		enum class EntityType {
@@ -37,7 +38,7 @@ namespace dae
 		Sprite GetCollider() const { return m_collider; }
 		EntityType GetEntity() const { return m_entityType; }
 
-		explicit CollisionComponent(GameObject* pOwner, EntityType entityType, float offset, const glm::vec2& dimensions);
+		explicit CollisionComponent(GameObject* pOwner, EntityType entityType, float offset = 0, const glm::vec2& dimensions = { GRIDCELL, GRIDCELL });
 		CollisionComponent(const CollisionComponent& other) = delete;
 		CollisionComponent(CollisionComponent&& other) = delete;
 

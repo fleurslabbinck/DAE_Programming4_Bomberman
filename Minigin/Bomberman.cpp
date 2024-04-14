@@ -9,6 +9,7 @@
 #include "Components/GridComponent.h"
 #include "Components/CameraComponent.h"
 #include "Components/HUDComponent.h"
+#include "Components/BomberComponent.h"
 
 namespace dae
 {
@@ -108,6 +109,7 @@ namespace dae
 		CollisionComponent* collisionComp{ player->AddComponent<CollisionComponent>(CollisionComponent::EntityType::Player, offset, collisionBox) };
 		SpriteComponent* spriteComp{ player->AddComponent<SpriteComponent>(filename, SpriteComponent::SpriteType::BOMBERMAN) };
 		HealthComponent* healthComp{ player->AddComponent<HealthComponent>(3) };
+		player->AddComponent<BomberComponent>(scene);
 		player->AddComponent<CameraComponent>(GRID_COLS * GRIDCELL, 0, GRID_COLS * GRIDCELL - WINDOW_WIDTH);
 		collisionComp->AddObserver(healthComp);
 		healthComp->AddObserver(spriteComp);
@@ -164,6 +166,7 @@ namespace dae
 			player->BindCommand(static_cast<int>(dae::GamepadButton::DPadRight), std::make_unique<dae::MoveCommand>(gameObject, speed, glm::vec2{ 1, 0 }));
 			player->BindCommand(static_cast<int>(dae::GamepadButton::DPadDown), std::make_unique<dae::MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
 			player->BindCommand(static_cast<int>(dae::GamepadButton::DPadUp), std::make_unique<dae::MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
+			player->BindCommand(static_cast<int>(dae::GamepadButton::X), std::make_unique<dae::BombCommand>(gameObject));
 			break;
 		}
 		case dae::PlayerController::ControlMethod::Keyboard:

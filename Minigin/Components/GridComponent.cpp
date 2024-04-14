@@ -43,6 +43,15 @@ namespace dae
 		return m_cells[currentIdx].center + offset;
 	}
 
+	glm::vec2 GridComponent::GetGridStartPos(const glm::vec2& pos) const
+	{
+		const int currentIdx{ PositionToIndex(pos) };
+
+		if (currentIdx == -1) return pos;
+
+		return m_cells[currentIdx].startPos;
+	}
+
 	std::vector<GameObject*> GridComponent::GetEntitiesClose(const glm::vec2& pos) const
 	{
 		const GameObject* owner{ GetOwner() };

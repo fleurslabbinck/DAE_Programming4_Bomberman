@@ -43,6 +43,16 @@ namespace dae
 			m_sprite.score = score;
 		}
 
+		if (m_sprite.type == SpriteType::BOMB)
+		{
+			m_sprite.cols = 3;
+			m_sprite.rows = 1;
+			m_sprite.deathFrames = 0;
+			m_sprite.framesPerSecond = 5;
+
+			m_sprite.hasDirection = false;
+		}
+
 		if (m_sprite.type == SpriteType::WALL)
 		{
 			m_sprite.cols = 7;
@@ -101,23 +111,27 @@ namespace dae
 
 	void SpriteComponent::AnimateMovement()
 	{
-		m_accumulatedTime += TimeManager::GetInstance().GetDeltaTime();
+		if (m_sprite.type == SpriteType::BOMB) return;
 
-		if (m_accumulatedTime >= 1.f / m_sprite.framesPerSecond)
+		m_accumulatedTime += TimeManager::GetInstance().GetDeltaTime();
+		const float maxTime{ 1.f / m_sprite.framesPerSecond };
+
+		if (m_accumulatedTime >= maxTime)
 		{
 			m_currentIndex = m_startFrameIndex.colIdx + (m_currentIndex + 1) % m_sprite.movementFrames;
-			m_accumulatedTime = 0;
+			m_accumulatedTime -= maxTime;
 		}
 	}
 
 	void SpriteComponent::AnimateDying()
 	{
 		m_accumulatedTime += TimeManager::GetInstance().GetDeltaTime();
+		const float maxTime{ 1.f / 2 };
 
-		if (m_accumulatedTime >= 1.f / 3)
+		if (m_accumulatedTime >= maxTime)
 		{
 			m_currentIndex = m_startFrameIndex.colIdx + (m_currentIndex + 1);
-			m_accumulatedTime = 0;
+			m_accumulatedTime -= maxTime;
 
 			if (m_currentIndex >= m_sprite.deathFrames)
 			{

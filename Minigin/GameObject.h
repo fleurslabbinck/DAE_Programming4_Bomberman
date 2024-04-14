@@ -27,6 +27,16 @@ namespace dae
 			return ptr;
 		}
 
+		template <typename ComponentType, typename Arg>
+		ComponentType* AddComponent(Arg& arg)
+		{
+			std::unique_ptr<ComponentType> component{ std::make_unique<ComponentType>(this, arg) };
+			ComponentType* ptr{ component.get() };
+			m_components.push_back(std::move(component));
+
+			return ptr;
+		}
+
 		template <typename ComponentType>
 		ComponentType* GetComponent() const
 		{
