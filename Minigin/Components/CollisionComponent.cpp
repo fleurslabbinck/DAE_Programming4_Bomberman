@@ -14,6 +14,16 @@ namespace dae
 
 	}
 
+	void CollisionComponent::OnNotify(GameEvent event, GameObject* gameObject)
+	{
+		switch (event)
+		{
+		case dae::GameEvent::PLAYER_RESPAWN:
+			gameObject->GetComponent<CollisionComponent>()->SetCheckForCollision(true);
+			break;
+		}
+	}
+
 	bool CollisionComponent::HandleCollision(const glm::vec2 pos, const std::vector<GameObject*>& entities) const
 	{
 		for (GameObject* entity : entities)
@@ -23,6 +33,7 @@ namespace dae
 				const EntityType type{ collisionComp->GetEntity() };
 
 				if (type == EntityType::Block) continue;
+				if (!entity->GetComponent<CollisionComponent>()->GetCheckForCollision()) continue;
 
 				const glm::vec2 entityPos{ entity->GetTransform()->GetLocalPosition() };
 				const Sprite entityCollider{ collisionComp->GetCollider() };
@@ -35,7 +46,7 @@ namespace dae
 
 						if (m_entityType != EntityType::Player)
 						{
-							Notify(GameEvent::PLAYER_HIT, entity);
+							HandleEntityHit(entity, type);
 							return true;
 						}
 
@@ -45,13 +56,13 @@ namespace dae
 
 						if (m_entityType == EntityType::Player)
 						{
-							Notify(GameEvent::PLAYER_HIT, GetOwner());
+							HandleEntityHit(GetOwner(), m_entityType);
 							return true;
 						}
 
 						if (m_entityType == EntityType::Bomb)
 						{
-							Notify(GameEvent::ENEMY_HIT, entity);
+							HandleEntityHit(entity, type);
 							return true;
 						}
 
@@ -61,7 +72,7 @@ namespace dae
 
 						if (m_entityType == EntityType::Bomb)
 						{
-							Notify(GameEvent::PLAYER_HIT, entity);
+							HandleEntityHit(entity, type);
 							return true;
 						}
 
@@ -93,5 +104,25 @@ namespace dae
 		bool verticalCollision = pos.y + verticalOffset <= entityPos.y + collider.height - verticalOffset && pos.y + m_collider.height - verticalOffset >= entityPos.y + verticalOffset;
 
 		return horizontalCollision && verticalCollision;
+	}
+
+	void CollisionComponent::HandleEntityHit(GameObject* entity, EntityType type) const
+	{
+		switch (type)
+		{
+		case dae::CollisionComponent::EntityType::Player:
+			Notify(GameEvent::PLAYER_HIT, entity);
+			break;
+		case dae::CollisionComponent::EntityType::Enemy:
+			Notify(GameEvent::ENEMY_HIT, entity);
+			break;
+		case dae::CollisionComponent::EntityType::Wall:
+			Notify(GameEvent::WALL_HIT, entity);
+			break;
+		default:
+			break;
+		}
+
+		entity->GetComponent<CollisionComponent>()->SetCheckForCollision(false);
 	}
 }

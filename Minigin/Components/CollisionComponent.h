@@ -11,7 +11,7 @@ namespace dae
 	//---------------------------------
 	//COLLISIONCOMPONENT
 	//---------------------------------
-	class CollisionComponent final : public BaseComponent, public Subject
+	class CollisionComponent final : public BaseComponent, public Subject, public Observer
 	{
 	public:
 		enum class EntityType {
@@ -27,6 +27,10 @@ namespace dae
 			glm::vec2 center{};
 		};
 
+		void OnNotify(GameEvent event, GameObject* gameObject) override;
+		void SetCheckForCollision(bool checkForCollision) { m_checkForCollision = checkForCollision; }
+		bool GetCheckForCollision() const { return m_checkForCollision; }
+
 		glm::vec2 GetCenter() const { return m_collider.center; }
 		bool HandleCollision(const glm::vec2 pos, const std::vector<GameObject*>& entities) const;
 		bool CanMove(const std::vector<GameObject*>& entities) const;
@@ -41,7 +45,10 @@ namespace dae
 		EntityType m_entityType;
 		Sprite m_collider;
 
+		bool m_checkForCollision{ true };
+
 		bool IsColliding(const glm::vec2 pos, const glm::vec2 entityPos, const Sprite& collider) const;
+		void HandleEntityHit(GameObject* entity, EntityType type) const;
 	};
 }
 #endif

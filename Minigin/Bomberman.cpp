@@ -111,6 +111,7 @@ namespace dae
 		HealthComponent* healthComp{ player->AddComponent<HealthComponent>(3) };
 		collisionComp->AddObserver(healthComp);
 		healthComp->AddObserver(spriteComp);
+		spriteComp->AddObserver(collisionComp);
 		spriteComp->AddObserver(healthComp);
 
 		player->SetParent(parent);
