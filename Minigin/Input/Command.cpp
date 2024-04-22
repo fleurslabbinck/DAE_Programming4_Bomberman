@@ -42,9 +42,6 @@ namespace dae
 
 		const float distToTarget{ glm::distance(centeredPos, m_targetPos) };
 
-		//if (distToTarget >= GRIDCELL) m_targetPos = centeredPos;
-		// check if target not too far away (death)
-
 		// check if reached target
 		if (distToTarget <= m_targetOffset)
 		{

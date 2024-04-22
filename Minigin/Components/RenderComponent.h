@@ -2,7 +2,7 @@
 #define RENDERCOMPONENT_H
 
 #include "BaseComponent.h"
-#include "Resources/Texture2D.h"
+#include "Render/Resources/Texture2D.h"
 
 namespace dae
 {

@@ -10,14 +10,14 @@ namespace dae
 		: BaseComponent(pOwner), m_minBorder{ minBorder }, m_maxBorder{ maxBorder }
 	{
 		m_viewport.w = playfieldWidth;
-		m_viewport.h = WINDOW_HEIGHT;
+		m_viewport.h = constants::WINDOW_HEIGHT;
 
-		m_clampOffset = WINDOW_WIDTH / 2;
+		m_clampOffset = m_viewport.h / 2;
 	}
 
 	void CameraComponent::FollowPlayer()
 	{
-		const float playerPos{ GetOwner()->GetTransform()->GetWorldPosition().x + GRIDCELL / 2.f };
+		const float playerPos{ GetOwner()->GetTransform()->GetWorldPosition().x + constants::GRIDCELL / 2.f };
 		m_viewport.x = static_cast<int>(playerPos) - m_clampOffset;
 
 		ClampPlayer();

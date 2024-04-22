@@ -38,7 +38,7 @@ namespace dae
 		Sprite GetCollider() const { return m_collider; }
 		EntityType GetEntity() const { return m_entityType; }
 
-		explicit CollisionComponent(GameObject* pOwner, EntityType entityType, float offset = 0, const glm::vec2& dimensions = { GRIDCELL, GRIDCELL });
+		explicit CollisionComponent(GameObject* pOwner, EntityType entityType, float offset = 0, const glm::vec2& dimensions = { constants::GRIDCELL, constants::GRIDCELL });
 		CollisionComponent(const CollisionComponent& other) = delete;
 		CollisionComponent(CollisionComponent&& other) = delete;
 

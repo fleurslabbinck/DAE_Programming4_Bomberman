@@ -30,8 +30,6 @@ namespace dae
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
-		InputManager() = default;
-		~InputManager() = default;
 		InputManager(const InputManager& other) = delete;
 		InputManager(InputManager&& other) = delete;
 		InputManager& operator=(const InputManager& other) = delete;
@@ -42,6 +40,10 @@ namespace dae
 		void RemovePlayerControllers();
 
 	private:
+		friend class Singleton<InputManager>;
+		InputManager() = default;
+		~InputManager() = default;
+
 		int m_playerControllerCount{};
 		std::vector<std::unique_ptr<PlayerController>> m_playerControllers;
 

@@ -1,6 +1,8 @@
 #include "HUDComponent.h"
+
 #include "GameObject.h"
 #include "Render/Renderer.h"
+#include "BombermanUtil.h"
 #include "Components/TextComponent.h"
 #include "Components/HealthComponent.h"
 
@@ -24,7 +26,7 @@ namespace dae
 		m_scoreMessage.text = "SCORE: ";
 		m_scoreMessage.textComponent = std::make_unique<TextComponent>(pOwner, fontPath, fontSize, m_scoreMessage.text);
 		m_scoreMessage.position.x = offset;
-		m_scoreMessage.position.y = 2 * offset + m_scoreMessage.textComponent->GetRenderComponent()->GetTexture()->GetSize().y * WINDOW_SCALE;
+		m_scoreMessage.position.y = 2 * offset + m_scoreMessage.textComponent->GetRenderComponent()->GetTexture()->GetSize().y * constants::WINDOW_SCALE;
 		m_scoreMessage.SetMessage();
 
 		m_subComponents.push_back(m_livesMessage.textComponent.get());

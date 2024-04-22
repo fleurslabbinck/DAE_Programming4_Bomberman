@@ -1,5 +1,5 @@
 #include "Components/RenderComponent.h"
-#include "Render/ResourceManager.h"
+#include "Render/Resources/ResourceManager.h"
 #include "Render/Renderer.h"
 #include "BombermanUtil.h"
 
@@ -23,7 +23,7 @@ namespace dae
 	void RenderComponent::Render(const glm::vec2& pos) const
 	{
 		const glm::vec2 dimensions{ m_texture->GetSize() };
-		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y, dimensions.x * WINDOW_SCALE, dimensions.y * WINDOW_SCALE);
+		Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y, dimensions.x * constants::WINDOW_SCALE, dimensions.y * constants::WINDOW_SCALE);
 	}
 
 	void RenderComponent::SetTexture(std::unique_ptr<Texture2D> texture)

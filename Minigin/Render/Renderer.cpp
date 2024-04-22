@@ -1,5 +1,6 @@
-#include <stdexcept>
 #include "Renderer.h"
+
+#include <stdexcept>
 #include "SceneManager.h"
 #include "Resources/Texture2D.h"
 

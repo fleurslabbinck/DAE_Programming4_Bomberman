@@ -12,7 +12,9 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "Minigin.h"
-#include "Render/ResourceManager.h"
+#include "Render/Resources/ResourceManager.h"
+
+#include "Bomberman.h"
 
 
 SDL_Window* g_window{};
@@ -64,7 +66,7 @@ void PrintSDLVersion()
 
 namespace dae
 {
-	Minigin::Minigin(const std::filesystem::path& dataPath)
+	Minigin::Minigin(const std::filesystem::path& dataPath, int windowWidth, int windowHeight)
 	{
 		PrintSDLVersion();
 
@@ -77,8 +79,8 @@ namespace dae
 			"Bomberman - Fleur Slabbinck",
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
-			WINDOW_WIDTH,
-			WINDOW_HEIGHT,
+			windowWidth,
+			windowHeight,
 			SDL_WINDOW_OPENGL
 		);
 		if (g_window == nullptr)
@@ -98,9 +100,11 @@ namespace dae
 		SDL_Quit();
 	}
 
-	void Minigin::Run()
+	void Minigin::Run(const std::function<void()>& load)
 	{
-		m_bomberman.LoadMainScene();
+		load();
+
+		//dae::Bomberman::GetInstance().LoadMainScene();
 
 		SDL_RenderSetVSync(m_renderer.GetSDLRenderer(), true);
 

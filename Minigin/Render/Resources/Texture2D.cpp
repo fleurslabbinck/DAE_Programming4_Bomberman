@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include "Resources/Texture2D.h"
+#include "Texture2D.h"
 
 namespace dae
 {

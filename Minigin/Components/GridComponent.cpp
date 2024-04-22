@@ -9,7 +9,7 @@ namespace dae
 	//GRIDCOMPONENT
 	//---------------------------------
 	GridComponent::GridComponent(GameObject* pOwner, int cols, int rows, bool setBackgroundColor, const SDL_Color& color)
-		: BaseComponent(pOwner), m_cols{ cols }, m_rows{ rows }, m_hasBackgroundColor{ setBackgroundColor }, m_BackgroundColor{ color }, m_background{ 0, 0, cols * GRIDCELL, rows * GRIDCELL }
+		: BaseComponent(pOwner), m_cols{ cols }, m_rows{ rows }, m_hasBackgroundColor{ setBackgroundColor }, m_BackgroundColor{ color }, m_background{ 0, 0, cols * constants::GRIDCELL, rows * constants::GRIDCELL }
 	{
 		Cell cell{};
 
@@ -38,7 +38,7 @@ namespace dae
 
 		if (currentIdx == -1) return currentPos;
 
-		glm::vec2 offset{ direction * static_cast<float>(GRIDCELL) };
+		glm::vec2 offset{ direction * static_cast<float>(constants::GRIDCELL) };
 
 		return m_cells[currentIdx].center + offset;
 	}
@@ -94,10 +94,10 @@ namespace dae
 	{
 		const glm::vec2 position{ pos - m_cells[0].startPos };
 
-		const int col{ static_cast<int>(position.x) / GRIDCELL };
-		const int row{ static_cast<int>(position.y) / GRIDCELL };
+		const int col{ static_cast<int>(position.x) / constants::GRIDCELL };
+		const int row{ static_cast<int>(position.y) / constants::GRIDCELL };
 
-		const int idx{ row * GRID_COLS + col };
+		const int idx{ row * constants::GRID_COLS + col };
 
 		return idx;
 	}

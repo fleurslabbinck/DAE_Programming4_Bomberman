@@ -15,22 +15,24 @@ namespace dae
 {
 	class GameObject;
 
-	class Bomberman final
+	class Bomberman final : public Singleton<Bomberman>
 	{
 	public:
 		void LoadMainScene();
 
-		Bomberman() = default;
-		~Bomberman() = default;
 		Bomberman(const Bomberman& other) = delete;
 		Bomberman(Bomberman&& other) = delete;
 		Bomberman& operator=(const Bomberman& other) = delete;
 		Bomberman& operator=(Bomberman&& other) = delete;
 
 	private:
+		friend class Singleton<Bomberman>;
+		Bomberman() = default;
+		~Bomberman() = default;
+
 		const SDL_Color m_backgroundColor{ 0, 147, 0 };
-		const glm::vec2 m_fpsComponentPos{ 10.f, WINDOW_HEIGHT - (10.f * WINDOW_SCALE) };
-		const float m_speed{ 40 * WINDOW_SCALE };
+		const glm::vec2 m_fpsComponentPos{ 10.f, constants::WINDOW_HEIGHT - (10.f * constants::WINDOW_SCALE) };
+		const float m_speed{ 40 * constants::WINDOW_SCALE };
 
 		void InitializePlayfield(GameObject* parent, Scene& scene, int totalCols, int totalRows) const;
 		GameObject* InitializePlayer(Scene& scene, GameObject* parent, const glm::vec2& startPos, const glm::vec2& collisionBox, const std::string& filename) const;

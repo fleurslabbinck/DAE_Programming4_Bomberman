@@ -16,7 +16,7 @@ namespace dae
 	{
 	public:
 		struct Cell {
-			float size{ static_cast<float>(GRIDCELL) };
+			float size{ static_cast<float>(constants::GRIDCELL) };
 			glm::vec2 startPos;
 			glm::vec2 center;
 		};

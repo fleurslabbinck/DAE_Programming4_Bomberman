@@ -2,8 +2,8 @@
 #define TEXTCOMPONENT_H
 
 #include "Components/RenderComponent.h"
-#include "Resources/Font.h"
-#include "Resources/Texture2D.h"
+#include "Render/Resources/Font.h"
+#include "Render/Resources/Texture2D.h"
 
 namespace dae
 {

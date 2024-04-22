@@ -71,10 +71,10 @@ namespace dae
 
 	void SpriteComponent::Render(const glm::vec2& pos) const
 	{
-		constexpr int srcGridCell{ GRIDCELL / WINDOW_SCALE };
+		constexpr int srcGridCell{ constants::GRIDCELL / constants::WINDOW_SCALE };
 
 		SDL_Rect srcRect{ m_currentIndex * srcGridCell, m_startFrameIndex.rowIdx * srcGridCell, srcGridCell, srcGridCell };
-		SDL_Rect dstRect{ static_cast<int>(pos.x), static_cast<int>(pos.y), GRIDCELL, GRIDCELL };
+		SDL_Rect dstRect{ static_cast<int>(pos.x), static_cast<int>(pos.y), constants::GRIDCELL, constants::GRIDCELL };
 
 		Renderer::GetInstance().RenderTexture(*m_renderComponent->GetTexture(), srcRect, dstRect);
 	}

@@ -2,9 +2,9 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "ResourceManager.h"
-#include "Renderer.h"
-#include "Resources/Texture2D.h"
-#include "Resources/Font.h"
+#include "Render/Renderer.h"
+#include "Texture2D.h"
+#include "Font.h"
 
 namespace dae
 {
