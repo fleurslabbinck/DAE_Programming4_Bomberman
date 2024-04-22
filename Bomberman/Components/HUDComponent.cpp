@@ -11,7 +11,7 @@ namespace dae
 	HUDComponent::HUDComponent(GameObject* pOwner, const std::string& fontPath, int fontSize, const std::string&)
 		: BaseComponent(pOwner)
 	{
-		constexpr float offset{ 10.f };
+		constexpr float offset{ 5.f };
 
 		m_livesMessage = HUDMessage{};
 		m_livesMessage.value = GetLives(GetOwner());
@@ -26,7 +26,7 @@ namespace dae
 		m_scoreMessage.text = "SCORE: ";
 		m_scoreMessage.textComponent = std::make_unique<TextComponent>(pOwner, fontPath, fontSize, m_scoreMessage.text);
 		m_scoreMessage.position.x = offset;
-		m_scoreMessage.position.y = 2 * offset + m_scoreMessage.textComponent->GetRenderComponent()->GetTexture()->GetSize().y * constants::WINDOW_SCALE;
+		m_scoreMessage.position.y = 2 * offset + m_scoreMessage.textComponent->GetRenderComponent()->GetTexture()->GetSize().y;
 		m_scoreMessage.SetMessage();
 
 		m_subComponents.push_back(m_livesMessage.textComponent.get());

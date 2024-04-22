@@ -19,7 +19,7 @@ namespace dae
 		auto& scene = dae::SceneManager::GetInstance().CreateScene("Main");
 
 		const std::string font{ "nintendo-nes-font.otf" };
-		constexpr int fontSize{ 2 * constants::WINDOW_SCALE };
+		constexpr int fontSize{ 8 };
 
 		// Playfield
 		GameObject* playfield{ scene.AddGameObject(std::make_unique<GameObject>(0.f, static_cast<float>(constants::WINDOW_HEIGHT - constants::GRIDCELL * constants::GRID_ROWS))) };
@@ -28,7 +28,7 @@ namespace dae
 
 		// Player
 		const glm::vec2 playerStartPos{ 1.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
-		const glm::vec2 playerCollisionBox{ 10.f * constants::WINDOW_SCALE, 1.f * constants::GRIDCELL };
+		const glm::vec2 playerCollisionBox{ 10.f, 1.f * constants::GRIDCELL };
 
 		GameObject* bomberman{ InitializePlayer(scene, playfield, playerStartPos,  playerCollisionBox, "Sprites/Bomberman.png") };
 		HealthComponent* bombermanHealthComp{ bomberman->GetComponent<HealthComponent>() };
@@ -39,7 +39,7 @@ namespace dae
 		
 		// Enemy
 		const glm::vec2 enemyStartPos{ 10.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
-		const glm::vec2 enemyCollisionBox{ 15.f * constants::WINDOW_SCALE, 1.f * constants::GRIDCELL };
+		const glm::vec2 enemyCollisionBox{ 15.f, 1.f * constants::GRIDCELL };
 
 		GameObject* balloom{ InitializeEnemy(scene, playfield, enemyStartPos, enemyCollisionBox, "Sprites/Balloom.png", SpriteComponent::SpriteType::BALLOOM, bombermanHealthComp) };
 		CollisionComponent* balloomCollisionComp{ balloom->GetComponent<CollisionComponent>() };

@@ -23,7 +23,7 @@ namespace dae
 		void Render() const;
 		void Destroy();
 
-		SDL_Rect GetViewport() const { return m_viewport; }
+		SDL_Rect GetViewport() const { return { m_viewport.x / m_windowScale, m_viewport.y / m_windowScale, m_viewport.w / m_windowScale, m_viewport.h / m_windowScale }; }
 		void SetViewport(const SDL_Rect& view);
 
 		void RenderRectangle(const SDL_Rect& rect, const SDL_Color& color) const;

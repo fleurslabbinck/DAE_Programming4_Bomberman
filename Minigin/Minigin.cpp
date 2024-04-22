@@ -77,8 +77,8 @@ namespace dae
 			"Bomberman - Fleur Slabbinck",
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
-			windowWidth,
-			windowHeight,
+			windowWidth * windowScale,
+			windowHeight * windowScale,
 			SDL_WINDOW_OPENGL
 		);
 		if (g_window == nullptr)
