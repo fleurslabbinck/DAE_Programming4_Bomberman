@@ -16,8 +16,10 @@ namespace dae
 		SDL_Window* m_window{};
 		SDL_Color m_clearColor{ 176, 176, 176 };
 		SDL_Rect m_viewport{};
+
+		int m_windowScale{};
 	public:
-		void Init(SDL_Window* window);
+		void Init(SDL_Window* window, int windowScale);
 		void Render() const;
 		void Destroy();
 

@@ -1,7 +1,7 @@
 #include "Renderer.h"
 
 #include <stdexcept>
-#include "SceneManager.h"
+#include "../Minigin/Scene/SceneManager.h"
 #include "Resources/Texture2D.h"
 
 int GetOpenGLDriverIndex()
@@ -20,7 +20,7 @@ int GetOpenGLDriverIndex()
 
 namespace dae
 {
-	void Renderer::Init(SDL_Window* window)
+	void Renderer::Init(SDL_Window* window, int windowScale)
 	{
 		m_window = window;
 		m_renderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED);
@@ -28,6 +28,8 @@ namespace dae
 		{
 			throw std::runtime_error(std::string("SDL_CreateRenderer Error: ") + SDL_GetError());
 		}
+
+		m_windowScale = windowScale;
 	}
 
 	void Renderer::Render() const
@@ -65,9 +67,11 @@ namespace dae
 	void Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
 	{
 		SDL_Rect dst{};
-		dst.x = static_cast<int>(x);
-		dst.y = static_cast<int>(y);
+		dst.x = static_cast<int>(x) * m_windowScale;
+		dst.y = static_cast<int>(y) * m_windowScale;
 		SDL_QueryTexture(texture.GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
+		dst.w *= m_windowScale;
+		dst.h *= m_windowScale;
 		SDL_RenderCopy(m_renderer, texture.GetSDLTexture(), nullptr, &dst);
 	}
 
@@ -76,8 +80,8 @@ namespace dae
 		SDL_Rect dst{};
 		dst.x = static_cast<int>(x);
 		dst.y = static_cast<int>(y);
-		dst.w = static_cast<int>(width);
-		dst.h = static_cast<int>(height);
+		dst.w = static_cast<int>(width) * m_windowScale;
+		dst.h = static_cast<int>(height) * m_windowScale;
 		SDL_RenderCopy(m_renderer, texture.GetSDLTexture(), nullptr, &dst);
 	}
 

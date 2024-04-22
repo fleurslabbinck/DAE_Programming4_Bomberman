@@ -8,7 +8,7 @@
 
 #include "Input/InputManager.h"
 #include "TimeManager.h"
-#include "SceneManager.h"
+#include "Scene/SceneManager.h"
 #include "Render/Renderer.h"
 
 namespace dae
@@ -16,7 +16,7 @@ namespace dae
 	class Minigin
 	{
 	public:
-		explicit Minigin(const std::filesystem::path& dataPath, int windowWidth, int windowHeight);
+		explicit Minigin(const std::filesystem::path& dataPath, int windowWidth, int windowHeight, int windowScale);
 		~Minigin();
 		void Run(const std::function<void()>& load);
 

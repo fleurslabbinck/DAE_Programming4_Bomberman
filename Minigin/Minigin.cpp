@@ -14,8 +14,6 @@
 #include "Minigin.h"
 #include "Render/Resources/ResourceManager.h"
 
-#include "Bomberman.h"
-
 
 SDL_Window* g_window{};
 
@@ -66,7 +64,7 @@ void PrintSDLVersion()
 
 namespace dae
 {
-	Minigin::Minigin(const std::filesystem::path& dataPath, int windowWidth, int windowHeight)
+	Minigin::Minigin(const std::filesystem::path& dataPath, int windowWidth, int windowHeight, int windowScale)
 	{
 		PrintSDLVersion();
 
@@ -88,7 +86,7 @@ namespace dae
 			throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 		}
 
-		m_renderer.Init(g_window);
+		m_renderer.Init(g_window, windowScale);
 		ResourceManager::GetInstance().Init(dataPath);
 	}
 

@@ -14,12 +14,14 @@ else()
 endif()
 
 # list source files here
-file(GLOB_RECURSE  SOURCES "Minigin/*.cpp")
+file(GLOB_RECURSE  MINIGEN_SOURCES "Minigin/*.cpp" "Bomberman/*.cpp")
 
-add_executable(${TARGET_NAME} ${TARGET_PARAM} ${SOURCES})
+add_executable(${TARGET_NAME} ${TARGET_PARAM} ${MINIGEN_SOURCES})
+#add_library(${TARGET_NAME} STATIC ${MINIGEN_SOURCES})
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+
 # set minigin as the default startup project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
 
