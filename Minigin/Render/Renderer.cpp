@@ -1,7 +1,7 @@
 #include "Renderer.h"
 
 #include <stdexcept>
-#include "../Minigin/Scene/SceneManager.h"
+#include "../Scene/SceneManager.h"
 #include "Resources/Texture2D.h"
 
 int GetOpenGLDriverIndex()

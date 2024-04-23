@@ -1,8 +1,8 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
-#include "../Minigin/Objects/Components/TransformComponent.h"
-#include "TimeManager.h"
+#include "../Objects/Components/TransformComponent.h"
+#include "../TimeManager.h"
 
 namespace dae
 {

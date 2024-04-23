@@ -1,5 +1,5 @@
 #include "RotatorComponent.h"
-#include "../Minigin/Objects/GameObject.h"
+#include "../GameObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace dae

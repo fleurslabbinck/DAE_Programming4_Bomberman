@@ -1,7 +1,7 @@
 #ifndef ROTATORCOMPONENT_H
 #define ROTATORCOMPONENT_H
 
-#include "../Minigin/Objects/Components/BaseComponent.h"
+#include "BaseComponent.h"
 #include <glm/glm.hpp>
 
 namespace dae

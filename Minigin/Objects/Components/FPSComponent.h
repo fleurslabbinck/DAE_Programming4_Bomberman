@@ -1,7 +1,7 @@
 #ifndef FPSCOMPONENT_H
 #define FPSCOMPONENT_H
 
-#include "Objects/Components/TextComponent.h"
+#include "TextComponent.h"
 #include <string>
 
 namespace dae

@@ -1,9 +1,9 @@
 #ifndef TEXTCOMPONENT_H
 #define TEXTCOMPONENT_H
 
-#include "../Minigin/Objects/Components/RenderComponent.h"
-#include "Render/Resources/Font.h"
-#include "Render/Resources/Texture2D.h"
+#include "RenderComponent.h"
+#include "../../Render/Resources/Font.h"
+#include "../../Render/Resources/Texture2D.h"
 
 namespace dae
 {

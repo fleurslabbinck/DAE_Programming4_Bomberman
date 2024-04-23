@@ -18,76 +18,118 @@
     <ClInclude Include="Singleton.h">
       <Filter>Engine Files</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture2D.h">
-      <Filter>Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>Engine Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Font.h">
-      <Filter>Engine Files</Filter>
-    </ClInclude>
     <ClInclude Include="Minigin.h">
       <Filter>Engine Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Game Files</Filter>
+    <ClInclude Include="TimeManager.h">
+      <Filter>Engine Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components.h">
-      <Filter>Game Files</Filter>
+    <ClInclude Include="Scene\SceneManager.h">
+      <Filter>Engine Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>Game Files</Filter>
+    <ClInclude Include="Scene\Scene.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Renderer.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Resources\Texture2D.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Resources\ResourceManager.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\Resources\Font.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Observers\Subject.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Observers\Observer.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\GameObject.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Components\TransformComponent.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Components\TextComponent.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Components\RotatorComponent.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Components\RenderComponent.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Components\FPSComponent.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Components\BaseComponent.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputManager.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Gamepad.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Command.h">
+      <Filter>Engine Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components.cpp">
-      <Filter>Game Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
-      <Filter>Engine Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Engine Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Font.cpp">
-      <Filter>Engine Files</Filter>
-    </ClCompile>
     <ClCompile Include="Minigin.cpp">
       <Filter>Engine Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Engine Files</Filter>
+    <ClCompile Include="Scene\SceneManager.cpp">
+      <Filter>Game Files</Filter>
     </ClCompile>
-    <ClCompile Include="Texture2D.cpp">
-      <Filter>Engine Files</Filter>
+    <ClCompile Include="Scene\Scene.cpp">
+      <Filter>Game Files</Filter>
     </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Engine Files</Filter>
+    <ClCompile Include="Render\Renderer.cpp">
+      <Filter>Game Files</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Engine Files</Filter>
+    <ClCompile Include="Render\Resources\Texture2D.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Resources\ResourceManager.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\Resources\Font.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Observers\Subject.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\GameObject.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Components\TransformComponent.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Components\TextComponent.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Components\RotatorComponent.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Components\RenderComponent.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Components\FPSComponent.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Components\BaseComponent.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputManager.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\Gamepad.cpp">
+      <Filter>Game Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

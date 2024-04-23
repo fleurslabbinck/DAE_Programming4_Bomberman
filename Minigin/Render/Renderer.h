@@ -2,7 +2,7 @@
 #define RENDERER_H
 
 #include <SDL.h>
-#include "Singleton.h"
+#include "../Singleton.h"
 
 namespace dae
 {

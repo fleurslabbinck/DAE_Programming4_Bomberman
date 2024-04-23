@@ -2,7 +2,7 @@
 #define SCENE_H
 
 //#include "SceneManager.h"
-#include "../Minigin/Objects/GameObject.h"
+#include "../Objects/GameObject.h"
 
 namespace dae
 {

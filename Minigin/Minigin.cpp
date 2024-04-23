@@ -1,3 +1,5 @@
+#include "Minigin.h"
+
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
@@ -11,55 +13,32 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include "Minigin.h"
+
 #include "Render/Resources/ResourceManager.h"
 
 
 SDL_Window* g_window{};
 
-void LogSDLVersion(const std::string& message, const SDL_version& v)
-{
-#if WIN32
-	std::stringstream ss;
-	ss << message << (int)v.major << "." << (int)v.minor << "." << (int)v.patch << "\n";
-	OutputDebugString(ss.str().c_str());
-#else
-	std::cout << message << (int)v.major << "." << (int)v.minor << "." << (int)v.patch << "\n";
-#endif
-}
-
-#ifdef __EMSCRIPTEN__
-#include "emscripten.h"
-
-void LoopCallback(void* arg)
-{
-	static_cast<dae::Minigin*>(arg)->RunOneFrame();
-}
-#endif
-
-// Why bother with this? Because sometimes students have a different SDL version installed on their pc.
-// That is not a problem unless for some reason the dll's from this project are not copied next to the exe.
-// These entries in the debug output help to identify that issue.
 void PrintSDLVersion()
 {
 	SDL_version version{};
 	SDL_VERSION(&version);
-	LogSDLVersion("We compiled against SDL version ", version);
+	printf("We compiled against SDL version %u.%u.%u ...\n", version.major, version.minor, version.patch);
 
 	SDL_GetVersion(&version);
-	LogSDLVersion("We linked against SDL version ", version);
+	printf("We are linking against SDL version %u.%u.%u.\n", version.major, version.minor, version.patch);
 
 	SDL_IMAGE_VERSION(&version);
-	LogSDLVersion("We compiled against SDL_image version ", version);
+	printf("We compiled against SDL_image version %u.%u.%u ...\n", version.major, version.minor, version.patch);
 
 	version = *IMG_Linked_Version();
-	LogSDLVersion("We linked against SDL_image version ", version);
+	printf("We are linking against SDL_image version %u.%u.%u.\n", version.major, version.minor, version.patch);
 
 	SDL_TTF_VERSION(&version)
-	LogSDLVersion("We compiled against SDL_ttf version ", version);
+	printf("We compiled against SDL_ttf version %u.%u.%u ...\n", version.major, version.minor, version.patch);
 
 	version = *TTF_Linked_Version();
-	LogSDLVersion("We linked against SDL_ttf version ", version);
+	printf("We are linking against SDL_ttf version %u.%u.%u.\n", version.major, version.minor, version.patch);
 }
 
 namespace dae
@@ -102,23 +81,13 @@ namespace dae
 	{
 		load();
 
-		//dae::Bomberman::GetInstance().LoadMainScene();
-
 		SDL_RenderSetVSync(m_renderer.GetSDLRenderer(), true);
-
-		//constexpr int targetFPS{ 165 };
-		//
-		//m_time.SetTargetFPS(targetFPS);
 
 		m_time.SetCurrTime();
 		m_time.SetLastTime();
 
-#ifndef __EMSCRIPTEN__
 		while (!m_quit)
 			RunOneFrame();
-#else
-		emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
-#endif
 	}
 
 	void Minigin::RunOneFrame()

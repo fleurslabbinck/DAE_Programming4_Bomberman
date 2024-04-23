@@ -1,5 +1,5 @@
 #include "FPSComponent.h"
-#include "../Minigin/Objects/GameObject.h"
+#include "../GameObject.h"
 
 namespace dae
 {

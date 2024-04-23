@@ -1,6 +1,6 @@
 #include "TextComponent.h"
-#include "Render/Resources/ResourceManager.h"
-#include "Render/Renderer.h"
+#include "../../Render/Resources/ResourceManager.h"
+#include "../../Render/Renderer.h"
 #include <SDL_ttf.h>
 #include <sstream>
 

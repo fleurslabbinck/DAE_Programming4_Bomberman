@@ -1,7 +1,7 @@
 #include "RenderComponent.h"
 
-#include "Render/Resources/ResourceManager.h"
-#include "Render/Renderer.h"
+#include "../../Render/Resources/ResourceManager.h"
+#include "../../Render/Renderer.h"
 
 namespace dae
 {
