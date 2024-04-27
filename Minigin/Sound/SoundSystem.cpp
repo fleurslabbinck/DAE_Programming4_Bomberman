@@ -1,11 +1,8 @@
 #include "SoundSystem.h"
 
-#include <SDL.h>
-#include <SDL_main.h>
-#include <../SDL2_mixer/include/SDL_mixer.h>
-#include <../SDL2_wavpack/include/wavpack.h>
-#include <stdexcept>
+#include <SDL_mixer.h>
 #include <unordered_map>
+#include <iostream>
 
 namespace dae
 {
@@ -14,7 +11,7 @@ namespace dae
 	public:
 		SoundImpl()
 		{
-			if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0) throw std::runtime_error("Failed to initialize SDL Mixer\n");
+			if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0) std::cout << "Failed to initialize SDL Mixer! " << Mix_GetError() << std::endl;
 		}
 
 		~SoundImpl()
@@ -30,7 +27,8 @@ namespace dae
 
 			if (sound == NULL)
 			{
-				throw std::runtime_error("Failed to load sound\n");
+				std::cout << "Failed to load sound! " << Mix_GetError() << std::endl;
+				Mix_Quit();
 			}
 
 			m_sounds.emplace(id, sound);
@@ -40,8 +38,9 @@ namespace dae
 		{
 			if (Mix_PlayChannel(-1, m_sounds[id], 0) == -1)
 			{
+				std::cout << "Failed to play sound! " << Mix_GetError() << std::endl;
 				Mix_FreeChunk(m_sounds[id]);
-				throw std::runtime_error("Failed to play sound\n");
+				Mix_Quit();
 			}
 
 			Mix_PlayChannel(-1, m_sounds[id], 0);
