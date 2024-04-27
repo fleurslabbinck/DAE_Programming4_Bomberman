@@ -31,7 +31,7 @@ namespace dae
 		class GamepadImpl;
 		std::unique_ptr<GamepadImpl> m_Pimpl;
 
-		static int gamepadCount;
+		static int s_gamepadCount;
 	};
 }
 #endif

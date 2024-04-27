@@ -5,16 +5,41 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget);$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget);$(SolutionDir)3rdParty\SDL2\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+		  $(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget);
+		  $(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget);
+		  $(SolutionDir)3rdParty\SDL2\lib\$(PlatformTarget);
+		  $(SolutionDir)3rdParty\SDL2_mixer\lib\$(PlatformTarget);
+		  $(SolutionDir)3rdParty\SDL2_wavpack\lib\$(PlatformTarget);
+		  $(SolutionDir)3rdParty\SDL2_vorbis\lib\$(PlatformTarget);
+		  $(SolutionDir)3rdParty\SDL2_libogg\lib\$(PlatformTarget);
+		  %(AdditionalLibraryDirectories)
+	  </AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;wavpackdll.lib;vorbis.lib;vorbisenc.lib;vorbisfile.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\SDL2_ttf\include;$(SolutionDir)3rdParty\SDL2_image\include;$(SolutionDir)3rdParty\glm;$(SolutionDir)3rdParty\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+		  $(SolutionDir)3rdParty\SDL2_vorbis\include;
+		  $(SolutionDir)3rdParty\SDL2_libogg\include;
+		  $(SolutionDir)3rdParty\SDL2_wavpack\include;
+		  $(SolutionDir)3rdParty\SDL2_mixer\include;
+		  $(SolutionDir)3rdParty\SDL2_ttf\include;
+		  $(SolutionDir)3rdParty\SDL2_image\include;
+		  $(SolutionDir)3rdParty\glm;
+		  $(SolutionDir)3rdParty\SDL2\include;
+		  %(AdditionalIncludeDirectories)
+	  </AdditionalIncludeDirectories>
     </ClCompile>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)3rdParty\SDL2\lib\$(PlatformTarget)\SDL2.dll" "$(OutputPath)" /R /Y
-xcopy "$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
-xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y</Command>
+      <Command>
+		  xcopy "$(SolutionDir)3rdParty\SDL2\lib\$(PlatformTarget)\SDL2.dll" "$(OutputPath)" /R /Y
+		  xcopy "$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+		  xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+		  xcopy "$(SolutionDir)3rdParty\SDL2_mixer\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+		  xcopy "$(SolutionDir)3rdParty\SDL2_vorbis\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+		  xcopy "$(SolutionDir)3rdParty\SDL2_libogg\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+		  xcopy "$(SolutionDir)3rdParty\SDL2_wavpack\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+	  </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup />

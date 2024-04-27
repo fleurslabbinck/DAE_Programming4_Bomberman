@@ -5,14 +5,14 @@
 
 namespace dae
 {
-	int Gamepad::gamepadCount{};
+	int Gamepad::s_gamepadCount{};
 
 	class Gamepad::GamepadImpl
 	{
 	public:
-		GamepadImpl() : m_gamepadIdx{ gamepadCount }
+		GamepadImpl() : m_gamepadIdx{ s_gamepadCount }
 		{
-			++gamepadCount;
+			++s_gamepadCount;
 
 			XINPUT_STATE state;
 			ZeroMemory(&state, sizeof(XINPUT_STATE));

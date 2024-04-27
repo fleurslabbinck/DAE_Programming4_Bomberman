@@ -2,6 +2,9 @@
 
 #include "../Minigin/Objects/GameObject.h"
 #include "../Minigin/Scene/SceneManager.h"
+#include "../Minigin/ServiceLocator.h"
+#include "../Minigin/Sound/SoundSystem.h"
+#include "../BombermanUtil.h"
 
 namespace dae
 {
@@ -12,6 +15,8 @@ namespace dae
 		: BaseComponent(pOwner), m_maxLives{ maxLives }
 	{
 		m_respawnPos = GetOwner()->GetTransform()->GetLocalPosition();
+		//ServiceLocator::GetSoundSystem().LoadSound(static_cast<int>(sound::SoundId::DeathSound), "Sounds/DieSound.wav");
+		ServiceLocator::GetSoundSystem().LoadSound(static_cast<int>(sound::SoundId::DeathTune), "Sounds/BombermanDies.wav");
 	}
 
 	void HealthComponent::OnNotify(GameEvent event, GameObject* gameObject)
@@ -40,6 +45,8 @@ namespace dae
 			--m_lives;
 			Notify(GameEvent::HEALTH_CHANGED, GetOwner());
 			Respawn();
+			
+			ServiceLocator::GetSoundSystem().PlaySoundOnce(static_cast<int>(sound::SoundId::DeathTune));
 		}
 
 		if (m_lives < 0)
