@@ -189,6 +189,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Sound\NullSoundSystem.h" />
+    <ClInclude Include="Sound\LoggingSoundSystem.h" />
+    <ClInclude Include="Sound\BaseSoundSystem.h" />
     <ClInclude Include="Input\Command.h" />
     <ClInclude Include="Input\Gamepad.h" />
     <ClInclude Include="Input\InputManager.h" />
@@ -217,6 +220,8 @@
   <ItemGroup>
     <ClCompile Include="Input\Gamepad.cpp" />
     <ClCompile Include="Input\InputManager.cpp" />
+    <ClCompile Include="Sound\NullSoundSystem.cpp" />
+    <ClCompile Include="Sound\LoggingSoundSystem.cpp" />
     <ClCompile Include="Minigin.cpp" />
     <ClCompile Include="Objects\Components\BaseComponent.cpp" />
     <ClCompile Include="Objects\Components\FPSComponent.cpp" />

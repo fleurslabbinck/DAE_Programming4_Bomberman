@@ -2,21 +2,27 @@
 #define SOUNDSYSTEM_H
 
 #include <memory>
-#include <string>
+
+#include "BaseSoundSystem.h"
 
 namespace dae
 {
-	class SoundSystem
+	//---------------------------------
+	//SDL SOUND SYSTEM
+	//---------------------------------
+	class SoundSystem final : public BaseSoundSystem
 	{
 	public:
 		SoundSystem();
 		~SoundSystem();
 		
-		virtual void LoadSound(int id, const std::string& path);
-		virtual void PlaySoundOnce(int id);
+		void LoadSoundFX(int id, const std::string& path) override;
+		void PlaySoundFX(int id) override;
+		void UpdateSoundFX() override;
+
+		bool HasPendingMessages() const;
 
 	private:
-
 		class SoundImpl;
 		std::unique_ptr<SoundImpl> m_pImpl;
 	};

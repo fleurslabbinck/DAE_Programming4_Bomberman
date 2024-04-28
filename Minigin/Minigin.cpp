@@ -15,6 +15,7 @@
 #include <SDL_ttf.h>
 
 #include "Render/Resources/ResourceManager.h"
+#include "ServiceLocator.h"
 
 
 SDL_Window* g_window{};
@@ -110,5 +111,6 @@ namespace dae
 		m_sceneManager.Update();
 		m_sceneManager.LateUpdate();
 		m_renderer.Render();
+		ServiceLocator::GetSoundSystem().UpdateSoundFX();
 	}
 }

@@ -21,6 +21,8 @@ namespace sound
 	enum class SoundId {
 		DeathSound,
 		DeathTune,
+
+		Empty = -1,
 	};
 }
 

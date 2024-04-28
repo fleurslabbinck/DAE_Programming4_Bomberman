@@ -4,25 +4,28 @@
 #include <vector>
 #include <memory>
 
-#include "Sound/SoundSystem.h"
+#include "Sound/NullSoundSystem.h"
 
 namespace dae
 {
 	class ServiceLocator final
 	{
 	public:
-		static void RegisterSoundSystem()
+		static void RegisterSoundSystem(std::unique_ptr<BaseSoundSystem> soundSystem)
 		{
-			m_soundSystem = std::make_unique<SoundSystem>();
+			m_soundSystemPtr = std::move(soundSystem);
 		}
 
-		static SoundSystem& GetSoundSystem()
+		static BaseSoundSystem& GetSoundSystem()
 		{
-			return *m_soundSystem.get();
+			if (!m_soundSystemPtr) return *m_nullSoundSystemPtr.get();
+
+			return *m_soundSystemPtr.get();
 		}
 
 	private:
-		inline static std::unique_ptr<SoundSystem> m_soundSystem{};
+		inline static std::unique_ptr<BaseSoundSystem> m_soundSystemPtr{ nullptr };
+		inline static std::unique_ptr<NullSoundSystem> m_nullSoundSystemPtr{ std::make_unique<NullSoundSystem>() };
 	};
 }
 #endif

@@ -5,7 +5,8 @@
 
 namespace dae
 {
-	Mix_Chunk* SoundFX::GetSoundFX() const {
+	Mix_Chunk* SoundFX::GetSoundFX() const
+	{
 		return m_soundFX;
 	}
 
