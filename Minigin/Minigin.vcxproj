@@ -210,6 +210,7 @@
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="ServiceLocator.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="Render\Resources\SoundFX.h" />
     <ClInclude Include="Sound\SoundSystem.h" />
     <ClInclude Include="TimeManager.h" />
   </ItemGroup>
@@ -231,6 +232,7 @@
     <ClCompile Include="Render\Resources\Texture2D.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Render\Resources\SoundFX.cpp" />
     <ClCompile Include="Sound\SoundSystem.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

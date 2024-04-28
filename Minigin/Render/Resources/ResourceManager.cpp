@@ -6,6 +6,7 @@
 #include "../Renderer.h"
 #include "Texture2D.h"
 #include "Font.h"
+#include "SoundFX.h"
 
 namespace dae
 {
@@ -33,5 +34,10 @@ namespace dae
 	std::unique_ptr<Font> ResourceManager::LoadFont(const std::string& file, unsigned int size) const
 	{
 		return std::make_unique<Font>((m_dataPath / file).string(), size);
+	}
+
+	std::unique_ptr<SoundFX> ResourceManager::LoadSoundFX(const std::string& file) const
+	{
+		return std::make_unique<SoundFX>((m_dataPath / file).string());
 	}
 }

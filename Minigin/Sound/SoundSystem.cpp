@@ -4,50 +4,46 @@
 #include <unordered_map>
 #include <iostream>
 
+#include "../Render/Resources/ResourceManager.h"
+#include "../Render/Resources/SoundFX.h"
+
 namespace dae
 {
 	class SoundSystem::SoundImpl
 	{
+		enum class ChannelUse {
+			SoundFX,
+			Music
+		};
+
 	public:
 		SoundImpl()
 		{
-			if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0) std::cout << "Failed to initialize SDL Mixer! " << Mix_GetError() << std::endl;
+			if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0) throw std::runtime_error(std::string("Failed to initialize SDL Mixer: ") + Mix_GetError());
 		}
 
 		~SoundImpl()
 		{
-			for (auto& sound : m_sounds) Mix_FreeChunk(sound.second);
-
-			Mix_Quit();
+			Mix_CloseAudio();
 		}
 
 		void LoadSound(int id, const std::string& path)
 		{
-			Mix_Chunk* sound{ Mix_LoadWAV(path.c_str()) };
-
-			if (sound == NULL)
-			{
-				std::cout << "Failed to load sound! " << Mix_GetError() << std::endl;
-				Mix_Quit();
-			}
-
-			m_sounds.emplace(id, sound);
+			m_soundFXs.emplace(id, ResourceManager::GetInstance().LoadSoundFX(path));
 		}
 
 		void PlaySoundOnce(int id)
 		{
-			if (Mix_PlayChannel(-1, m_sounds[id], 0) == -1)
+			if (Mix_PlayChannel(-1, m_soundFXs[id]->GetSoundFX(), 0) == -1)
 			{
-				std::cout << "Failed to play sound! " << Mix_GetError() << std::endl;
-				Mix_FreeChunk(m_sounds[id]);
+				Mix_FreeChunk(m_soundFXs[id]->GetSoundFX());
 				Mix_Quit();
+				throw std::runtime_error(std::string("Failed to play soundFX: ") + Mix_GetError());
 			}
-
-			Mix_PlayChannel(-1, m_sounds[id], 0);
 		}
 
 	private:
-		std::unordered_map<int, Mix_Chunk*> m_sounds{};
+		std::unordered_map<int, std::unique_ptr<SoundFX>> m_soundFXs{};
 	};
 
 	SoundSystem::SoundSystem()

@@ -15,8 +15,8 @@ namespace dae
 		: BaseComponent(pOwner), m_maxLives{ maxLives }
 	{
 		m_respawnPos = GetOwner()->GetTransform()->GetLocalPosition();
-		//ServiceLocator::GetSoundSystem().LoadSound(static_cast<int>(sound::SoundId::DeathSound), "Sounds/DieSound.wav");
-		ServiceLocator::GetSoundSystem().LoadSound(static_cast<int>(sound::SoundId::DeathTune), "Sounds/BombermanDies.wav");
+		ServiceLocator::GetSoundSystem().LoadSound(static_cast<int>(sound::SoundId::DeathSound), "../Data/Sounds/DieSound.wav");
+		ServiceLocator::GetSoundSystem().LoadSound(static_cast<int>(sound::SoundId::DeathTune), "../Data/Sounds/BombermanDies.wav");
 	}
 
 	void HealthComponent::OnNotify(GameEvent event, GameObject* gameObject)
@@ -25,6 +25,8 @@ namespace dae
 		{
 		case GameEvent::PLAYER_HIT:
 			Notify(GameEvent::PLAYER_DEATH, gameObject);
+			ServiceLocator::GetSoundSystem().PlaySoundOnce(static_cast<int>(sound::SoundId::DeathSound));
+			ServiceLocator::GetSoundSystem().PlaySoundOnce(static_cast<int>(sound::SoundId::DeathTune));
 			break;
 		case GameEvent::ENEMY_HIT:
 			Notify(GameEvent::ENEMY_DEATH, gameObject);
@@ -45,8 +47,6 @@ namespace dae
 			--m_lives;
 			Notify(GameEvent::HEALTH_CHANGED, GetOwner());
 			Respawn();
-			
-			ServiceLocator::GetSoundSystem().PlaySoundOnce(static_cast<int>(sound::SoundId::DeathTune));
 		}
 
 		if (m_lives < 0)
