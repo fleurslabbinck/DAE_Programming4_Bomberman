@@ -24,8 +24,8 @@ namespace dae
 		}
 
 	private:
-		inline static std::unique_ptr<BaseSoundSystem> m_soundSystemPtr{ nullptr };
-		inline static std::unique_ptr<NullSoundSystem> m_nullSoundSystemPtr{ std::make_unique<NullSoundSystem>() };
+		static inline std::unique_ptr<BaseSoundSystem> m_soundSystemPtr{ nullptr };
+		static inline std::unique_ptr<NullSoundSystem> m_nullSoundSystemPtr{ std::make_unique<NullSoundSystem>() };
 	};
 }
 #endif

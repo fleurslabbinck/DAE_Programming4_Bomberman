@@ -16,6 +16,7 @@
 
 #include "Render/Resources/ResourceManager.h"
 #include "ServiceLocator.h"
+#include "Sound/LoggingSoundSystem.h"
 
 
 SDL_Window* g_window{};
@@ -61,6 +62,7 @@ namespace dae
 			windowHeight * windowScale,
 			SDL_WINDOW_OPENGL
 		);
+
 		if (g_window == nullptr)
 		{
 			throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
@@ -80,15 +82,25 @@ namespace dae
 
 	void Minigin::Run(const std::function<void()>& load)
 	{
+#if _DEBUG
+		ServiceLocator::RegisterSoundSystem(std::make_unique<dae::LoggingSoundSystem>(std::make_unique<dae::SoundSystem>()));
+#else
+		ServiceLocator::RegisterSoundSystem(std::make_unique<dae::SoundSystem>());
+#endif
+
 		load();
 
 		SDL_RenderSetVSync(m_renderer.GetSDLRenderer(), true);
+
+		std::jthread soundThread(&BaseSoundSystem::UpdateSoundFX, &ServiceLocator::GetSoundSystem());
 
 		m_time.SetCurrTime();
 		m_time.SetLastTime();
 
 		while (!m_quit)
 			RunOneFrame();
+
+		ServiceLocator::GetSoundSystem().SignalEnd();
 	}
 
 	void Minigin::RunOneFrame()
@@ -111,6 +123,5 @@ namespace dae
 		m_sceneManager.Update();
 		m_sceneManager.LateUpdate();
 		m_renderer.Render();
-		ServiceLocator::GetSoundSystem().UpdateSoundFX();
 	}
 }

@@ -24,9 +24,13 @@ namespace dae
 
 	void LoggingSoundSystem::UpdateSoundFX()
 	{
-		if (!m_SoundSystemPtr->HasPendingMessages()) return;
-
 		m_SoundSystemPtr->UpdateSoundFX();
 		std::cout << "Updating queue\n";
+	}
+
+	void LoggingSoundSystem::SignalEnd()
+	{
+		m_SoundSystemPtr->SignalEnd();
+		std::cout << "Stop thread\n";
 	}
 }

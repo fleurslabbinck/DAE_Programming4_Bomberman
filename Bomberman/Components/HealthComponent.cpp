@@ -26,7 +26,6 @@ namespace dae
 		case GameEvent::PLAYER_HIT:
 			Notify(GameEvent::PLAYER_DEATH, gameObject);
 			ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathSound));
-			ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathTune));
 			break;
 		case GameEvent::ENEMY_HIT:
 			Notify(GameEvent::ENEMY_DEATH, gameObject);
@@ -36,6 +35,7 @@ namespace dae
 			break;
 		case GameEvent::PLAYER_RESPAWN:
 			gameObject->GetComponent<HealthComponent>()->HandleHealth();
+			ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathTune));
 			break;
 		}
 	}

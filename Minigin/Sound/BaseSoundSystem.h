@@ -5,6 +5,10 @@
 
 namespace dae
 {
+	struct PlayMessage {
+		int id;
+	};
+
 	//---------------------------------
 	//BASE SOUND SYSTEM
 	//---------------------------------
@@ -21,6 +25,7 @@ namespace dae
 		virtual void LoadSoundFX(int id, const std::string& path) = 0;
 		virtual void PlaySoundFX(int id) = 0;
 		virtual void UpdateSoundFX() = 0;
+		virtual void SignalEnd() = 0;
 	};
 }
 

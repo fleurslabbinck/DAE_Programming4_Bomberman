@@ -220,7 +220,6 @@
   <ItemGroup>
     <ClCompile Include="Input\Gamepad.cpp" />
     <ClCompile Include="Input\InputManager.cpp" />
-    <ClCompile Include="Sound\NullSoundSystem.cpp" />
     <ClCompile Include="Sound\LoggingSoundSystem.cpp" />
     <ClCompile Include="Minigin.cpp" />
     <ClCompile Include="Objects\Components\BaseComponent.cpp" />

@@ -126,7 +126,7 @@ namespace dae
 	void SpriteComponent::AnimateDying()
 	{
 		m_accumulatedTime += TimeManager::GetInstance().GetDeltaTime();
-		const float maxTime{ 1.f / 2 };
+		constexpr float maxTime{ 1.f / 3 };
 
 		if (m_accumulatedTime >= maxTime)
 		{

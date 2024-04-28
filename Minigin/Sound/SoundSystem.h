@@ -19,8 +19,7 @@ namespace dae
 		void LoadSoundFX(int id, const std::string& path) override;
 		void PlaySoundFX(int id) override;
 		void UpdateSoundFX() override;
-
-		bool HasPendingMessages() const;
+		void SignalEnd() override;
 
 	private:
 		class SoundImpl;

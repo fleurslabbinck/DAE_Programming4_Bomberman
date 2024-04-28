@@ -3,7 +3,8 @@
 #include <SDL_mixer.h>
 #include <unordered_map>
 #include <iostream>
-#include <cassert>
+#include <future>
+#include <mutex>
 
 #include "../Render/Resources/ResourceManager.h"
 #include "../Render/Resources/SoundFX.h"
@@ -13,10 +14,6 @@ namespace dae
 {
 	class SoundSystem::SoundImpl
 	{
-		struct PlayMessage {
-			int id;
-		};
-
 		enum class ChannelUse {
 			SoundFX,
 			Music
@@ -24,6 +21,8 @@ namespace dae
 
 	public:
 		SoundImpl()
+			: m_signalPromise{}
+			, m_signalEnd{ m_signalPromise.get_future() }
 		{
 			if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0) throw std::runtime_error(std::string("Failed to initialize SDL Mixer: ") + Mix_GetError());
 
@@ -47,28 +46,48 @@ namespace dae
 			for (const auto& message : m_pendingMessages)
 				if (message.id == id) return;
 
+			std::lock_guard lock(m_mutex);
 			m_pendingMessages[m_tailIdx].id = id;
 			m_tailIdx = (m_tailIdx + 1) % m_maxPending;
+
+			m_processMessages = true;
+			m_signalPromise.set_value();
 		}
 
 		void UpdateSoundFX()
 		{
-			if (m_headIdx == m_tailIdx) return;
-
-			if (Mix_PlayChannel(static_cast<int>(ChannelUse::SoundFX), m_soundFXs[m_pendingMessages[m_headIdx].id]->GetSoundFX(), 0) == -1)
+			while (!m_shouldQuit)
 			{
-				Mix_FreeChunk(m_soundFXs[m_pendingMessages[m_headIdx].id]->GetSoundFX());
-				Mix_Quit();
-				throw std::runtime_error(std::string("Failed to play soundFX: ") + Mix_GetError());
-			}
+				m_signalEnd.wait();
 
-			m_pendingMessages[m_headIdx].id = static_cast<int>(sound::SoundId::Empty);
-			m_headIdx = (m_headIdx + 1) % m_maxPending;
+				while (m_processMessages)
+				{
+					if (m_headIdx == m_tailIdx) continue;
+
+					if (Mix_PlayChannel(static_cast<int>(ChannelUse::SoundFX), m_soundFXs[m_pendingMessages[m_headIdx].id]->GetSoundFX(), 0) == -1)
+					{
+						Mix_FreeChunk(m_soundFXs[m_pendingMessages[m_headIdx].id]->GetSoundFX());
+						Mix_Quit();
+						throw std::runtime_error(std::string("Failed to play soundFX: ") + Mix_GetError());
+					}
+
+					std::lock_guard lock(m_mutex);
+
+					m_pendingMessages[m_headIdx].id = static_cast<int>(sound::SoundId::Empty);
+					m_headIdx = (m_headIdx + 1) % m_maxPending;
+
+					if (m_pendingMessages[m_headIdx].id == static_cast<int>(sound::SoundId::Empty)) m_processMessages = false;
+				}
+
+				m_signalPromise = std::promise<void>{};
+				m_signalEnd = m_signalPromise.get_future();
+			}
 		}
 
-		bool HasPendingMessages() const
+		void SignalEnd()
 		{
-			return m_pendingMessages[m_headIdx].id != static_cast<int>(sound::SoundId::Empty);
+			m_shouldQuit = true;
+			m_signalPromise.set_value();
 		}
 
 	private:
@@ -78,6 +97,14 @@ namespace dae
 		PlayMessage m_pendingMessages[m_maxPending]{};
 		int m_headIdx{};
 		int m_tailIdx{};
+
+		bool m_processMessages{ false };
+		bool m_shouldQuit{ false };
+
+		std::promise<void> m_signalPromise;
+		std::future<void> m_signalEnd;
+
+		std::mutex m_mutex{};
 	};
 
 	SoundSystem::SoundSystem()
@@ -103,5 +130,8 @@ namespace dae
 		m_pImpl->UpdateSoundFX();
 	}
 
-	bool SoundSystem::HasPendingMessages() const { return m_pImpl->HasPendingMessages(); }
+	void SoundSystem::SignalEnd()
+	{
+		m_pImpl->SignalEnd();
+	}
 }

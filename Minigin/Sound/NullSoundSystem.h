@@ -13,9 +13,10 @@ namespace dae
 	public:
 		NullSoundSystem() = default;
 
-		void LoadSoundFX(int, const std::string&) override {};
-		void PlaySoundFX(int) override {};
-		void UpdateSoundFX() override {};
+		void LoadSoundFX(int, const std::string&) override {}
+		void PlaySoundFX(int) override {}
+		void UpdateSoundFX() override {}
+		void SignalEnd() override {}
 	};
 }
 #endif
