@@ -2,6 +2,7 @@
 
 #include <SDL_mixer.h>
 #include <unordered_map>
+#include <deque>
 #include <iostream>
 #include <future>
 #include <mutex>
@@ -25,8 +26,6 @@ namespace dae
 			, m_signalEnd{ m_signalPromise.get_future() }
 		{
 			if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0) throw std::runtime_error(std::string("Failed to initialize SDL Mixer: ") + Mix_GetError());
-
-			for (auto& message : m_pendingMessages) message.id = static_cast<int>(sound::SoundId::Empty);
 		}
 
 		~SoundImpl()
@@ -41,64 +40,85 @@ namespace dae
 
 		void PlaySoundFX(int id)
 		{
-			assert((m_tailIdx + 1) % m_maxPending != m_headIdx);
+			std::deque<PlayMessage> currentMessages = m_pendingMessages;
 
-			for (const auto& message : m_pendingMessages)
-				if (message.id == id) return;
+			for (const PlayMessage& message : m_pendingMessages)
+			{
+				if (id == message.id) return;
+			}
 
 			std::lock_guard lock(m_mutex);
-			m_pendingMessages[m_tailIdx].id = id;
-			m_tailIdx = (m_tailIdx + 1) % m_maxPending;
+
+			m_pendingMessages.push_back(PlayMessage{ id });
+
+			if (m_promiseSet) return;
 
 			m_processMessages = true;
 			m_signalPromise.set_value();
+			m_promiseSet = true;
 		}
 
 		void UpdateSoundFX()
 		{
 			while (!m_shouldQuit)
 			{
+				// Wait for value to be set
 				m_signalEnd.wait();
+
+				// Lock access to pending messages
+				m_mutex.lock();
+
+				// Copy messages
+				std::deque<PlayMessage> currentMessages = m_pendingMessages;
+
+				// Empty messages that will be handled
+				m_pendingMessages.clear();
+
+				// Unlock to handle local messages
+				m_mutex.unlock();
 
 				while (m_processMessages)
 				{
-					if (m_headIdx == m_tailIdx) continue;
-
-					if (Mix_PlayChannel(static_cast<int>(ChannelUse::SoundFX), m_soundFXs[m_pendingMessages[m_headIdx].id]->GetSoundFX(), 0) == -1)
+					// Play sounds untill empty
+					while (!currentMessages.empty())
 					{
-						Mix_FreeChunk(m_soundFXs[m_pendingMessages[m_headIdx].id]->GetSoundFX());
-						Mix_Quit();
-						throw std::runtime_error(std::string("Failed to play soundFX: ") + Mix_GetError());
+						if (Mix_PlayChannel(static_cast<int>(ChannelUse::SoundFX), m_soundFXs[currentMessages.front().id]->GetSoundFX(), 0) == -1)
+						{
+							Mix_FreeChunk(m_soundFXs[currentMessages.front().id]->GetSoundFX());
+							Mix_Quit();
+							throw std::runtime_error(std::string("Failed to play soundFX: ") + Mix_GetError());
+						}
+
+						currentMessages.pop_front();
 					}
 
-					std::lock_guard lock(m_mutex);
-
-					m_pendingMessages[m_headIdx].id = static_cast<int>(sound::SoundId::Empty);
-					m_headIdx = (m_headIdx + 1) % m_maxPending;
-
-					if (m_pendingMessages[m_headIdx].id == static_cast<int>(sound::SoundId::Empty)) m_processMessages = false;
+					// Get out of while loop when messages handled
+					m_processMessages = false;
 				}
+
+				std::lock_guard<std::mutex> promiseLock(m_mutex);
 
 				m_signalPromise = std::promise<void>{};
 				m_signalEnd = m_signalPromise.get_future();
+				m_promiseSet = false;
 			}
 		}
 
 		void SignalEnd()
 		{
+			std::lock_guard<std::mutex> lock(m_mutex);
+			
 			m_shouldQuit = true;
+
 			m_signalPromise.set_value();
 		}
 
 	private:
 		std::unordered_map<int, std::unique_ptr<SoundFX>> m_soundFXs{};
-
-		static const int m_maxPending{ 16 };
-		PlayMessage m_pendingMessages[m_maxPending]{};
-		int m_headIdx{};
-		int m_tailIdx{};
+		std::deque<PlayMessage> m_pendingMessages{};
 
 		bool m_processMessages{ false };
+		bool m_promiseSet{ false };
 		bool m_shouldQuit{ false };
 
 		std::promise<void> m_signalPromise;
