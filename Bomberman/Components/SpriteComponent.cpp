@@ -79,19 +79,19 @@ namespace dae
 		Renderer::GetInstance().RenderTexture(*m_renderComponent->GetTexture(), srcRect, dstRect);
 	}
 
-	void SpriteComponent::OnNotify(GameEvent event, GameObject*)
+	void SpriteComponent::OnNotify(Event event, GameObject*)
 	{
 		switch (event)
 		{
-		case dae::GameEvent::PLAYER_DEATH:
+		case static_cast<int>(GameEvent::PLAYER_DEATH):
 			if (m_sprite.type != SpriteType::BOMBERMAN) return;
 			SetDead();
 			break;
-		case dae::GameEvent::ENEMY_DEATH:
+		case static_cast<int>(GameEvent::ENEMY_DEATH):
 			if (!m_sprite.enemy) return;
 			SetDead();
 			break;
-		case dae::GameEvent::WALL_DEATH:
+		case static_cast<int>(GameEvent::WALL_DEATH):
 			if (m_sprite.type != SpriteType::WALL) return;
 			SetDead();
 			break;
@@ -140,24 +140,24 @@ namespace dae
 				switch (m_sprite.type)
 				{
 				case SpriteType::BOMBERMAN:
-					Notify(GameEvent::PLAYER_RESPAWN, owner);
+					Notify(static_cast<int>(GameEvent::PLAYER_RESPAWN), owner);
 					m_dead = false;
 					m_startFrameIndex = m_sprite.startFrameLeft;
 					break;
 				case SpriteType::BALLOOM:
-					Notify(GameEvent::SCORE_CHANGED, owner);
+					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
 					owner->SetDead();
 					break;
 				case SpriteType::ONEAL:
-					Notify(GameEvent::SCORE_CHANGED, owner);
+					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
 					owner->SetDead();
 					break;
 				case SpriteType::DOLL:
-					Notify(GameEvent::SCORE_CHANGED, owner);
+					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
 					owner->SetDead();
 					break;
 				case SpriteType::MINVO:
-					Notify(GameEvent::SCORE_CHANGED, owner);
+					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
 					owner->SetDead();
 					break;
 				case SpriteType::WALL:

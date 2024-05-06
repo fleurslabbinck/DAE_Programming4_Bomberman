@@ -15,11 +15,11 @@ namespace dae
 
 	}
 
-	void CollisionComponent::OnNotify(GameEvent event, GameObject* gameObject)
+	void CollisionComponent::OnNotify(Event event, GameObject* gameObject)
 	{
 		switch (event)
 		{
-		case dae::GameEvent::PLAYER_RESPAWN:
+		case static_cast<int>(GameEvent::PLAYER_RESPAWN):
 			gameObject->GetComponent<CollisionComponent>()->SetCheckForCollision(true);
 			break;
 		}
@@ -112,13 +112,13 @@ namespace dae
 		switch (type)
 		{
 		case dae::CollisionComponent::EntityType::Player:
-			Notify(GameEvent::PLAYER_HIT, entity);
+			Notify(static_cast<int>(GameEvent::PLAYER_HIT), entity);
 			break;
 		case dae::CollisionComponent::EntityType::Enemy:
-			Notify(GameEvent::ENEMY_HIT, entity);
+			Notify(static_cast<int>(GameEvent::ENEMY_HIT), entity);
 			break;
 		case dae::CollisionComponent::EntityType::Wall:
-			Notify(GameEvent::WALL_HIT, entity);
+			Notify(static_cast<int>(GameEvent::WALL_HIT), entity);
 			break;
 		default:
 			break;

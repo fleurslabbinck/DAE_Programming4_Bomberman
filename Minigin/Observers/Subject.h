@@ -6,6 +6,8 @@
 
 namespace dae
 {
+	using Event = int;
+
 	class Observer;
 
 	class Subject
@@ -22,7 +24,7 @@ namespace dae
 		virtual Subject& operator=(Subject&& other) = delete;
 
 	protected:
-		void Notify(GameEvent event, GameObject* gameObject) const;
+		void Notify(Event event, GameObject* gameObject) const;
 
 	private:
 		std::vector<Observer*> m_observers{};

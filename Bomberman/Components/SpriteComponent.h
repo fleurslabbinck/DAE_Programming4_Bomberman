@@ -7,6 +7,8 @@
 
 namespace dae
 {
+	using Event = int;
+
 	class SpriteComponent final : public BaseComponent, public Observer, public Subject
 	{
 	public:
@@ -40,7 +42,7 @@ namespace dae
 		void Update() override;
 		void Render(const glm::vec2& pos) const override;
 
-		void OnNotify(GameEvent event, GameObject* gameObject) override;
+		void OnNotify(Event event, GameObject* gameObject) override;
 
 		void SetDirection(const glm::vec2& direction);
 		void AnimateMovement();

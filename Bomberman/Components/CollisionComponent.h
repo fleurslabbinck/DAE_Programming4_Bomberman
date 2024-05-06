@@ -8,6 +8,8 @@
 
 namespace dae
 {
+	using Event = int;
+
 	class GameObject;
 
 	//---------------------------------
@@ -29,7 +31,7 @@ namespace dae
 			glm::vec2 center{};
 		};
 
-		void OnNotify(GameEvent event, GameObject* gameObject) override;
+		void OnNotify(Event event, GameObject* gameObject) override;
 		void SetCheckForCollision(bool checkForCollision) { m_checkForCollision = checkForCollision; }
 		bool GetCheckForCollision() const { return m_checkForCollision; }
 

@@ -14,7 +14,7 @@ namespace dae
 		m_observers.erase(it, m_observers.end());
 	}
 
-	void Subject::Notify(GameEvent event, GameObject* gameObject) const
+	void Subject::Notify(Event event, GameObject* gameObject) const
 	{
 		for (Observer* observer : m_observers)
 		{

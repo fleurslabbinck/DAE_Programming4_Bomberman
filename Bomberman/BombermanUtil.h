@@ -24,4 +24,17 @@ namespace sound
 	};
 }
 
+enum class GameEvent {
+	PLAYER_HIT,
+	ENEMY_HIT,
+	WALL_HIT,
+	PLAYER_DEATH,
+	ENEMY_DEATH,
+	WALL_DEATH,
+	HEALTH_CHANGED,
+	SCORE_CHANGED,
+	PLAYER_RESPAWN,
+	GAME_OVER,
+};
+
 #endif

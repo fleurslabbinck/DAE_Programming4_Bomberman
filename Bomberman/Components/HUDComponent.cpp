@@ -33,15 +33,15 @@ namespace dae
 		m_subComponents.push_back(m_scoreMessage.textComponent.get());
 	}
 
-	void HUDComponent::OnNotify(GameEvent event, GameObject* gameObject)
+	void HUDComponent::OnNotify(Event event, GameObject* gameObject)
 	{
 		switch (event)
 		{
-		case dae::GameEvent::HEALTH_CHANGED:
+		case static_cast<int>(GameEvent::HEALTH_CHANGED):
 			m_livesMessage.value = GetLives(gameObject);
 			m_livesMessage.SetMessage();
 			break;
-		case dae::GameEvent::SCORE_CHANGED:
+		case static_cast<int>(GameEvent::SCORE_CHANGED):
 			m_scoreMessage.value = GetScore(gameObject);
 			m_scoreMessage.SetMessage();
 			break;

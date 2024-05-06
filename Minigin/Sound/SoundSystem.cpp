@@ -9,7 +9,6 @@
 
 #include "../Render/Resources/ResourceManager.h"
 #include "../Render/Resources/SoundFX.h"
-#include "../../Bomberman/BombermanUtil.h"
 
 namespace dae
 {
@@ -109,7 +108,6 @@ namespace dae
 			std::lock_guard<std::mutex> lock(m_mutex);
 			
 			m_shouldQuit = true;
-
 			m_signalPromise.set_value();
 		}
 

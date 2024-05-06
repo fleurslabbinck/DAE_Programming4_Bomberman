@@ -7,6 +7,8 @@
 
 namespace dae
 {
+	using Event = int;
+
 	class TextComponent;
 
 	class HUDComponent final : public BaseComponent, public Observer
@@ -21,7 +23,7 @@ namespace dae
 			void SetMessage();
 		};
 
-		void OnNotify(GameEvent event, GameObject* gameObject);
+		void OnNotify(Event event, GameObject* gameObject);
 
 		void Render(const glm::vec2& pos) const;
 

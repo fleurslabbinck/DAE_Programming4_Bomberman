@@ -6,6 +6,8 @@
 
 namespace dae
 {
+	using Event = int;
+
 	class GameObject;
 
 	//---------------------------------
@@ -14,7 +16,7 @@ namespace dae
 	class HealthComponent final : public BaseComponent, public Observer, public Subject
 	{
 	public:
-		void OnNotify(GameEvent event, GameObject* gameObject) override;
+		void OnNotify(Event event, GameObject* gameObject) override;
 
 		int GetLives() const { return m_lives; }
 		int GetScore() const { return m_score; }
