@@ -27,7 +27,7 @@ namespace dae
 		TransformComponent(TransformComponent&& other) = delete;
 
 	private:
-		glm::vec2 m_localPosition;
+		glm::vec2 m_localPosition{};
 		glm::vec2 m_worldPosition{};
 
 		bool m_positionIsDirty{ true };

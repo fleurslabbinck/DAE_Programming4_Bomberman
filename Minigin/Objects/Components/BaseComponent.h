@@ -17,7 +17,6 @@ namespace dae
 	{
 		GameObject* m_pOwner;
 	public:
-		virtual void FixedUpdate();
 		virtual void Update();
 		virtual void LateUpdate();
 		virtual void Render(const glm::vec2& pos) const;

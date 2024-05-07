@@ -52,7 +52,6 @@ namespace dae
 		if (m_lives < 0)
 		{
 			Notify(static_cast<int>(GameEvent::GAME_OVER), GetOwner());
-			SceneManager::GetInstance().SetGameState(SceneManager::GameState::GAME_OVER);
 		}
 	}
 

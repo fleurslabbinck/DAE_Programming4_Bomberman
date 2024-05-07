@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include <algorithm>
+#include "../Objects/CollisionManager.h"
 
 namespace dae
 {
@@ -30,10 +31,7 @@ namespace dae
 
 	void Scene::FixedUpdate()
 	{
-		for (std::unique_ptr<GameObject>& gameObject : m_gameObjects)
-		{
-			if (!gameObject.get()->IsDead()) gameObject.get()->FixedUpdate();
-		}
+		CollisionManager::GetInstance().FixedUpdate();
 	}
 
 	void Scene::Update()

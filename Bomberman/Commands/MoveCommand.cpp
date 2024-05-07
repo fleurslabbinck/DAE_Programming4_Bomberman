@@ -1,9 +1,9 @@
 #include "MoveCommand.h"
 
 #include "../Minigin/Objects/Components/RenderComponent.h"
+#include "../Minigin/Objects/CollisionManager.h"
 #include "../Components/GridComponent.h"
 #include "../Components/SpriteComponent.h"
-#include "../Components/CollisionComponent.h"
 #include "../Components/BomberComponent.h"
 #include "../Components/HealthComponent.h"
 #include "../Components/CameraComponent.h"
@@ -20,18 +20,17 @@ namespace dae
 		GameObject* gameObject{ GetGameObject() };
 		GridComponent* gridComponent{ gameObject->GetParent()->GetComponent<GridComponent>() };
 		SpriteComponent* spriteComponent{ gameObject->GetComponent<SpriteComponent>() };
-		const CollisionComponent* collisionComp{ gameObject->GetComponent<CollisionComponent>() };
+		const ColliderComponent* colliderComp{ gameObject->GetComponent<ColliderComponent>() };
 
 		if (spriteComponent->IsDead()) return;
 
 		glm::vec2 dir{};
 
 		// get current pos
-		glm::vec2 bottomLeft{ gameObject->GetTransform()->GetLocalPosition() };
-		glm::vec2 centeredPos{ bottomLeft + collisionComp->GetCenter() };
+		glm::vec2 centeredPos{ gameObject->GetTransform()->GetLocalPosition() + colliderComp->GetCenter() };
 
 		// check entity collision
-		if (collisionComp->HandleCollision(bottomLeft, gridComponent->GetEntitiesClose(centeredPos))) return;
+		//if (collisionComp->HandleCollision(bottomLeft, gridComponent->GetEntitiesClose(centeredPos))) return;
 
 		// reset target position if change of direction
 		if (m_direction != m_lastDirection)
@@ -53,7 +52,7 @@ namespace dae
 		spriteComponent->AnimateMovement();
 
 		// check for block
-		if (!collisionComp->CanMove(gridComponent->GetEntitiesInCell(m_targetPos))) return;
+		if (!CollisionManager::GetInstance().CanMove(colliderComp, m_targetPos)) return;
 
 		dir = glm::normalize(m_targetPos - centeredPos);
 		const glm::vec2 offset{ dir * m_speed * TimeManager::GetInstance().GetDeltaTime() };

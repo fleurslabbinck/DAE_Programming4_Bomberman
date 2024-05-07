@@ -1,7 +1,6 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-//#include "SceneManager.h"
 #include "../Objects/GameObject.h"
 
 namespace dae

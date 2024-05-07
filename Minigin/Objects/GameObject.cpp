@@ -27,11 +27,11 @@ namespace dae
 		//check if valid
 		if (IsChild(parent) || parent == this || m_parent == parent) return;
 
-		if (parent == nullptr) m_transformComponent->SetLocalPosition(m_transformComponent->GetWorldPosition());
-		else
+		if (keepWorldPosition)
 		{
-			if (keepWorldPosition) m_transformComponent->SetLocalPosition(m_transformComponent->GetLocalPosition() - parent->GetTransform()->GetWorldPosition());
-
+			if (parent) m_transformComponent->SetLocalPosition(m_transformComponent->GetLocalPosition() - parent->GetTransform()->GetWorldPosition());
+			else if (m_parent) m_transformComponent->SetLocalPosition(m_transformComponent->GetLocalPosition() + m_parent->GetTransform()->GetWorldPosition());
+		
 			m_transformComponent->SetPositionDirty();
 		}
 
@@ -43,6 +43,8 @@ namespace dae
 
 		//add itself as child
 		if (m_parent != nullptr) m_parent->AddChild(this);
+
+		m_transformComponent->UpdateWorldPosition();
 	}
 
 	bool GameObject::IsChild(GameObject* parent)
@@ -70,11 +72,6 @@ namespace dae
 
 		//add child to children list
 		m_children.push_back(child);
-	}
-
-	void GameObject::FixedUpdate()
-	{
-		for (std::unique_ptr<BaseComponent>& component : m_components) if (!component->ShouldBeDeleted()) component->FixedUpdate();
 	}
 
 	void GameObject::Update()

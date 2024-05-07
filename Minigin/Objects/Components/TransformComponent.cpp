@@ -10,7 +10,7 @@ namespace dae
 	TransformComponent::TransformComponent(GameObject* pOwner, float x, float y)
 		: BaseComponent(pOwner), m_localPosition{ x, y }
 	{
-
+		UpdateWorldPosition();
 	}
 
 	void TransformComponent::Translate(const glm::vec2& offset)
@@ -43,7 +43,6 @@ namespace dae
 		{
 			owner->GetChildAt(idx)->GetTransform()->SetPositionDirty();
 		}
-
 	}
 
 	glm::vec2 TransformComponent::GetWorldPosition()

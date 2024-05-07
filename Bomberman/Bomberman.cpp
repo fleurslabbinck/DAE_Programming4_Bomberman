@@ -2,6 +2,7 @@
 
 #include "../Minigin/Scene/SceneManager.h"
 #include "../Minigin/Objects/GameObject.h"
+#include "../Minigin/Objects/CollisionManager.h"
 #include "../Minigin/Objects/Components/RenderComponent.h"
 #include "../Minigin/Objects/Components/TextComponent.h"
 #include "../Minigin/Objects/Components/FPSComponent.h"
@@ -14,7 +15,7 @@
 
 namespace dae
 {
-	void Bomberman::LoadMainScene()
+	void Bomberman::LoadMainScene() const
 	{
 		auto& scene = dae::SceneManager::GetInstance().CreateScene("Main");
 
@@ -27,10 +28,7 @@ namespace dae
 		InitializePlayfield(playfield, scene, constants::GRID_COLS, constants::GRID_ROWS);
 
 		// Player
-		const glm::vec2 playerStartPos{ 1.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
-		const glm::vec2 playerCollisionBox{ 10.f, 1.f * constants::GRIDCELL };
-
-		GameObject* bomberman{ InitializePlayer(scene, playfield, playerStartPos,  playerCollisionBox, "Sprites/Bomberman.png") };
+		GameObject* bomberman{ InitializePlayer(scene, playfield, "Sprites/Bomberman.png") };
 		HealthComponent* bombermanHealthComp{ bomberman->GetComponent<HealthComponent>() };
 
 		// PlayerHUD
@@ -38,13 +36,10 @@ namespace dae
 		bombermanHealthComp->AddObserver(hudComp);
 		
 		// Enemy
-		const glm::vec2 enemyStartPos{ 10.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
-		const glm::vec2 enemyCollisionBox{ 15.f, 1.f * constants::GRIDCELL };
+		GameObject* balloom{ InitializeEnemy(scene, playfield, "Sprites/Balloom.png", SpriteComponent::SpriteType::BALLOOM, bombermanHealthComp) };
+		//CollisionComponent* balloomCollisionComp{ balloom->GetComponent<CollisionComponent>() };
 
-		GameObject* balloom{ InitializeEnemy(scene, playfield, enemyStartPos, enemyCollisionBox, "Sprites/Balloom.png", SpriteComponent::SpriteType::BALLOOM, bombermanHealthComp) };
-		CollisionComponent* balloomCollisionComp{ balloom->GetComponent<CollisionComponent>() };
-
-		balloomCollisionComp->AddObserver(bombermanHealthComp);
+		//balloomCollisionComp->AddObserver(bombermanHealthComp);
 
 		// Controls
 		AddControls(bomberman, PlayerController::ControlMethod::Gamepad, m_speed);
@@ -80,8 +75,6 @@ namespace dae
 		for (int row{}; row < totalRows; ++row)
 			for (int col{}; col < totalCols; ++col)
 			{
-				//if (col % 2 == 1 || row % 2 == 1) continue;
-
 				const int idx{ row * constants::GRID_COLS + col };
 
 				if (playfieldArr[idx] != '#') continue;
@@ -89,38 +82,48 @@ namespace dae
 				startPos = parent->GetComponent<dae::GridComponent>()->GetCelPosAtIdx(idx);
 				
 				GameObject* block{ scene.AddGameObject(std::make_unique<GameObject>(startPos.x, startPos.y)) };
-				block->AddComponent<RenderComponent>("Obstacles/Block.png");
-				block->AddComponent<CollisionComponent>(CollisionComponent::EntityType::Block, 0.f, blockCollisionBox);
 				block->SetParent(parent);
+				block->AddComponent<RenderComponent>("Obstacles/Block.png");
+				//block->AddComponent<CollisionComponent>(CollisionComponent::EntityType::Block, 0.f, blockCollisionBox);
+				ColliderComponent* blockCollider{ block->AddComponent<ColliderComponent>(glm::vec2{}, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL), false) };
+				CollisionManager::GetInstance().AddCollider(blockCollider);
 			}
 	}
 
-	GameObject* Bomberman::InitializePlayer(Scene& scene, GameObject* parent, const glm::vec2& startPos, const glm::vec2& collisionBox, const std::string& filename) const
+	GameObject* Bomberman::InitializePlayer(Scene& scene, GameObject* parent, const std::string& filename) const
 	{
-		const float offset{ (constants::GRIDCELL - collisionBox.x) / 2 };
+		const glm::vec2 startPos{ 1.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
+		const glm::vec2 collider{ 10.f, 14.f };
+		const glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
 
 		GameObject* player{ scene.AddGameObject(std::make_unique<GameObject>(startPos.x, startPos.y)) };
-		CollisionComponent* collisionComp{ player->AddComponent<CollisionComponent>(CollisionComponent::EntityType::Player, offset, collisionBox) };
+		player->SetParent(parent);
+		//CollisionComponent* collisionComp{ player->AddComponent<CollisionComponent>(CollisionComponent::EntityType::Player, offset, collisionBox) };
+		ColliderComponent* playerCollider{ player->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
+		CollisionManager::GetInstance().AddCollider(playerCollider);
 		SpriteComponent* spriteComp{ player->AddComponent<SpriteComponent>(filename, SpriteComponent::SpriteType::BOMBERMAN) };
 		HealthComponent* healthComp{ player->AddComponent<HealthComponent>(3) };
 		player->AddComponent<BomberComponent>(scene);
 		player->AddComponent<CameraComponent>(constants::GRID_COLS * constants::GRIDCELL, 0, constants::GRID_COLS * constants::GRIDCELL - constants::WINDOW_WIDTH);
-		collisionComp->AddObserver(healthComp);
+		//colliderComp->AddObserver(healthComp);
 		healthComp->AddObserver(spriteComp);
-		spriteComp->AddObserver(collisionComp);
+		//spriteComp->AddObserver(collisionComp);
 		spriteComp->AddObserver(healthComp);
-
-		player->SetParent(parent);
 
 		return player;
 	}
 
-	GameObject* Bomberman::InitializeEnemy(Scene& scene, GameObject* parent, const glm::vec2& startPos, const glm::vec2& collisionBox, const std::string& filename, SpriteComponent::SpriteType type, HealthComponent* playerHealthComp) const
+	GameObject* Bomberman::InitializeEnemy(Scene& scene, GameObject* parent, const std::string& filename, SpriteComponent::SpriteType type, HealthComponent* playerHealthComp) const
 	{
-		const float offset{ (constants::GRIDCELL - collisionBox.x) / 2 };
+		const glm::vec2 startPos{ 1.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
+		const glm::vec2 collider{ 14.f, 14.f };
+		const glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
 
 		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>(startPos.x, startPos.y)) };
-		CollisionComponent* collisionComp{ enemy->AddComponent<CollisionComponent>(CollisionComponent::EntityType::Enemy, offset, collisionBox) };
+		enemy->SetParent(parent);
+		//CollisionComponent* collisionComp{ enemy->AddComponent<CollisionComponent>(CollisionComponent::EntityType::Enemy, offset, collisionBox) };
+		ColliderComponent* enemyCollider{ enemy->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
+		CollisionManager::GetInstance().AddCollider(enemyCollider);
 		SpriteComponent* spriteComp{};
 
 		switch (type)
@@ -140,11 +143,9 @@ namespace dae
 		}
 
 		HealthComponent* healthComp{ enemy->AddComponent<HealthComponent>(0) };
-		collisionComp->AddObserver(playerHealthComp);
+		//colliderComp->AddObserver(playerHealthComp);
 		playerHealthComp->AddObserver(spriteComp);
 		spriteComp->AddObserver(healthComp);
-
-		enemy->SetParent(parent);
 
 		return enemy;
 	}

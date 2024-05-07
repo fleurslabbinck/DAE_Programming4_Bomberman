@@ -189,6 +189,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Objects\Components\ColliderComponent.h" />
+    <ClInclude Include="Objects\CollisionManager.h" />
     <ClInclude Include="Sound\NullSoundSystem.h" />
     <ClInclude Include="Sound\LoggingSoundSystem.h" />
     <ClInclude Include="Sound\BaseSoundSystem.h" />
@@ -218,6 +220,8 @@
     <ClInclude Include="TimeManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Objects\Components\ColliderComponent.cpp" />
+    <ClCompile Include="Objects\CollisionManager.cpp" />
     <ClCompile Include="Input\Gamepad.cpp" />
     <ClCompile Include="Input\InputManager.cpp" />
     <ClCompile Include="Sound\LoggingSoundSystem.cpp" />

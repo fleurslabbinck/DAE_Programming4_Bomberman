@@ -52,7 +52,6 @@ namespace dae
 
 		bool HasComponent() const { return m_components.empty(); };
 
-		void FixedUpdate();
 		void Update();
 		void LateUpdate();
 		void Render() const;
