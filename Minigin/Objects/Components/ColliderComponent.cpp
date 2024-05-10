@@ -20,4 +20,11 @@ namespace dae
 	{
 		m_collider.pos = GetOwner()->GetTransform()->GetWorldPosition() + m_offset;
 	}
+
+	glm::vec2 ColliderComponent::GetLocalCenter() const
+	{
+		const glm::vec2 loalPos{ GetOwner()->GetTransform()->GetLocalPosition() };
+
+		return { loalPos.x + m_collider.width / 2, loalPos.y + m_collider.height / 2 };
+	}
 }

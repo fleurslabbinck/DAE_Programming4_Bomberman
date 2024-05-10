@@ -27,7 +27,7 @@ namespace dae
 		glm::vec2 dir{};
 
 		// get current pos
-		glm::vec2 centeredPos{ gameObject->GetTransform()->GetLocalPosition() + colliderComp->GetCenter() };
+		glm::vec2 centeredPos{ colliderComp->GetLocalCenter() };
 
 		// check entity collision
 		//if (collisionComp->HandleCollision(bottomLeft, gridComponent->GetEntitiesClose(centeredPos))) return;

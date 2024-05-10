@@ -19,7 +19,7 @@ namespace dae
 		void SetLocalPosition(const glm::vec2& pos);
 		void SetPositionDirty();
 		bool IsPositionDirty() const { return m_positionIsDirty; }
-		glm::vec2 GetLocalPosition() { return m_localPosition; }
+		glm::vec2 GetLocalPosition() const { return m_localPosition; }
 		glm::vec2 GetWorldPosition();
 
 		explicit TransformComponent(GameObject* pOwner, float x = 0, float y = 0);

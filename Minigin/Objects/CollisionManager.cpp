@@ -23,7 +23,7 @@ namespace dae
 		{
 			if (otherColliderComp->GetObjectType() == ObjectType::Dynamic) continue;
 
-			if (nextPos == otherColliderComp->GetCenter()) return false;
+			if (nextPos == otherColliderComp->GetLocalCenter()) return false;
 		}
 
 		return true;
