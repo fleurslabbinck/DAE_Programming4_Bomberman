@@ -44,6 +44,7 @@ namespace dae
 
 		void OnNotify(Event event, GameObject* gameObject) override;
 
+		glm::vec2 GetLastDirection() const { return m_lastDirection; }
 		void SetDirection(const glm::vec2& direction);
 		void AnimateMovement();
 		void AnimateDying();
@@ -59,6 +60,8 @@ namespace dae
 		std::unique_ptr<RenderComponent> m_renderComponent;
 
 		Sprite m_sprite{};
+
+		glm::vec2 m_lastDirection{};
 
 		FrameIndex m_startFrameIndex{};
 		int m_currentIndex{};

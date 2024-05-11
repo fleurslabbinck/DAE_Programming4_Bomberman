@@ -22,6 +22,8 @@ namespace dae
 		const std::string font{ "nintendo-nes-font.otf" };
 		constexpr int fontSize{ 8 };
 
+		//CollisionManager::SetCollisionEvent(static_cast<int>(GameEvent::ENTITYOVERLAP));
+
 		// Playfield
 		GameObject* playfield{ scene.AddGameObject(std::make_unique<GameObject>(0.f, static_cast<float>(constants::WINDOW_HEIGHT - constants::GRIDCELL * constants::GRID_ROWS))) };
 		playfield->AddComponent<GridComponent>(constants::GRID_COLS, constants::GRID_ROWS, true, m_backgroundColor);
@@ -102,10 +104,10 @@ namespace dae
 		ColliderComponent* playerCollider{ player->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
 		CollisionManager::GetInstance().AddCollider(playerCollider);
 		SpriteComponent* spriteComp{ player->AddComponent<SpriteComponent>(filename, SpriteComponent::SpriteType::BOMBERMAN) };
-		HealthComponent* healthComp{ player->AddComponent<HealthComponent>(3) };
+		HealthComponent* healthComp{ player->AddComponent<HealthComponent>(entities::EntityType::Bomberman, 3) };
 		player->AddComponent<BomberComponent>(scene);
 		player->AddComponent<CameraComponent>(constants::GRID_COLS * constants::GRIDCELL, 0, constants::GRID_COLS * constants::GRIDCELL - constants::WINDOW_WIDTH);
-		//colliderComp->AddObserver(healthComp);
+		playerCollider->AddObserver(healthComp);
 		healthComp->AddObserver(spriteComp);
 		//spriteComp->AddObserver(collisionComp);
 		spriteComp->AddObserver(healthComp);
@@ -115,7 +117,7 @@ namespace dae
 
 	GameObject* Bomberman::InitializeEnemy(Scene& scene, GameObject* parent, const std::string& filename, SpriteComponent::SpriteType type, HealthComponent* playerHealthComp) const
 	{
-		const glm::vec2 startPos{ 1.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
+		const glm::vec2 startPos{ 9.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
 		const glm::vec2 collider{ 14.f, 14.f };
 		const glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
 
@@ -142,7 +144,7 @@ namespace dae
 			break;
 		}
 
-		HealthComponent* healthComp{ enemy->AddComponent<HealthComponent>(0) };
+		HealthComponent* healthComp{ enemy->AddComponent<HealthComponent>(entities::EntityType::Balloom, 0) };
 		//colliderComp->AddObserver(playerHealthComp);
 		playerHealthComp->AddObserver(spriteComp);
 		spriteComp->AddObserver(healthComp);

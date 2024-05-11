@@ -16,6 +16,21 @@ namespace constants
 	constexpr int GRID_ROWS = 13;
 }
 
+namespace entities
+{
+	enum class EntityType {
+		Bomberman,
+		Bomb,
+		Balloom,
+		Oneal,
+		Doll,
+		Minvo,
+		Brick,
+		ExitWay,
+		PowerUp,
+	};
+}
+
 namespace sound
 {
 	enum class SoundId {
@@ -25,12 +40,10 @@ namespace sound
 }
 
 enum class GameEvent {
-	PLAYER_HIT,
-	ENEMY_HIT,
-	WALL_HIT,
+	ENTITYOVERLAP,
 	PLAYER_DEATH,
 	ENEMY_DEATH,
-	WALL_DEATH,
+	BRICK_DEATH,
 	HEALTH_CHANGED,
 	SCORE_CHANGED,
 	PLAYER_RESPAWN,

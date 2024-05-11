@@ -15,6 +15,8 @@ namespace dae
 		GameObject* AddGameObject(std::unique_ptr<GameObject> object);
 		void RemoveAllGameObjects();
 
+		const std::string GetName() const { return m_name; }
+
 		void FixedUpdate();
 		void Update();
 		void LateUpdate();

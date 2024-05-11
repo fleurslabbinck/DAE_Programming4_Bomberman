@@ -107,22 +107,22 @@ namespace dae
 		return horizontalCollision && verticalCollision;
 	}
 
-	void CollisionComponent::HandleEntityHit(GameObject* entity, EntityType type) const
+	void CollisionComponent::HandleEntityHit(GameObject* entity, EntityType) const
 	{
-		switch (type)
-		{
-		case dae::CollisionComponent::EntityType::Player:
-			Notify(static_cast<int>(GameEvent::PLAYER_HIT), entity);
-			break;
-		case dae::CollisionComponent::EntityType::Enemy:
-			Notify(static_cast<int>(GameEvent::ENEMY_HIT), entity);
-			break;
-		case dae::CollisionComponent::EntityType::Wall:
-			Notify(static_cast<int>(GameEvent::WALL_HIT), entity);
-			break;
-		default:
-			break;
-		}
+		//switch (type)
+		//{
+		//case dae::CollisionComponent::EntityType::Player:
+		//	Notify(static_cast<int>(GameEvent::PLAYER_HIT), entity);
+		//	break;
+		//case dae::CollisionComponent::EntityType::Enemy:
+		//	Notify(static_cast<int>(GameEvent::ENEMY_HIT), entity);
+		//	break;
+		//case dae::CollisionComponent::EntityType::Wall:
+		//	Notify(static_cast<int>(GameEvent::WALL_HIT), entity);
+		//	break;
+		//default:
+		//	break;
+		//}
 
 		entity->GetComponent<CollisionComponent>()->SetCheckForCollision(false);
 	}

@@ -29,8 +29,10 @@ namespace dae
 
 		ObjectType GetObjectType() const { return m_objectType; }
 		Collider GetCollider() const { return m_collider; }
-		glm::vec2 GetCenter() const { return { m_collider.pos.x + m_collider.width / 2, m_collider.pos.y + m_collider.height / 2 }; }
 		glm::vec2 GetLocalCenter() const;
+		GameObject* GetOwningGameObject() const { return GetOwner(); }
+
+		void OnCollision(Event event, GameObject* gameObject) const { Notify(event, gameObject); };
 
 		explicit ColliderComponent(GameObject* pOwner, glm::vec2 offset, float width, float height, bool isDynamic = true);
 		ColliderComponent(const ColliderComponent& other) = delete;

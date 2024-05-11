@@ -13,7 +13,11 @@ namespace dae
 	//---------------------------------
 	// MOVE
 	//---------------------------------
-	glm::vec2 MoveCommand::m_lastDirection{};
+	MoveCommand::MoveCommand(dae::GameObject* gameObject, float speed, glm::vec2 direction)
+		: GameObjectCommand(gameObject), m_speed { speed }, m_direction{ direction }
+	{
+		
+	}
 
 	void MoveCommand::Execute()
 	{
@@ -32,11 +36,13 @@ namespace dae
 		// check entity collision
 		//if (collisionComp->HandleCollision(bottomLeft, gridComponent->GetEntitiesClose(centeredPos))) return;
 
+		glm::vec2 lastDirection{ spriteComponent->GetLastDirection() };
+
 		// reset target position if change of direction
-		if (m_direction != m_lastDirection)
+		if (m_direction != lastDirection)
 		{
 			m_targetPos = centeredPos;
-			m_lastDirection = m_direction;
+			lastDirection = m_direction;
 			spriteComponent->SetDirection(m_direction);
 		}
 
@@ -45,7 +51,7 @@ namespace dae
 		// check if reached target
 		if (distToTarget <= m_targetOffset)
 		{
-			m_targetPos = gridComponent->GetNextPosition(centeredPos, m_lastDirection);
+			m_targetPos = gridComponent->GetNextPosition(centeredPos, lastDirection);
 		}
 
 		// set animation frame

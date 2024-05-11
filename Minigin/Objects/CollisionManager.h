@@ -8,10 +8,14 @@
 
 namespace dae
 {
+	using Event = int;
+
 	class CollisionManager final : public Singleton<CollisionManager>
 	{
 	public:
-		void AddCollider(ColliderComponent* collider) { if (collider) m_collidersComponents.push_back(collider); }
+		void SetCollisionEvent(Event event) { m_collisionEvent = event; }
+
+		void AddCollider(ColliderComponent* collider);
 		void RemoveCollider(ColliderComponent* collider);
 
 		void FixedUpdate();
@@ -23,7 +27,9 @@ namespace dae
 		CollisionManager() = default;
 		~CollisionManager() = default;
 
-		std::vector<ColliderComponent*> m_collidersComponents{};
+		Event m_collisionEvent{};
+		std::vector<ColliderComponent*> m_dynamicColliders{};
+		std::vector<ColliderComponent*> m_staticColliders{};
 
 		bool AreColliding(const Collider& collider, const Collider& otherCollider) const;
 	};

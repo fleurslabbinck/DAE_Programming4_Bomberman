@@ -91,7 +91,7 @@ namespace dae
 			if (!m_sprite.enemy) return;
 			SetDead();
 			break;
-		case static_cast<int>(GameEvent::WALL_DEATH):
+		case static_cast<int>(GameEvent::BRICK_DEATH):
 			if (m_sprite.type != SpriteType::WALL) return;
 			SetDead();
 			break;
@@ -103,9 +103,11 @@ namespace dae
 		if (m_sprite.hasDirection)
 		{
 			if (direction.x < 0) m_startFrameIndex = m_sprite.startFrameLeft;
-			if (direction.x > 0) m_startFrameIndex = m_sprite.startFrameRight;
+			else if (direction.x > 0) m_startFrameIndex = m_sprite.startFrameRight;
 			if (direction.y > 0) m_startFrameIndex = m_sprite.startFrameDown;
-			if (direction.y < 0) m_startFrameIndex = m_sprite.startFrameUp;
+			else if (direction.y < 0) m_startFrameIndex = m_sprite.startFrameUp;
+
+			m_lastDirection = direction;
 		}
 	}
 
@@ -173,5 +175,6 @@ namespace dae
 		m_dead = true;
 		m_startFrameIndex.colIdx = 0;
 		m_startFrameIndex.rowIdx = m_sprite.rows - 1;
+		m_lastDirection = {};
 	}
 }
