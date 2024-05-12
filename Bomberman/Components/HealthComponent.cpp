@@ -57,7 +57,6 @@ namespace dae
 			Notify(static_cast<int>(GameEvent::BRICK_DEATH), GetOwner());
 			//ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathSound));
 		}
-
 	}
 
 	bool HealthComponent::IsGameOver()

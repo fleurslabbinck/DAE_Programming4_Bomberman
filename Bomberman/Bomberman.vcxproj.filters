@@ -60,6 +60,9 @@
     <ClCompile Include="Commands\GameInputCommands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Commands\InfoCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\BomberComponent.h">
@@ -105,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Commands\GameInputCommands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands\InfoCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

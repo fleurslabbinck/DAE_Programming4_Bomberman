@@ -19,6 +19,7 @@
 #include "Commands/MoveCommand.h"
 #include "Commands/BombCommand.h"
 #include "Commands/GameInputCommands.h"
+#include "Commands/InfoCommand.h"
 
 namespace dae
 {
@@ -53,6 +54,9 @@ namespace dae
 		case scenes::Scenes::HighScore:
 			LoadHighScoreScene();
 		}
+
+		PlayerController* player{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
+		player->BindCommand(static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
 	}
 
 	void BombermanManager::LoadMenuScene()
