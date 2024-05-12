@@ -54,9 +54,6 @@ namespace dae
 		case scenes::Scenes::HighScore:
 			LoadHighScoreScene();
 		}
-
-		PlayerController* player{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
-		player->BindCommand(static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
 	}
 
 	void BombermanManager::LoadMenuScene()
@@ -241,6 +238,7 @@ namespace dae
 			PlayerController* player{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
 			player->BindCommand(static_cast<int>(SDL_SCANCODE_RETURN), std::make_unique<ContinueCommand>());
 			player->BindCommand(static_cast<int>(SDL_SCANCODE_BACKSPACE), std::make_unique<BackCommand>());
+			player->BindCommand(static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
 			break;
 		}
 		}
@@ -265,6 +263,7 @@ namespace dae
 			player1->BindCommand(static_cast<int>(SDL_SCANCODE_DOWN), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
 			player1->BindCommand(static_cast<int>(SDL_SCANCODE_UP), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
 			player1->BindCommand(static_cast<int>(SDL_SCANCODE_X), std::make_unique<BombCommand>(gameObject));
+			player->BindCommand(static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
 			break;
 		}
 		case PlayerController::ControlMethod::Keyboard:
