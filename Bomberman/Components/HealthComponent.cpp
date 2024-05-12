@@ -4,6 +4,7 @@
 #include "Scene/SceneManager.h"
 #include "ServiceLocator.h"
 #include "Sound/SoundSystem.h"
+#include "../BombermanManager.h"
 
 namespace dae
 {
@@ -26,8 +27,11 @@ namespace dae
 			HandleCollision(gameObject);
 			break;
 		case static_cast<int>(GameEvent::PLAYER_RESPAWN):
-			HandleHealth();
-			ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathTune));
+			if (!IsGameOver())
+			{
+				ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathTune));
+				BombermanManager::GetInstance().HandleGame(static_cast<int>(gameInput::GameInput::LevelReset));
+			}
 			break;
 		}
 	}
@@ -56,19 +60,23 @@ namespace dae
 
 	}
 
-	void HealthComponent::HandleHealth()
+	bool HealthComponent::IsGameOver()
 	{
+		--m_lives;
+
 		if (m_maxLives > 0)
 		{
-			--m_lives;
 			Notify(static_cast<int>(GameEvent::HEALTH_CHANGED), GetOwner());
 			Respawn();
 		}
 
 		if (m_lives < 0)
 		{
-			Notify(static_cast<int>(GameEvent::GAME_OVER), GetOwner());
+			BombermanManager::GetInstance().HandleGame(static_cast<int>(gameInput::GameInput::GameOver));
+			return true;
 		}
+
+		return false;
 	}
 
 	void HealthComponent::Respawn()

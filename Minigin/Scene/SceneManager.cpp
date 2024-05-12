@@ -26,6 +26,22 @@ namespace dae
 		{
 			scene->LateUpdate();
 		}
+
+		if (!m_sceneToRemove.empty())
+		{
+			auto it = std::find_if(m_scenes.begin(), m_scenes.end(), [&](const std::unique_ptr<Scene>& scene) { return scene.get()->GetName() == m_sceneToRemove; });
+
+			if (it != m_scenes.end())
+			{
+				std::unique_ptr<Scene>& foundScenePtr{ *it };
+
+				foundScenePtr->RemoveAllGameObjects();
+			}
+
+			m_scenes.erase(it);
+
+			m_sceneToRemove = {};
+		}
 	}
 
 	void SceneManager::Render()
@@ -44,6 +60,6 @@ namespace dae
 
 	void SceneManager::RemoveScene(const std::string& name)
 	{
-		auto it = std::find_if(m_scenes.begin(), m_scenes.end(), [&](const std::unique_ptr<Scene>& scene) { return scene.get()->GetName() == name; });
+		m_sceneToRemove = name;
 	}
 }

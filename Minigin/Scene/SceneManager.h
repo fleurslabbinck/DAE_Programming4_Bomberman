@@ -26,6 +26,7 @@ namespace dae
 		SceneManager() = default;
 		~SceneManager() = default;
 		std::vector<std::unique_ptr<Scene>> m_scenes;
+		std::string m_sceneToRemove{};
 	};
 }
 #endif

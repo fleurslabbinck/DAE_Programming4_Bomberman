@@ -1,6 +1,7 @@
 #include "ColliderComponent.h"
 
 #include "../GameObject.h"
+#include "../CollisionManager.h"
 
 namespace dae
 {
@@ -19,6 +20,13 @@ namespace dae
 	void  ColliderComponent::UpdatePos()
 	{
 		m_collider.pos = GetOwner()->GetTransform()->GetWorldPosition() + m_offset;
+	}
+
+	void ColliderComponent::SetDelete()
+	{
+		m_delete = true;
+
+		CollisionManager::GetInstance().RemoveCollider(this);
 	}
 
 	glm::vec2 ColliderComponent::GetLocalCenter() const

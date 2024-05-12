@@ -27,6 +27,8 @@ namespace dae
 	public:
 		void UpdatePos();
 
+		void SetDelete() override;
+
 		ObjectType GetObjectType() const { return m_objectType; }
 		Collider GetCollider() const { return m_collider; }
 		glm::vec2 GetLocalCenter() const;

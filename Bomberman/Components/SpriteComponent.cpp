@@ -3,16 +3,15 @@
 #include "Render/Renderer.h"
 #include "../Minigin/TimeManager.h"
 #include "../Minigin/Objects/GameObject.h"
-#include "../Bomberman/BombermanUtil.h"
 
 namespace dae
 {
-	SpriteComponent::SpriteComponent(GameObject* pOwner, const std::string& filename, SpriteType type, int score)
+	SpriteComponent::SpriteComponent(GameObject* pOwner, const std::string& filename, entities::EntityType type, int score)
 		: BaseComponent(pOwner), m_renderComponent{ std::make_unique<RenderComponent>(pOwner, filename) }
 	{
 		m_sprite.type = type;
 
-		if (m_sprite.type == SpriteType::BOMBERMAN)
+		if (m_sprite.type == entities::EntityType::Bomberman)
 		{
 			m_sprite.cols = 7;
 			m_sprite.rows = 3;
@@ -26,7 +25,7 @@ namespace dae
 			m_sprite.startFrameUp = { m_sprite.movementFrames, 1 };
 		}
 
-		if (m_sprite.type == SpriteType::BALLOOM || m_sprite.type == SpriteType::ONEAL || m_sprite.type == SpriteType::DOLL || m_sprite.type == SpriteType::MINVO)
+		if (m_sprite.type == entities::EntityType::Balloom || m_sprite.type == entities::EntityType::Oneal || m_sprite.type == entities::EntityType::Doll || m_sprite.type == entities::EntityType::Minvo)
 		{
 			m_sprite.cols = 6;
 			m_sprite.rows = 2;
@@ -43,7 +42,7 @@ namespace dae
 			m_sprite.score = score;
 		}
 
-		if (m_sprite.type == SpriteType::BOMB)
+		if (m_sprite.type == entities::EntityType::Bomb)
 		{
 			m_sprite.cols = 3;
 			m_sprite.rows = 1;
@@ -53,7 +52,7 @@ namespace dae
 			m_sprite.hasDirection = false;
 		}
 
-		if (m_sprite.type == SpriteType::WALL)
+		if (m_sprite.type == entities::EntityType::Brick)
 		{
 			m_sprite.cols = 7;
 			m_sprite.rows = 1;
@@ -84,7 +83,7 @@ namespace dae
 		switch (event)
 		{
 		case static_cast<int>(GameEvent::PLAYER_DEATH):
-			if (m_sprite.type != SpriteType::BOMBERMAN) return;
+			if (m_sprite.type != entities::EntityType::Bomberman) return;
 			SetDead();
 			break;
 		case static_cast<int>(GameEvent::ENEMY_DEATH):
@@ -92,7 +91,7 @@ namespace dae
 			SetDead();
 			break;
 		case static_cast<int>(GameEvent::BRICK_DEATH):
-			if (m_sprite.type != SpriteType::WALL) return;
+			if (m_sprite.type != entities::EntityType::Brick) return;
 			SetDead();
 			break;
 		}
@@ -113,7 +112,7 @@ namespace dae
 
 	void SpriteComponent::AnimateMovement()
 	{
-		if (m_sprite.type == SpriteType::BOMB) return;
+		if (m_sprite.type == entities::EntityType::Bomb) return;
 
 		m_accumulatedTime += TimeManager::GetInstance().GetDeltaTime();
 		const float maxTime{ 1.f / m_sprite.framesPerSecond };
@@ -141,28 +140,28 @@ namespace dae
 
 				switch (m_sprite.type)
 				{
-				case SpriteType::BOMBERMAN:
+				case entities::EntityType::Bomberman:
 					Notify(static_cast<int>(GameEvent::PLAYER_RESPAWN), owner);
 					m_dead = false;
 					m_startFrameIndex = m_sprite.startFrameLeft;
 					break;
-				case SpriteType::BALLOOM:
+				case entities::EntityType::Balloom:
 					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
 					owner->SetDead();
 					break;
-				case SpriteType::ONEAL:
+				case entities::EntityType::Oneal:
 					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
 					owner->SetDead();
 					break;
-				case SpriteType::DOLL:
+				case entities::EntityType::Doll:
 					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
 					owner->SetDead();
 					break;
-				case SpriteType::MINVO:
+				case entities::EntityType::Minvo:
 					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
 					owner->SetDead();
 					break;
-				case SpriteType::WALL:
+				case entities::EntityType::Brick:
 					owner->SetDead();
 					break;
 				}

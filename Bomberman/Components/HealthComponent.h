@@ -37,7 +37,7 @@ namespace dae
 		glm::vec2 m_respawnPos{};
 
 		void HandleCollision(GameObject* gameObject);
-		void HandleHealth();
+		bool IsGameOver();
 		void Respawn();
 	};
 }

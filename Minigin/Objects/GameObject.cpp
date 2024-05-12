@@ -76,7 +76,13 @@ namespace dae
 
 	void GameObject::Update()
 	{
-		for (std::unique_ptr<BaseComponent>& component : m_components) if (!component->ShouldBeDeleted()) component->Update();
+		for (std::unique_ptr<BaseComponent>& component : m_components)
+		{
+			if (!component->ShouldBeDeleted())
+			{
+				component->Update();
+			}
+		}
 	}
 
 	void GameObject::LateUpdate()

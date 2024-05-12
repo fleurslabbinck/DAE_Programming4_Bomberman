@@ -1,7 +1,7 @@
 #ifndef BOMBCOMMAND_H
 #define BOMBCOMMAND_H
 
-#include "../minigin/Input/Command.h"
+#include "Input/Command.h"
 
 namespace dae
 {

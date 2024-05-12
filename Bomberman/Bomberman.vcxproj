@@ -161,8 +161,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bomberman.cpp" />
+    <ClCompile Include="BombermanManager.cpp" />
     <ClCompile Include="Commands\BombCommand.cpp" />
+    <ClCompile Include="Commands\GameInputCommands.cpp" />
     <ClCompile Include="Commands\MoveCommand.cpp" />
     <ClCompile Include="Components\BomberComponent.cpp" />
     <ClCompile Include="Components\CameraComponent.cpp" />
@@ -172,11 +173,15 @@
     <ClCompile Include="Components\HUDComponent.cpp" />
     <ClCompile Include="Components\SpriteComponent.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="States\HighScoreState.cpp" />
+    <ClCompile Include="States\MainMenuState.cpp" />
+    <ClCompile Include="States\PlayState.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bomberman.h" />
+    <ClInclude Include="BombermanManager.h" />
     <ClInclude Include="BombermanUtil.h" />
     <ClInclude Include="Commands\BombCommand.h" />
+    <ClInclude Include="Commands\GameInputCommands.h" />
     <ClInclude Include="Commands\MoveCommand.h" />
     <ClInclude Include="Components\BomberComponent.h" />
     <ClInclude Include="Components\CameraComponent.h" />
@@ -185,6 +190,9 @@
     <ClInclude Include="Components\HealthComponent.h" />
     <ClInclude Include="Components\HUDComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
+    <ClInclude Include="States\HighScoreState.h" />
+    <ClInclude Include="States\MainMenuState.h" />
+    <ClInclude Include="States\PlayState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

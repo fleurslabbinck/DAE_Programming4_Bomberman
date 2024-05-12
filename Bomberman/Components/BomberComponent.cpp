@@ -1,9 +1,10 @@
 #include "BomberComponent.h"
 
-#include "../Minigin/Objects/GameObject.h"
-#include "../Bomberman/Components/CollisionComponent.h"
-#include "../Bomberman/Components/SpriteComponent.h"
-#include "../Bomberman/Components/HealthComponent.h"
+#include "Objects/GameObject.h"
+#include "Objects/CollisionManager.h"
+#include "Objects/Components/ColliderComponent.h"
+#include "SpriteComponent.h"
+#include "HealthComponent.h"
 
 namespace dae
 {
@@ -16,10 +17,12 @@ namespace dae
 	void BomberComponent::DropBomb(GameObject* parent, HealthComponent* healthComp, const glm::vec2& pos)
 	{
 		GameObject* bomb{ m_scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
-		CollisionComponent* collisionComp{ bomb->AddComponent<CollisionComponent>(CollisionComponent::EntityType::Wall) };
-		SpriteComponent* spriteComp{ bomb->AddComponent<SpriteComponent>("Sprites/Bomb.png", SpriteComponent::SpriteType::BOMB)};
+		ColliderComponent* collider{ bomb->AddComponent<ColliderComponent>(glm::vec2{}, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL), false) };
+		CollisionManager::GetInstance().AddCollider(collider);
+
+		SpriteComponent* spriteComp{ bomb->AddComponent<SpriteComponent>("Sprites/Bomb.png", entities::EntityType::Bomb)};
 		// ExplosionComponent
-		spriteComp->AddObserver(collisionComp);
+		spriteComp->AddObserver(healthComp);
 		healthComp->AddObserver(spriteComp);
 
 		bomb->SetParent(parent);

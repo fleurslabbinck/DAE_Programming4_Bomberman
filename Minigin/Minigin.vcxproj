@@ -189,6 +189,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\GameManager.h" />
     <ClInclude Include="Game\GameState.h" />
     <ClInclude Include="Objects\Components\ColliderComponent.h" />
     <ClInclude Include="Objects\CollisionManager.h" />
@@ -221,7 +222,6 @@
     <ClInclude Include="TimeManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game\GameState.cpp" />
     <ClCompile Include="Objects\Components\ColliderComponent.cpp" />
     <ClCompile Include="Objects\CollisionManager.cpp" />
     <ClCompile Include="Input\Gamepad.cpp" />

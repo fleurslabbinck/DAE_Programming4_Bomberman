@@ -1,6 +1,7 @@
 #ifndef BOMBERMAN_UTIL_H
 #define BOMBERMAN_UTIL_H
 
+#include <string>
 #include <glm/glm.hpp>
 
 namespace constants
@@ -14,6 +15,27 @@ namespace constants
 	constexpr int GRIDCELL = 16 /** WINDOW_SCALE*/;
 	constexpr int GRID_COLS = 31;
 	constexpr int GRID_ROWS = 13;
+}
+
+namespace scenes
+{
+	enum class Scenes {
+		Menu,
+		Level,
+		HighScore,
+	};
+}
+
+namespace gameInput
+{
+	enum class GameInput {
+		Continue,
+		Back,
+		NextLevel,
+		LevelReset,
+		GameWon,
+		GameOver,
+	};
 }
 
 namespace entities

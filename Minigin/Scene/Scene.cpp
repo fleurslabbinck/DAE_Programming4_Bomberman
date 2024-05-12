@@ -26,7 +26,7 @@ namespace dae
 
 	void Scene::RemoveAllGameObjects()
 	{
-		m_gameObjects.clear();
+		for (auto& gameObject : m_gameObjects) gameObject->SetDead();
 	}
 
 	void Scene::FixedUpdate()

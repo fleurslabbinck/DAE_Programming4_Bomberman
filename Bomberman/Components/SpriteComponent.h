@@ -1,8 +1,9 @@
 #ifndef	SPRITECOMPONENT_H
 #define	SPRITECOMPONENT_H
 
-#include "../Minigin/Objects/Components/BaseComponent.h"
-#include "../Minigin/Objects/Components/RenderComponent.h"
+#include "../Bomberman/BombermanUtil.h"
+#include "Objects/Components/BaseComponent.h"
+#include "Objects/Components/RenderComponent.h"
 #include "Observers/Subject.h"
 
 namespace dae
@@ -12,23 +13,12 @@ namespace dae
 	class SpriteComponent final : public BaseComponent, public Observer, public Subject
 	{
 	public:
-		enum class SpriteType {
-			BOMBERMAN,
-			BALLOOM,
-			ONEAL,
-			DOLL,
-			MINVO,
-			BOMB,
-			EXPLOSION,
-			WALL,
-		};
-
 		struct FrameIndex {
 			int colIdx, rowIdx;
 		};
 
 		struct Sprite {
-			SpriteType type{ SpriteType::BOMBERMAN };
+			entities::EntityType type{ entities::EntityType::Bomberman };
 			int cols{}, rows{};
 			const int movementFrames{ 3 };
 			int deathFrames{};
@@ -53,7 +43,7 @@ namespace dae
 		bool IsDead() const { return m_dead; };
 		int GetScore() const { return m_sprite.score; }
 
-		explicit SpriteComponent(GameObject* pOwner, const std::string& filename, SpriteType type, int score = 0);
+		explicit SpriteComponent(GameObject* pOwner, const std::string& filename, entities::EntityType type, int score = 0);
 		SpriteComponent(const SpriteComponent& other) = delete;
 		SpriteComponent(SpriteComponent&& other) = delete;
 	private:
