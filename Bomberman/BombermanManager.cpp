@@ -40,7 +40,7 @@ namespace dae
 		if (!m_currentScene.empty())
 		{
 			SceneManager::GetInstance().RemoveScene(m_currentScene);
-			InputManager::GetInstance().RemovePlayerControllers();
+			InputManager::GetInstance().SetUpdatePlayerControllersFlag();
 		}
 
 		switch (static_cast<scenes::Scenes>(scene))

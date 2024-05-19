@@ -27,6 +27,8 @@ namespace dae
 		virtual bool IsDownThisFrame(GamepadButton button) const;
 		virtual bool IsUpThisFrame(GamepadButton button) const;
 
+		static void ResetGamepadCount() { s_gamepadCount = 0; }
+
 	private:
 		class GamepadImpl;
 		std::unique_ptr<GamepadImpl> m_Pimpl;

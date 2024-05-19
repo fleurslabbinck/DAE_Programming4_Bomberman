@@ -37,19 +37,22 @@ namespace dae
 
 		bool ProcessInput();
 		PlayerController* AddPlayerController(PlayerController::ControlMethod controlMethod);
-		void RemovePlayerControllers();
-
+		void SetUpdatePlayerControllersFlag();
+		
 	private:
 		friend class Singleton<InputManager>;
 		InputManager() = default;
 		~InputManager() = default;
 
-		int m_playerControllerCount{};
 		std::vector<std::unique_ptr<PlayerController>> m_playerControllers;
+		bool m_updatePlayerControllers{ true };
+		std::vector<std::unique_ptr<PlayerController>> m_newPlayerControllers;
 
 		void ExecuteCommands();
 		std::vector<Command*> HandleInput(const std::unique_ptr<PlayerController>& playerController) const;
 		bool IsPressed(const std::unique_ptr<PlayerController>& playerController, int input) const;
+
+		void UpdatePlayerControllers();
 	};
 }
 #endif
