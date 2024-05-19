@@ -1,7 +1,7 @@
 #include "GridComponent.h"
 
-#include "../Minigin/Render/Renderer.h"
-#include "../Minigin/Objects/GameObject.h"
+#include "Render/Renderer.h"
+#include "Objects/GameObject.h"
 
 namespace dae
 {

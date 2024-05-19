@@ -2,8 +2,8 @@
 #define GRIDCOMPONENT_H
 
 #include <SDL.h>
-#include "../Minigin/Objects/Components/BaseComponent.h"
-#include "../Bomberman/BombermanUtil.h"
+#include "Objects/Components/BaseComponent.h"
+#include "../BombermanUtil.h"
 
 namespace dae
 {

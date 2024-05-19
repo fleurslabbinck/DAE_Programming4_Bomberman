@@ -1,8 +1,8 @@
 #include "CollisionComponent.h"
 
-#include "../Minigin/Objects/GameObject.h"
-#include "../Minigin/Objects/Components/TransformComponent.h"
-#include "../Bomberman/Components/GridComponent.h"
+#include "Objects/GameObject.h"
+#include "Objects/Components/TransformComponent.h"
+#include "../Components/GridComponent.h"
 
 //---------------------------------
 //COLLISIONCOMPONENT

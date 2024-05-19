@@ -1,7 +1,7 @@
 #ifndef MOVECOMMAND_H
 #define MOVECOMMAND_H
 
-#include "../minigin/Input/Command.h"
+#include "Input/Command.h"
 
 namespace dae
 {

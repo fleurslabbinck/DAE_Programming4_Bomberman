@@ -1,8 +1,8 @@
 #include "SpriteComponent.h"
 
 #include "Render/Renderer.h"
-#include "../Minigin/TimeManager.h"
-#include "../Minigin/Objects/GameObject.h"
+#include "TimeManager.h"
+#include "Objects/GameObject.h"
 
 namespace dae
 {

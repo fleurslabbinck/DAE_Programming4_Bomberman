@@ -1,7 +1,7 @@
 #ifndef	SPRITECOMPONENT_H
 #define	SPRITECOMPONENT_H
 
-#include "../Bomberman/BombermanUtil.h"
+#include "../BombermanUtil.h"
 #include "Objects/Components/BaseComponent.h"
 #include "Objects/Components/RenderComponent.h"
 #include "Observers/Subject.h"

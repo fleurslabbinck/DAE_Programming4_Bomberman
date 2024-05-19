@@ -1,8 +1,8 @@
 #include "CameraComponent.h"
 
-#include "../Minigin/Objects/GameObject.h"
-#include "../Minigin/Render/Renderer.h"
-#include "../Bomberman/BombermanUtil.h"
+#include "Objects/GameObject.h"
+#include "Render/Renderer.h"
+#include "../BombermanUtil.h"
 
 namespace dae
 {

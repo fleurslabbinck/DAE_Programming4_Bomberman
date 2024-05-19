@@ -2,7 +2,7 @@
 #define	HUDCOMPONENT_H
 
 #include <vector>
-#include "../Minigin/Objects/Components/BaseComponent.h"
+#include "Objects/Components/BaseComponent.h"
 #include "Observers/Observer.h"
 
 namespace dae

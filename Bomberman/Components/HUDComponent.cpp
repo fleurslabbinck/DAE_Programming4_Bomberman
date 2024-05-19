@@ -1,10 +1,10 @@
 #include "HUDComponent.h"
 
-#include "../Minigin/Render/Renderer.h"
-#include "../Minigin/Objects/GameObject.h"
-#include "../Minigin/Objects/Components/TextComponent.h"
-#include "../Bomberman/Components/HealthComponent.h"
-#include "../Bomberman/BombermanUtil.h"
+#include "Render/Renderer.h"
+#include "Objects/GameObject.h"
+#include "Objects/Components/TextComponent.h"
+#include "../Components/HealthComponent.h"
+#include "../BombermanUtil.h"
 
 namespace dae
 {

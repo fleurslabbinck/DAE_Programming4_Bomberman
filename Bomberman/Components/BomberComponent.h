@@ -1,8 +1,8 @@
 #ifndef BOMBERCOMPONENT_H
 #define BOMBERCOMPONENT_H
 
-#include "../Minigin/Objects/Components/BaseComponent.h"
-#include "../Minigin/Scene/Scene.h"
+#include "Objects/Components/BaseComponent.h"
+#include "Scene/Scene.h"
 
 namespace dae
 {

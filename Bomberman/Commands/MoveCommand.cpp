@@ -1,7 +1,7 @@
 #include "MoveCommand.h"
 
-#include "../Minigin/Objects/Components/RenderComponent.h"
-#include "../Minigin/Objects/CollisionManager.h"
+#include "Objects/Components/RenderComponent.h"
+#include "Objects/CollisionManager.h"
 #include "../Components/GridComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/BomberComponent.h"

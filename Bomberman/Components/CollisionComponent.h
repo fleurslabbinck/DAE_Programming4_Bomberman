@@ -1,9 +1,9 @@
 #ifndef COLLISIONCOMPONENT_H
 #define COLLISIONCOMPONENT_H
 
-#include "../Bomberman/BombermanUtil.h"
+#include "../BombermanUtil.h"
 
-#include "../Minigin/Objects/Components/BaseComponent.h"
+#include "Objects/Components/BaseComponent.h"
 #include "Observers/Subject.h"
 
 namespace dae

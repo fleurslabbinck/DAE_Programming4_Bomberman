@@ -2,7 +2,7 @@
 #define	CAMERACOMPONENT_H
 
 #include <SDL.h>
-#include "../Minigin/Objects/Components/BaseComponent.h"
+#include "Objects/Components/BaseComponent.h"
 
 namespace dae
 {
