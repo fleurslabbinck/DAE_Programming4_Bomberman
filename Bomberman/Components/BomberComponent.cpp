@@ -30,13 +30,13 @@ namespace dae
 		}
 	}
 
-	void BomberComponent::DropBomb(GameObject* parent, HealthComponent* healthComp, const glm::vec2& pos)
+	void BomberComponent::DropBomb(GameObject* parent, const glm::vec2& pos)
 	{
 		if (!CanPlaceBomb() || m_accumulatedTime < m_cooldown) return;
 
 		GameObject* bomb{ m_scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
-		bomb->AddComponent<BombComponent>(healthComp, m_fire);
 		bomb->SetParent(parent);
+		bomb->AddComponent<BombComponent>(m_healthComponents, m_fire);
 
 		m_bombs.push_back({ bomb });
 

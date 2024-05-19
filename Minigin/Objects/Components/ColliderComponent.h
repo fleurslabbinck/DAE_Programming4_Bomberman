@@ -36,11 +36,12 @@ namespace dae
 
 		void OnCollision(Event event, GameObject* gameObject) const { Notify(event, gameObject); };
 
-		explicit ColliderComponent(GameObject* pOwner, glm::vec2 offset, float width, float height, bool isDynamic = true);
+		explicit ColliderComponent(GameObject* pOwner, glm::vec2 offset, float width, float height, bool isDynamic = true, bool updatePos = true);
 		ColliderComponent(const ColliderComponent& other) = delete;
 		ColliderComponent(ColliderComponent&& other) = delete;
 
 	private:
+		bool m_updatePos{ false };
 		ObjectType m_objectType{ ObjectType::Dynamic };
 		Collider m_collider{};
 		const glm::vec2 m_offset;

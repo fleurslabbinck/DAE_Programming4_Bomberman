@@ -12,6 +12,7 @@
 namespace dae
 {
 	class GameObject;
+	class HealthComponent;
 
 	class BombermanManager final : public Singleton<BombermanManager>, public GameManager
 	{
@@ -45,8 +46,8 @@ namespace dae
 		void LoadHighScoreScene();
 
 		GameObject* Playfield(Scene& scene, int totalCols, int totalRows) const;
-		GameObject* Player(Scene& scene, GameObject* parent) const;
-		GameObject* Enemy(Scene& scene, GameObject* parent, entities::EntityType enemyType) const;
+		GameObject* Player(Scene& scene, GameObject* parent, std::vector<HealthComponent*>& healthComps) const;
+		GameObject* Enemy(Scene& scene, GameObject* parent, entities::EntityType enemyType, std::vector<HealthComponent*>& healthComps) const;
 		GameObject* FPSComponent(Scene& scene) const;
 
 		void AddMenuControls(PlayerController::ControlMethod controlMethod) const;

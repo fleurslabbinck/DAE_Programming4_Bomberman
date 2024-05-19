@@ -20,6 +20,6 @@ namespace dae
 		glm::vec2 bottomLeft{ gameObject->GetTransform()->GetLocalPosition() };
 		glm::vec2 centeredPos{ collider->GetLocalCenter() };
 
-		gameObject->GetComponent<BomberComponent>()->DropBomb(gameObject->GetParent(), gameObject->GetComponent<HealthComponent>(), gridComponent->GetGridStartPos(centeredPos));
+		gameObject->GetComponent<BomberComponent>()->DropBomb(gameObject->GetParent(), gridComponent->GetGridStartPos(centeredPos));
 	}
 }

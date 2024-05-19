@@ -38,6 +38,7 @@ namespace dae
 		void SetDirection(const glm::vec2& direction);
 		void AnimateMovement();
 		void AnimateDying();
+		void ToggleVisibility() { m_isVisible = !m_isVisible; }
 		void SetDead();
 
 		bool IsDead() const { return m_dead; };
@@ -57,6 +58,7 @@ namespace dae
 		int m_currentIndex{};
 		float m_accumulatedTime{};
 
+		bool m_isVisible{ true };
 		bool m_dead{ false };
 	};
 }

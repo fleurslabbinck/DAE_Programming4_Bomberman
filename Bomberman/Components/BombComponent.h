@@ -9,23 +9,55 @@ namespace dae
 	class ColliderComponent;
 	class HealthComponent;
 	class SpriteComponent;
+	class RenderComponent;
 
 	class BombComponent final : public BaseComponent
 	{
+		enum class FireDirection {
+			Left,
+			Right,
+			Up,
+			Down,
+			None,
+		};
+
+		struct Explosion
+		{
+			FireDirection direction{ FireDirection::None };
+			uint8_t row{};
+			glm::vec2 pos{};
+			std::unique_ptr<ColliderComponent> colliderComp{ nullptr };
+			std::unique_ptr<RenderComponent> renderComp{ nullptr };
+		};
+
 	public:
+		void Update();
+		void Render(const glm::vec2& pos) const;
+
 		void Explode();
 
-		explicit BombComponent(GameObject* pOwner, HealthComponent* bombermanHealthComp, uint8_t fire);
+		explicit BombComponent(GameObject* pOwner, const std::vector<HealthComponent*>& healthComps, uint8_t fire);
 		BombComponent(const BombComponent& other) = delete;
 		BombComponent(BombComponent&& other) = delete;
 
 	private:
-		std::unique_ptr<ColliderComponent> m_colliderComponent;
+		std::unique_ptr<ColliderComponent> m_colliderComponentBomb;
 		std::unique_ptr<HealthComponent> m_healthComponent;
-		std::unique_ptr<SpriteComponent> m_spriteComponentBomb;
-		std::unique_ptr<SpriteComponent> m_spriteComponentExplosion;
+		std::unique_ptr<SpriteComponent> m_spriteComponent;
+
+		std::vector<HealthComponent*> m_gameEntityHealthComponents;
+		
+		bool m_explode{ false };
 
 		uint8_t m_fire;
+		uint8_t m_currentFirePhase{};
+		const uint8_t m_framesPerSecond{ 2 };
+		float m_accumulatedTime{};
+
+		std::vector<Explosion> m_explosions{};
+
+		bool AddExplosion(int explosionCount, FireDirection dir, uint8_t midRow, uint8_t endRow);
+		void KillBomb();
 	};
 }
 #endif

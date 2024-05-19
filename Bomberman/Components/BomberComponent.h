@@ -19,8 +19,10 @@ namespace dae
 	public:
 		void Update();
 
+		void SetHealthComponents(std::vector<HealthComponent*>& healthComps) { m_healthComponents = healthComps; }
+
 		bool CanPlaceBomb() const { return m_bombs.size() < m_maxBombs; }
-		void DropBomb(GameObject* parent, HealthComponent* healthComp, const glm::vec2& pos);
+		void DropBomb(GameObject* parent, const glm::vec2& pos);
 		void ExplodeBomb();
 		void ExplodeBombs();
 
@@ -30,6 +32,7 @@ namespace dae
 
 	private:
 		Scene& m_scene;
+		std::vector<HealthComponent*> m_healthComponents;
 
 		uint8_t m_maxBombs{ 1 };
 		uint8_t m_fire{ 1 };

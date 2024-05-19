@@ -71,6 +71,8 @@ namespace dae
 
 	void SpriteComponent::Render(const glm::vec2& pos) const
 	{
+		if (!m_isVisible) return;
+
 		constexpr int srcGridCell{ constants::GRIDCELL };
 
 		SDL_Rect srcRect{ m_currentIndex * srcGridCell, m_startFrameIndex.rowIdx * srcGridCell, srcGridCell, srcGridCell };

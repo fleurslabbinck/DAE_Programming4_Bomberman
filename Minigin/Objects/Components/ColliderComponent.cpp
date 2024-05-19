@@ -5,9 +5,8 @@
 
 namespace dae
 {
-	ColliderComponent::ColliderComponent(GameObject* pOwner, glm::vec2 offset, float width, float height, bool isDynamic)
-		: BaseComponent(pOwner)
-		, m_offset{ offset }
+	ColliderComponent::ColliderComponent(GameObject* pOwner, glm::vec2 offset, float width, float height, bool isDynamic, bool updatePos)
+		: BaseComponent(pOwner), m_offset{ offset }, m_updatePos{ updatePos }
 	{
 		UpdatePos();
 
@@ -19,7 +18,7 @@ namespace dae
 
 	void  ColliderComponent::UpdatePos()
 	{
-		m_collider.pos = GetOwner()->GetTransform()->GetWorldPosition() + m_offset;
+		if (m_updatePos) m_collider.pos = GetOwner()->GetTransform()->GetWorldPosition() + m_offset;
 	}
 
 	void ColliderComponent::SetDelete()
