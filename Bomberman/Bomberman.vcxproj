@@ -166,6 +166,7 @@
     <ClCompile Include="Commands\GameInputCommands.cpp" />
     <ClCompile Include="Commands\InfoCommand.cpp" />
     <ClCompile Include="Commands\MoveCommand.cpp" />
+    <ClCompile Include="Components\BombComponent.cpp" />
     <ClCompile Include="Components\BomberComponent.cpp" />
     <ClCompile Include="Components\CameraComponent.cpp" />
     <ClCompile Include="Components\CollisionComponent.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Commands\GameInputCommands.h" />
     <ClInclude Include="Commands\InfoCommand.h" />
     <ClInclude Include="Commands\MoveCommand.h" />
+    <ClInclude Include="Components\BombComponent.h" />
     <ClInclude Include="Components\BomberComponent.h" />
     <ClInclude Include="Components\CameraComponent.h" />
     <ClInclude Include="Components\CollisionComponent.h" />

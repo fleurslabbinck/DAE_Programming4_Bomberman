@@ -47,7 +47,7 @@ namespace dae
 			m_sprite.cols = 3;
 			m_sprite.rows = 1;
 			m_sprite.deathFrames = 0;
-			m_sprite.framesPerSecond = 5;
+			m_sprite.framesPerSecond = 3;
 
 			m_sprite.hasDirection = false;
 		}
@@ -66,6 +66,7 @@ namespace dae
 	void SpriteComponent::Update()
 	{
 		if (m_dead) AnimateDying();
+		if (m_sprite.type == entities::EntityType::Bomb) AnimateMovement();
 	}
 
 	void SpriteComponent::Render(const glm::vec2& pos) const
@@ -112,8 +113,6 @@ namespace dae
 
 	void SpriteComponent::AnimateMovement()
 	{
-		if (m_sprite.type == entities::EntityType::Bomb) return;
-
 		m_accumulatedTime += TimeManager::GetInstance().GetDeltaTime();
 		const float maxTime{ 1.f / m_sprite.framesPerSecond };
 

@@ -48,12 +48,12 @@ namespace dae
 			m_dead = true;
 			break;
 		case entities::EntityType::Balloom:
-			if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Bomb)
+			if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Explosion)
 			Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
 			//ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathSound));
 			break;
 		case entities::EntityType::Brick:
-			if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Bomb)
+			if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Explosion)
 			Notify(static_cast<int>(GameEvent::BRICK_DEATH), GetOwner());
 			//ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathSound));
 		}

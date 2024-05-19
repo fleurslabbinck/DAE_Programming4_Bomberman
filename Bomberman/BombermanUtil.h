@@ -43,6 +43,7 @@ namespace entities
 	enum class EntityType {
 		Bomberman,
 		Bomb,
+		Explosion,
 		Balloom,
 		Oneal,
 		Doll,
