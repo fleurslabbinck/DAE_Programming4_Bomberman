@@ -12,12 +12,11 @@
 
 namespace dae
 {
-	BombComponent::BombComponent(GameObject* pOwner, const std::vector<HealthComponent*>& healthComps, uint8_t fire)
+	BombComponent::BombComponent(GameObject* pOwner, uint8_t fire)
 		: BaseComponent(pOwner),
 		m_colliderComponentBomb{ std::make_unique<ColliderComponent>(pOwner, glm::vec2{}, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL), false) },
 		m_healthComponent{ std::make_unique<HealthComponent>(pOwner, entities::EntityType::Explosion, 1) },
 		m_spriteComponent{ std::make_unique<SpriteComponent>(pOwner, "Sprites/Bomb.png", entities::EntityType::Bomb) },
-		m_gameEntityHealthComponents{ healthComps },
 		m_fire{ fire }
 	{
 		CollisionManager::GetInstance().AddCollider(m_colliderComponentBomb.get());
@@ -108,15 +107,7 @@ namespace dae
 
 		m_explode = true;
 
-		for (auto& explosion : m_explosions)
-		{
-			collisionManager.AddCollider(explosion.colliderComp.get());
-			
-			//for (auto& healthComp : m_gameEntityHealthComponents)
-			//{
-			//	explosion.colliderComp.get()->AddObserver(healthComp);
-			//}
-		}
+		for (auto& explosion : m_explosions) collisionManager.AddCollider(explosion.colliderComp.get());
 	}
 
 	bool BombComponent::AddExplosion(int explosionCount, FireDirection dir, uint8_t midRow, uint8_t endRow)

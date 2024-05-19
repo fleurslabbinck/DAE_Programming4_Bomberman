@@ -75,14 +75,10 @@ namespace dae
 
 		auto& scene = dae::SceneManager::GetInstance().CreateScene(m_currentScene);
 
-		std::vector<HealthComponent*> healthComps{};
-
 		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS) };
-		GameObject* player{ Player(scene, playfield, healthComps) };
-		Enemy(scene, playfield, entities::EntityType::Balloom, healthComps);
+		Player(scene, playfield);
+		Enemy(scene, playfield, entities::EntityType::Balloom);
 		FPSComponent(scene);
-
-		player->GetComponent<BomberComponent>()->SetHealthComponents(healthComps);
 	}
 
 	void BombermanManager::LoadHighScoreScene()
@@ -146,7 +142,7 @@ namespace dae
 		return playfield;
 	}
 
-	GameObject* BombermanManager::Player(Scene& scene, GameObject* parent, std::vector<HealthComponent*>& healthComps) const
+	GameObject* BombermanManager::Player(Scene& scene, GameObject* parent) const
 	{
 		constexpr glm::vec2 startPos{ 1.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
 		constexpr glm::vec2 collider{ 10.f, 14.f };
@@ -165,8 +161,6 @@ namespace dae
 		HUDComponent* hudComp{ player->AddComponent<HUDComponent>(m_font, m_fontSize) };
 		player->AddComponent<CameraComponent>(constants::GRID_COLS * constants::GRIDCELL, 0, constants::GRID_COLS * constants::GRIDCELL - constants::WINDOW_WIDTH);
 
-		healthComps.push_back(healthComp);
-
 		playerCollider->AddObserver(healthComp);
 		healthComp->AddObserver(spriteComp);
 		healthComp->AddObserver(hudComp);
@@ -177,7 +171,7 @@ namespace dae
 		return player;
 	}
 
-	GameObject* BombermanManager::Enemy(Scene& scene, GameObject* parent, entities::EntityType enemyType, std::vector<HealthComponent*>& healthComps) const
+	GameObject* BombermanManager::Enemy(Scene& scene, GameObject* parent, entities::EntityType enemyType) const
 	{
 		constexpr glm::vec2 startPos{ 9.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
 		constexpr glm::vec2 collider{ 10.f, 14.f };
@@ -210,9 +204,7 @@ namespace dae
 			break;
 		}
 		
-		HealthComponent* healthComp{ enemy->AddComponent<HealthComponent>(entities::EntityType::Balloom, 1) };
-
-		healthComps.push_back(healthComp);
+		HealthComponent* healthComp{ enemy->AddComponent<HealthComponent>(enemyType, 1) };
 
 		enemyCollider->AddObserver(healthComp);
 		healthComp->AddObserver(spriteComp);

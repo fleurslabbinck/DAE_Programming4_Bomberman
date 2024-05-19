@@ -36,7 +36,7 @@ namespace dae
 
 		GameObject* bomb{ m_scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
 		bomb->SetParent(parent);
-		bomb->AddComponent<BombComponent>(m_healthComponents, m_fire);
+		bomb->AddComponent<BombComponent>(m_fire);
 
 		m_bombs.push_back({ bomb });
 

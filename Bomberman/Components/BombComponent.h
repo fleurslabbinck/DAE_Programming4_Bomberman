@@ -36,7 +36,7 @@ namespace dae
 
 		void Explode();
 
-		explicit BombComponent(GameObject* pOwner, const std::vector<HealthComponent*>& healthComps, uint8_t fire);
+		explicit BombComponent(GameObject* pOwner, uint8_t fire);
 		BombComponent(const BombComponent& other) = delete;
 		BombComponent(BombComponent&& other) = delete;
 
@@ -44,8 +44,6 @@ namespace dae
 		std::unique_ptr<ColliderComponent> m_colliderComponentBomb;
 		std::unique_ptr<HealthComponent> m_healthComponent;
 		std::unique_ptr<SpriteComponent> m_spriteComponent;
-
-		std::vector<HealthComponent*> m_gameEntityHealthComponents;
 		
 		bool m_explode{ false };
 
