@@ -1,6 +1,7 @@
 #include "HealthComponent.h"
 
 #include "Objects/GameObject.h"
+#include "Objects/CollisionManager.h"
 #include "Scene/SceneManager.h"
 #include "ServiceLocator.h"
 #include "Sound/SoundSystem.h"
@@ -52,11 +53,11 @@ namespace dae
 		case entities::EntityType::Minvo:
 			if (!gameObject->GetComponent<HealthComponent>())
 			Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
+			CollisionManager::GetInstance().RemoveCollider(GetOwner()->GetComponent<ColliderComponent>());
 			break;
 		case entities::EntityType::Brick:
 			if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Explosion)
 			Notify(static_cast<int>(GameEvent::BRICK_DEATH), GetOwner());
-			//ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathSound));
 		}
 	}
 
