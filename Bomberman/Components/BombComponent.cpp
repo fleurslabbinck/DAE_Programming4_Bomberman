@@ -3,8 +3,6 @@
 #include <sdl.h>
 
 #include "Render/Renderer.h"
-#include "Objects/CollisionManager.h"
-#include "Objects/Components/ColliderComponent.h"
 #include "Objects/Components/RenderComponent.h"
 #include "../Components/HealthComponent.h"
 #include "../Components/SpriteComponent.h"
@@ -19,7 +17,7 @@ namespace dae
 		m_spriteComponent{ std::make_unique<SpriteComponent>(pOwner, "Sprites/Bomb.png", entities::EntityType::Bomb) },
 		m_fire{ fire }
 	{
-		CollisionManager::GetInstance().AddCollider(m_colliderComponentBomb.get());
+		m_collisionManager.AddCollider(m_colliderComponentBomb.get());
 
 		m_subComponents.push_back(m_colliderComponentBomb.get());
 		m_subComponents.push_back(m_healthComponent.get());
@@ -61,7 +59,7 @@ namespace dae
 	BombComponent::~BombComponent()
 	{
 		if (m_explode) for (auto& explosion : m_explosions)
-			if (CollisionManager::GetInstance().HasCollider(explosion.colliderComp.get())) CollisionManager::GetInstance().RemoveCollider(explosion.colliderComp.get());
+			if (m_collisionManager.HasCollider(explosion.colliderComp.get())) m_collisionManager.RemoveCollider(explosion.colliderComp.get());
 	}
 
 	void BombComponent::Update()
@@ -106,12 +104,10 @@ namespace dae
 
 	void BombComponent::Explode()
 	{
-		CollisionManager& collisionManager{ CollisionManager::GetInstance() };
-
-		collisionManager.RemoveCollider(m_colliderComponentBomb.get());
+		m_collisionManager.RemoveCollider(m_colliderComponentBomb.get());
 		m_spriteComponent->ToggleVisibility();
 
-		for (auto& explosion : m_explosions) collisionManager.AddCollider(explosion.colliderComp.get());
+		for (auto& explosion : m_explosions) m_collisionManager.AddCollider(explosion.colliderComp.get());
 
 		m_explode = true;
 	}

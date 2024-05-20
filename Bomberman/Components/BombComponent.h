@@ -2,6 +2,7 @@
 #define BOMBCOMPONENT_H
 
 #include "Objects/Components/BaseComponent.h"
+#include "Objects/CollisionManager.h"
 #include "Scene/Scene.h"
 
 namespace dae
@@ -42,6 +43,8 @@ namespace dae
 		BombComponent(BombComponent&& other) = delete;
 
 	private:
+		CollisionManager& m_collisionManager{ CollisionManager::GetInstance() };
+
 		std::unique_ptr<ColliderComponent> m_colliderComponentBomb;
 		std::unique_ptr<HealthComponent> m_healthComponent;
 		std::unique_ptr<SpriteComponent> m_spriteComponent;
