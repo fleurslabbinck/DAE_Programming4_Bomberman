@@ -6,6 +6,9 @@
 
 namespace dae
 {
+	//---------------------------------
+	//SCREENCOMPONENT
+	//---------------------------------
 	class ScreenComponent final : public BaseComponent, public Subject
 	{
 	public:

@@ -1,5 +1,7 @@
 #include "BomberComponent.h"
 
+#include "ServiceLocator.h"
+#include "Sound/LoggingSoundSystem.h"
 #include "Objects/GameObject.h"
 #include "Objects/CollisionManager.h"
 #include "Objects/Components/ColliderComponent.h"
@@ -12,7 +14,8 @@ namespace dae
 	BomberComponent::BomberComponent(GameObject* pOwner, Scene& scene)
 		: BaseComponent(pOwner), m_scene{ scene }
 	{
-
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathTune), "../Data/Sounds/PlaceBomb.wav");
+		
 	}
 
 	void BomberComponent::Update()
@@ -37,6 +40,8 @@ namespace dae
 		GameObject* bomb{ m_scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
 		bomb->SetParent(parent);
 		bomb->AddComponent<BombComponent>(m_fire);
+
+		ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathTune), 10);
 
 		m_bombs.push_back({ bomb });
 

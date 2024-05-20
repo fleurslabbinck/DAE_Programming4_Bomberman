@@ -173,6 +173,7 @@
     <ClCompile Include="Components\GridComponent.cpp" />
     <ClCompile Include="Components\HealthComponent.cpp" />
     <ClCompile Include="Components\HUDComponent.cpp" />
+    <ClCompile Include="Components\ScoreComponent.cpp" />
     <ClCompile Include="Components\SpriteComponent.cpp" />
     <ClCompile Include="Components\ScreenComponent.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Components\GridComponent.h" />
     <ClInclude Include="Components\HealthComponent.h" />
     <ClInclude Include="Components\HUDComponent.h" />
+    <ClInclude Include="Components\ScoreComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\ScreenComponent.h" />
     <ClInclude Include="States\GameOverScreenState.h" />

@@ -13,6 +13,7 @@
 #include "Components/GridComponent.h"
 #include "Components/HealthComponent.h"
 #include "Components/SpriteComponent.h"
+#include "Components/ScoreComponent.h"
 #include "Components/CameraComponent.h"
 #include "Components/HUDComponent.h"
 #include "Components/BomberComponent.h"
@@ -113,8 +114,14 @@ namespace dae
 		Renderer::GetInstance().SetBackgroundColor(m_inGameBackgroundColor);
 
 		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS) };
-		Player(scene, playfield);
-		Enemy(scene, playfield, entities::EntityType::Balloom);
+
+		GameObject* player{ Player(scene, playfield) };
+		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+
+		Enemy(scene, playfield, scoreComp, glm::vec2{ 5.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Balloom);
+		Enemy(scene, playfield, scoreComp, glm::vec2{ 6.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Oneal);
+		Enemy(scene, playfield, scoreComp, glm::vec2{ 7.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Doll);
+		Enemy(scene, playfield, scoreComp, glm::vec2{ 8.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Minvo);
 		FPSComponent(scene);
 	}
 
@@ -197,6 +204,7 @@ namespace dae
 		player->AddComponent<BomberComponent>(scene);
 		SpriteComponent* spriteComp{ player->AddComponent<SpriteComponent>("Sprites/Bomberman.png", entities::EntityType::Bomberman)};
 		HealthComponent* healthComp{ player->AddComponent<HealthComponent>(entities::EntityType::Bomberman, m_currentHealth) };
+		ScoreComponent* scoreComp{ player->AddComponent<ScoreComponent>() };
 		HUDComponent* hudComp{ player->AddComponent<HUDComponent>(m_font, m_fontSize) };
 		player->AddComponent<CameraComponent>(constants::GRID_COLS * constants::GRIDCELL, 0, constants::GRID_COLS * constants::GRIDCELL - constants::WINDOW_WIDTH);
 
@@ -204,6 +212,7 @@ namespace dae
 		healthComp->AddObserver(spriteComp);
 		healthComp->AddObserver(hudComp);
 		spriteComp->AddObserver(healthComp);
+		scoreComp->AddObserver(hudComp);
 
 		healthComp->AddObserver(m_state.get());
 
@@ -212,14 +221,13 @@ namespace dae
 		return player;
 	}
 
-	GameObject* BombermanManager::Enemy(Scene& scene, GameObject* parent, entities::EntityType enemyType) const
+	GameObject* BombermanManager::Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos, entities::EntityType enemyType) const
 	{
-		constexpr glm::vec2 startPos{ 9.f * constants::GRIDCELL, 1.f * constants::GRIDCELL };
 		constexpr glm::vec2 collider{ 10.f, 14.f };
 		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
 		constexpr float speed{ 20.f * constants::WINDOW_SCALE };
 
-		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>(startPos.x, startPos.y)) };
+		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
 		enemy->SetParent(parent);
 
 		ColliderComponent* enemyCollider{ enemy->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
@@ -228,28 +236,35 @@ namespace dae
 		enemy->AddComponent<BomberComponent>(scene);
 
 		SpriteComponent* spriteComp{};
+		int score{};
 
 		switch (enemyType)
 		{
 		case entities::EntityType::Balloom:
-			spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Balloom.png", enemyType, 100);
+			spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Balloom.png", enemyType);
+			score = 100;
 			break;
 		case entities::EntityType::Oneal:
-			spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Oneal.png", enemyType, 200);
+			spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Oneal.png", enemyType);
+			score = 200;
 			break;
 		case entities::EntityType::Doll:
-			spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Doll.png", enemyType, 400);
+			spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Doll.png", enemyType);
+			score = 400;
 			break;
 		case entities::EntityType::Minvo:
-			spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Minvo.png", enemyType, 800);
+			spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Minvo.png", enemyType);
+			score = 800;
 			break;
 		}
 		
 		HealthComponent* healthComp{ enemy->AddComponent<HealthComponent>(enemyType, 1) };
+		enemy->AddComponent<ScoreComponent>(score);
 
 		enemyCollider->AddObserver(healthComp);
 		healthComp->AddObserver(spriteComp);
 		spriteComp->AddObserver(healthComp);
+		spriteComp->AddObserver(scoreComp);
 
 		AddPlayerControls(enemy, PlayerController::ControlMethod::Keyboard, speed);
 

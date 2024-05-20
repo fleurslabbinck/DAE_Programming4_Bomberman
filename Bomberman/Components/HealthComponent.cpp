@@ -47,6 +47,9 @@ namespace dae
 			m_dead = true;
 			break;
 		case entities::EntityType::Balloom:
+		case entities::EntityType::Oneal:
+		case entities::EntityType::Doll:
+		case entities::EntityType::Minvo:
 			if (!gameObject->GetComponent<HealthComponent>())
 			Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
 			break;

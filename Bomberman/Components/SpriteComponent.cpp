@@ -6,7 +6,7 @@
 
 namespace dae
 {
-	SpriteComponent::SpriteComponent(GameObject* pOwner, const std::string& filename, entities::EntityType type, int score)
+	SpriteComponent::SpriteComponent(GameObject* pOwner, const std::string& filename, entities::EntityType type)
 		: BaseComponent(pOwner), m_renderComponent{ std::make_unique<RenderComponent>(pOwner, filename) }
 	{
 		m_sprite.type = type;
@@ -39,7 +39,6 @@ namespace dae
 			m_sprite.startFrameUp = { m_sprite.movementFrames, 0 };
 
 			m_sprite.enemy = true;
-			m_sprite.score = score;
 		}
 
 		if (m_sprite.type == entities::EntityType::Bomb)
@@ -147,17 +146,8 @@ namespace dae
 					m_startFrameIndex = m_sprite.startFrameLeft;
 					break;
 				case entities::EntityType::Balloom:
-					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
-					owner->SetDead();
-					break;
 				case entities::EntityType::Oneal:
-					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
-					owner->SetDead();
-					break;
 				case entities::EntityType::Doll:
-					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
-					owner->SetDead();
-					break;
 				case entities::EntityType::Minvo:
 					Notify(static_cast<int>(GameEvent::SCORE_CHANGED), owner);
 					owner->SetDead();

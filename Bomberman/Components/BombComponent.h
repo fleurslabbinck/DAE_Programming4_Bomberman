@@ -53,8 +53,10 @@ namespace dae
 
 		uint8_t m_fire;
 		uint8_t m_currentFirePhase{};
-		const uint8_t m_framesPerSecond{ 2 };
+		uint8_t m_maxFrames{ 4 };
+		const uint8_t m_framesPerSecond{ 10 };
 		float m_accumulatedTime{};
+		bool m_oppositeAnim{ false };
 
 		std::vector<Explosion> m_explosions{};
 

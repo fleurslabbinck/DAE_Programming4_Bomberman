@@ -5,6 +5,9 @@
 
 namespace dae
 {
+	//---------------------------------
+	//SCREENCOMPONENT
+	//---------------------------------
 	ScreenComponent::ScreenComponent(GameObject* pOwner, float maxTime)
 		: BaseComponent(pOwner), m_maxWaitTime{ maxTime }
 	{}

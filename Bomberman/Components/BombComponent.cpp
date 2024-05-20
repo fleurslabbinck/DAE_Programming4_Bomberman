@@ -75,10 +75,17 @@ namespace dae
 
 			if (m_accumulatedTime >= maxTime)
 			{
-				m_currentFirePhase += 1;
+				if (!m_oppositeAnim)
+				{
+					++m_currentFirePhase;
+					if (m_currentFirePhase >= m_maxFrames - 1) m_oppositeAnim = true;
+				}
+				else
+				{
+					--m_currentFirePhase;
+					if (m_currentFirePhase <= 0) KillBomb();
+				}
 				m_accumulatedTime -= maxTime;
-
-				if (m_currentFirePhase > 4) KillBomb();
 			}
 		}
 	}

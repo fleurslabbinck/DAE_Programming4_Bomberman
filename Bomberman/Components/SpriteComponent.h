@@ -26,7 +26,6 @@ namespace dae
 			bool hasDirection{ true };
 			FrameIndex startFrameLeft{}, startFrameRight{}, startFrameDown{}, startFrameUp{};
 			bool enemy{ false };
-			int score{};
 		};
 
 		void Update() override;
@@ -42,9 +41,8 @@ namespace dae
 		void SetDead();
 
 		bool IsDead() const { return m_dead; };
-		int GetScore() const { return m_sprite.score; }
 
-		explicit SpriteComponent(GameObject* pOwner, const std::string& filename, entities::EntityType type, int score = 0);
+		explicit SpriteComponent(GameObject* pOwner, const std::string& filename, entities::EntityType type);
 		SpriteComponent(const SpriteComponent& other) = delete;
 		SpriteComponent(SpriteComponent&& other) = delete;
 	private:

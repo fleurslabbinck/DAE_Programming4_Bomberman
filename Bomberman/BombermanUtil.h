@@ -49,6 +49,7 @@ namespace sound
 	enum class SoundId {
 		DeathSound,
 		DeathTune,
+		PlaceBomb,
 	};
 }
 

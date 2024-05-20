@@ -21,9 +21,8 @@ namespace dae
 
 		entities::EntityType GetEntityType() const { return m_entityType; }
 		int GetLives() const { return m_lives; }
-		int GetScore() const { return m_score; }
 
-		explicit HealthComponent(GameObject* pOwner, entities::EntityType entityType, int maxLives = 3);
+		explicit HealthComponent(GameObject* pOwner, entities::EntityType entityType, int maxLives = 2);
 		HealthComponent(const HealthComponent& other) = delete;
 		HealthComponent(HealthComponent&& other) = delete;
 
@@ -32,7 +31,6 @@ namespace dae
 		const entities::EntityType m_entityType{ entities::EntityType::Bomberman };
 		const int m_maxLives;
 		int m_lives{ m_maxLives };
-		int m_score{};
 
 		void HandleCollision(GameObject* gameObject);
 		bool IsGameOver();

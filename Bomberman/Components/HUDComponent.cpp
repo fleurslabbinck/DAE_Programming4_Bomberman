@@ -4,6 +4,7 @@
 #include "Objects/GameObject.h"
 #include "Objects/Components/TextComponent.h"
 #include "../Components/HealthComponent.h"
+#include "../Components/ScoreComponent.h"
 #include "../BombermanUtil.h"
 
 namespace dae
@@ -66,7 +67,7 @@ namespace dae
 
 	int HUDComponent::GetScore(GameObject* gameObject) const
 	{
-		return gameObject->GetComponent<HealthComponent>()->GetScore();
+		return gameObject->GetComponent<ScoreComponent>()->GetTotalScore();
 	}
 
 	void HUDComponent::HUDMessage::SetMessage()

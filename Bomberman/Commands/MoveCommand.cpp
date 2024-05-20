@@ -33,9 +33,6 @@ namespace dae
 		// get current pos
 		glm::vec2 centeredPos{ colliderComp->GetLocalCenter() };
 
-		// check entity collision
-		//if (collisionComp->HandleCollision(bottomLeft, gridComponent->GetEntitiesClose(centeredPos))) return;
-
 		glm::vec2 lastDirection{ spriteComponent->GetLastDirection() };
 
 		// reset target position if change of direction
