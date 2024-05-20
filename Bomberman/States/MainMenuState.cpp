@@ -6,11 +6,10 @@
 
 namespace dae
 {
-	GameState* MainMenuState::HandleGame(Input input)
+	void MainMenuState::OnNotify(Event event, GameObject*)
 	{
-		if (input == static_cast<int>(gameInput::GameInput::Continue)) return new PlayState();
-
-		return nullptr;
+		if (event == static_cast<int>(GameEvent::CONTINUE)) m_state = std::make_unique<PlayState>();
+		else m_state = nullptr;
 	}
 
 	void MainMenuState::OnEnter() const

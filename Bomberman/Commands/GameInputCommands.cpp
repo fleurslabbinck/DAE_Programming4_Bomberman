@@ -10,7 +10,9 @@ namespace dae
 	//---------------------------------
 	void ContinueCommand::Execute()
 	{
-		BombermanManager::GetInstance().HandleGame(static_cast<int>(gameInput::GameInput::Continue));
+		if (m_pressed) return;
+		Notify(static_cast<int>(GameEvent::CONTINUE), nullptr);
+		m_pressed = true;
 	}
 
 	//---------------------------------
@@ -18,6 +20,8 @@ namespace dae
 	//---------------------------------
 	void BackCommand::Execute()
 	{
-		BombermanManager::GetInstance().HandleGame(static_cast<int>(gameInput::GameInput::Back));
+		if (m_pressed) return;
+		Notify(static_cast<int>(GameEvent::BACK), nullptr);
+		m_pressed = true;
 	}
 }

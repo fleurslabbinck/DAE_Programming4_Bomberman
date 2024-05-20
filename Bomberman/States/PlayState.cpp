@@ -7,31 +7,31 @@
 
 namespace dae
 {
-	GameState* PlayState::HandleGame(Input input)
+	void PlayState::OnNotify(Event event, GameObject*)
 	{
-		switch (static_cast<gameInput::GameInput>(input))
+		switch (static_cast<GameEvent>(event))
 		{
-		case gameInput::GameInput::NextLevel:
+		case GameEvent::NEXT_LEVEL:
 			NextLevel();
-			return new PlayState();
+			m_state = std::make_unique<PlayState>();
 			break;
-		case gameInput::GameInput::LevelReset:
+		case GameEvent::RESET_LEVEL:
 			ResetLevel();
 			BombermanManager::GetInstance().LoseHealth();
-			return new PlayState();
+			m_state = std::make_unique<PlayState>();
 			break;
-		case gameInput::GameInput::GameWon:
+		case GameEvent::GAME_WON:
 			BombermanManager::GetInstance().ResetHealth();
 			ResetLevel();
-			return new HighScoreState();
+			m_state = std::make_unique<HighScoreState>();
 			break;
-		case gameInput::GameInput::GameOver:
+		case GameEvent::GAME_OVER:
 			BombermanManager::GetInstance().ResetHealth();
 			ResetLevel();
-			return new HighScoreState();
+			m_state = std::make_unique<HighScoreState>();
 			break;
 		default:
-			return nullptr;
+			m_state = nullptr;
 			break;
 		}
 	}

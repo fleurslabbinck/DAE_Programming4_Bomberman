@@ -18,7 +18,7 @@ namespace dae
 	{
 		for (Observer* observer : m_observers)
 		{
-			if (gameObject) observer->OnNotify(event, gameObject);
+			observer->OnNotify(event, gameObject);
 		}
 	}
 }

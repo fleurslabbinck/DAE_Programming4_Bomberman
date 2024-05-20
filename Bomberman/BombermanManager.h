@@ -22,10 +22,10 @@ namespace dae
 		BombermanManager& operator=(const BombermanManager& other) = delete;
 		BombermanManager& operator=(BombermanManager&& other) = delete;
 
-		void HandleGame(Input input) override;
+		void InitializeGame();
+		void HandleGame() override;
 		void LoadScene(GameScene scene, int level = 0);
 
-		void SetState(GameState* newState) { m_state = newState; }
 		void LoseHealth() { --m_currentHealth; }
 		void ResetHealth() { m_currentHealth = 3; }
 

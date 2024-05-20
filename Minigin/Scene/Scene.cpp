@@ -26,7 +26,14 @@ namespace dae
 
 	void Scene::RemoveAllGameObjects()
 	{
-		for (auto& gameObject : m_gameObjects) gameObject->SetDead();
+		for (auto& gameObject : m_gameObjects)
+		{
+			gameObject->SetDead();
+
+			ColliderComponent* colliderComp{ gameObject->GetComponent<ColliderComponent>() };
+
+			if (colliderComp) CollisionManager::GetInstance().RemoveCollider(colliderComp);
+		}
 	}
 
 	void Scene::FixedUpdate()

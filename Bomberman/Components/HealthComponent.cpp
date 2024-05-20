@@ -14,7 +14,6 @@ namespace dae
 	HealthComponent::HealthComponent(GameObject* pOwner, entities::EntityType entityType, int maxLives)
 		: BaseComponent(pOwner), m_entityType{ entityType }, m_maxLives { maxLives }
 	{
-		m_respawnPos = GetOwner()->GetTransform()->GetLocalPosition();
 		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathSound), "../Data/Sounds/DieSound.wav");
 		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathTune), "../Data/Sounds/BombermanDies.wav");
 	}
@@ -30,7 +29,10 @@ namespace dae
 			if (!IsGameOver())
 			{
 				ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathTune));
-				BombermanManager::GetInstance().HandleGame(static_cast<int>(gameInput::GameInput::LevelReset));
+				Notify(static_cast<int>(GameEvent::RESET_LEVEL), nullptr);
+				// send event to handle game, set timer when game restarts
+				// in sprite when death animation done: send event to hud? to set screen black displaying lives?
+				//BombermanManager::GetInstance().HandleGame(static_cast<int>(gameInput::GameInput::LevelReset));
 			}
 			break;
 		}
@@ -66,21 +68,15 @@ namespace dae
 		if (m_maxLives > 0)
 		{
 			Notify(static_cast<int>(GameEvent::HEALTH_CHANGED), GetOwner());
-			Respawn();
+			//Respawn();
 		}
 
 		if (m_lives < 0)
 		{
-			BombermanManager::GetInstance().HandleGame(static_cast<int>(gameInput::GameInput::GameOver));
+			Notify(static_cast<int>(GameEvent::GAME_OVER), nullptr);
 			return true;
 		}
 
 		return false;
-	}
-
-	void HealthComponent::Respawn()
-	{
-		GetOwner()->GetTransform()->SetLocalPosition(m_respawnPos);
-		m_dead = false;
 	}
 }

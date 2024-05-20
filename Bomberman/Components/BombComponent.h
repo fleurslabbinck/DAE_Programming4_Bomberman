@@ -37,6 +37,7 @@ namespace dae
 		void Explode();
 
 		explicit BombComponent(GameObject* pOwner, uint8_t fire);
+		~BombComponent() override;
 		BombComponent(const BombComponent& other) = delete;
 		BombComponent(BombComponent&& other) = delete;
 

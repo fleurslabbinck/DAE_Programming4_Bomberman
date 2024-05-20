@@ -34,8 +34,6 @@ namespace dae
 		int m_lives{ m_maxLives };
 		int m_score{};
 
-		glm::vec2 m_respawnPos{};
-
 		void HandleCollision(GameObject* gameObject);
 		bool IsGameOver();
 		void Respawn();

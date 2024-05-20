@@ -58,6 +58,12 @@ namespace dae
 		}
 	}
 
+	BombComponent::~BombComponent()
+	{
+		if (m_explode) for (auto& explosion : m_explosions)
+			if (CollisionManager::GetInstance().HasCollider(explosion.colliderComp.get())) CollisionManager::GetInstance().RemoveCollider(explosion.colliderComp.get());
+	}
+
 	void BombComponent::Update()
 	{
 		for (auto& component : m_subComponents) component->Update();
@@ -105,9 +111,9 @@ namespace dae
 		collisionManager.RemoveCollider(m_colliderComponentBomb.get());
 		m_spriteComponent->ToggleVisibility();
 
-		m_explode = true;
-
 		for (auto& explosion : m_explosions) collisionManager.AddCollider(explosion.colliderComp.get());
+
+		m_explode = true;
 	}
 
 	bool BombComponent::AddExplosion(int explosionCount, FireDirection dir, uint8_t midRow, uint8_t endRow)
@@ -155,7 +161,5 @@ namespace dae
 	void BombComponent::KillBomb()
 	{
 		GetOwner()->SetDead();
-
-		for (auto& explosion : m_explosions) CollisionManager::GetInstance().RemoveCollider(explosion.colliderComp.get());
 	}
 }

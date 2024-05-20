@@ -26,18 +26,6 @@ namespace scenes
 	};
 }
 
-namespace gameInput
-{
-	enum class GameInput {
-		Continue,
-		Back,
-		NextLevel,
-		LevelReset,
-		GameWon,
-		GameOver,
-	};
-}
-
 namespace entities
 {
 	enum class EntityType {
@@ -70,7 +58,12 @@ enum class GameEvent {
 	HEALTH_CHANGED,
 	SCORE_CHANGED,
 	PLAYER_RESPAWN,
+	NEXT_LEVEL,
+	RESET_LEVEL,
+	GAME_WON,
 	GAME_OVER,
+	CONTINUE,
+	BACK,
 };
 
 #endif

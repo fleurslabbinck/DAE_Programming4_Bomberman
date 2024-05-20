@@ -28,6 +28,20 @@ namespace dae
 		}
 	}
 
+	bool CollisionManager::HasCollider(ColliderComponent* collider) const
+	{
+		switch (collider->GetObjectType())
+		{
+		case ObjectType::Dynamic:
+			if (std::find(m_dynamicColliders.begin(), m_dynamicColliders.end(), collider) != m_dynamicColliders.end()) return true;
+			break;
+		case ObjectType::Static:
+			if (std::find(m_staticColliders.begin(), m_staticColliders.end(), collider) != m_staticColliders.end()) return true;
+		}
+
+		return false;
+	}
+
 	void CollisionManager::FixedUpdate()
 	{
 		for (ColliderComponent* collider : m_dynamicColliders)

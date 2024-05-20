@@ -8,11 +8,9 @@
 
 namespace dae
 {
-	GameState* HighScoreState::HandleGame(Input input)
+	void HighScoreState::OnNotify(Event event, GameObject*)
 	{
-		if (input == static_cast<int>(gameInput::GameInput::Back)) return new MainMenuState();
-
-		return nullptr;
+		if (event == static_cast<int>(GameEvent::BACK)) m_state = std::make_unique<MainMenuState>();
 	}
 
 	void HighScoreState::OnEnter() const

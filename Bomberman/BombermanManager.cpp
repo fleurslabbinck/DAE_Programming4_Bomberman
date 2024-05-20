@@ -20,19 +20,25 @@
 #include "Commands/BombCommand.h"
 #include "Commands/GameInputCommands.h"
 #include "Commands/InfoCommand.h"
+#include "States/MainMenuState.h"
 
 namespace dae
 {
-	void BombermanManager::HandleGame(Input input)
+	void BombermanManager::InitializeGame()
 	{
-		GameState* state = m_state->HandleGame(input);
+		m_state = std::make_unique<MainMenuState>();
+		m_state->OnEnter();
+	}
+
+	void BombermanManager::HandleGame()
+	{
+		std::unique_ptr<GameState> state = m_state->HandleGame();
 
 		if (state == nullptr) return;
 
-		delete m_state;
-		m_state = state;
+		m_state = std::move(state);
 
-		state->OnEnter();
+		m_state->OnEnter();
 	}
 
 	void BombermanManager::LoadScene(GameScene scene, int level)
@@ -166,6 +172,8 @@ namespace dae
 		healthComp->AddObserver(hudComp);
 		spriteComp->AddObserver(healthComp);
 
+		healthComp->AddObserver(m_state.get());
+
 		AddPlayerControls(player, PlayerController::ControlMethod::Gamepad, speed);
 
 		return player;
@@ -225,20 +233,26 @@ namespace dae
 
 	void BombermanManager::AddMenuControls(PlayerController::ControlMethod controlMethod) const
 	{
+		std::unique_ptr<ContinueCommand> continueCommand{ std::make_unique<ContinueCommand>() };
+		continueCommand->AddObserver(m_state.get());
+
+		std::unique_ptr<BackCommand> backCommand{ std::make_unique<BackCommand>() };
+		backCommand->AddObserver(m_state.get());
+
 		switch (controlMethod)
 		{
 		case PlayerController::ControlMethod::Gamepad:
 		{
 			PlayerController* player{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Gamepad) };
-			player->BindCommand(static_cast<int>(GamepadButton::A), std::make_unique<ContinueCommand>());
-			player->BindCommand(static_cast<int>(GamepadButton::B), std::make_unique<BackCommand>());
+			player->BindCommand(static_cast<int>(GamepadButton::A), std::move(continueCommand));
+			player->BindCommand(static_cast<int>(GamepadButton::B), std::move(backCommand));
 			break;
 		}
 		case PlayerController::ControlMethod::Keyboard:
 		{
 			PlayerController* player{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
-			player->BindCommand(static_cast<int>(SDL_SCANCODE_RETURN), std::make_unique<ContinueCommand>());
-			player->BindCommand(static_cast<int>(SDL_SCANCODE_BACKSPACE), std::make_unique<BackCommand>());
+			player->BindCommand(static_cast<int>(SDL_SCANCODE_RETURN), std::move(continueCommand));
+			player->BindCommand(static_cast<int>(SDL_SCANCODE_BACKSPACE), std::move(backCommand));
 			player->BindCommand(static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
 			break;
 		}

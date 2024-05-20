@@ -27,6 +27,8 @@ namespace dae
 			scene->LateUpdate();
 		}
 
+		m_gameManager->HandleGame();
+
 		if (!m_sceneToRemove.empty())
 		{
 			auto it = std::find_if(m_scenes.begin(), m_scenes.end(), [&](const std::unique_ptr<Scene>& scene) { return scene.get()->GetName() == m_sceneToRemove; });

@@ -14,7 +14,7 @@ namespace dae
 		InfoCommand() : Command() {}
 		void Execute() override;
 	private:
-		inline static bool m_infoAsked{ false };
+		bool m_infoAsked{ false };
 	};
 }
 #endif

@@ -14,7 +14,8 @@ namespace dae
 		MainMenuState& operator=(const MainMenuState& other) = delete;
 		MainMenuState& operator=(MainMenuState&& other) = delete;
 
-		GameState* HandleGame(Input input) override;
+		void OnNotify(Event event, GameObject* gameObject) override;
+		std::unique_ptr<GameState> HandleGame() override { return std::move(m_state); }
 		void OnEnter() const override;
 	};
 }
