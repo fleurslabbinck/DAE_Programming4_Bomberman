@@ -14,7 +14,8 @@ namespace dae
 	BomberComponent::BomberComponent(GameObject* pOwner, Scene& scene)
 		: BaseComponent(pOwner), m_scene{ scene }
 	{
-		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathTune), "../Data/Sounds/PlaceBomb.wav");
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::PlaceBomb), "../Data/Sounds/PlaceBomb.wav");
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::Explosion), "../Data/Sounds/Explosion.wav");
 		
 	}
 
@@ -41,7 +42,7 @@ namespace dae
 		bomb->SetParent(parent);
 		bomb->AddComponent<BombComponent>(m_fire);
 
-		ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathTune), 10);
+		ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::PlaceBomb), 10);
 
 		m_bombs.push_back({ bomb });
 
@@ -50,6 +51,8 @@ namespace dae
 
 	void BomberComponent::ExplodeBomb()
 	{
+		ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::Explosion), 20);
+
 		BombComponent* bombComp{ m_bombs.front().bombObj->GetComponent<BombComponent>()};
 		if (bombComp) bombComp->Explode();
 
@@ -58,6 +61,8 @@ namespace dae
 
 	void BomberComponent::ExplodeBombs()
 	{
+		ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::Explosion), 20);
+
 		for (Bomb& bomb : m_bombs)
 		{
 			BombComponent* bombComp{ bomb.bombObj->GetComponent<BombComponent>() };
