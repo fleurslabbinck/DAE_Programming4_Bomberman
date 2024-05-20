@@ -118,7 +118,7 @@ namespace dae
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
 
-		Enemy(scene, playfield, scoreComp, glm::vec2{ 5.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Balloom);
+		Enemy(scene, playfield, scoreComp, glm::vec2{ 5.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Balloom, true);
 		Enemy(scene, playfield, scoreComp, glm::vec2{ 6.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Oneal);
 		Enemy(scene, playfield, scoreComp, glm::vec2{ 7.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Doll);
 		Enemy(scene, playfield, scoreComp, glm::vec2{ 8.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Minvo);
@@ -221,7 +221,7 @@ namespace dae
 		return player;
 	}
 
-	GameObject* BombermanManager::Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos, entities::EntityType enemyType) const
+	GameObject* BombermanManager::Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos, entities::EntityType enemyType, bool player) const
 	{
 		constexpr glm::vec2 collider{ 10.f, 14.f };
 		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
@@ -266,7 +266,7 @@ namespace dae
 		spriteComp->AddObserver(healthComp);
 		spriteComp->AddObserver(scoreComp);
 
-		AddPlayerControls(enemy, PlayerController::ControlMethod::Keyboard, speed);
+		if (player) AddPlayerControls(enemy, PlayerController::ControlMethod::Keyboard, speed);
 
 		return enemy;
 	}

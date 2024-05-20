@@ -47,6 +47,8 @@ namespace entities
 namespace sound
 {
 	enum class SoundId {
+		HorizontalStep,
+		VerticalStep,
 		DeathSound,
 		DeathTune,
 		PlaceBomb,

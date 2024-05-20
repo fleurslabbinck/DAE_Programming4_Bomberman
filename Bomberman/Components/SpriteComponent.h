@@ -55,9 +55,13 @@ namespace dae
 		FrameIndex m_startFrameIndex{};
 		int m_currentIndex{};
 		float m_accumulatedTime{};
+		uint8_t m_stepCount{};
+		const uint8_t m_maxStepSkip{ 3 };
 
 		bool m_isVisible{ true };
 		bool m_dead{ false };
+
+		void PlayStepSound();
 	};
 }
 #endif

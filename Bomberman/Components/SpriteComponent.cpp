@@ -3,6 +3,8 @@
 #include "Render/Renderer.h"
 #include "TimeManager.h"
 #include "Objects/GameObject.h"
+#include "ServiceLocator.h"
+#include "Sound/LoggingSoundSystem.h"
 
 namespace dae
 {
@@ -60,6 +62,9 @@ namespace dae
 
 			m_sprite.hasDirection = false;
 		}
+
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::HorizontalStep), "../Data/Sounds/HorizontalStep.wav");
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::VerticalStep), "../Data/Sounds/VerticalStep.wav");
 	}
 
 	void SpriteComponent::Update()
@@ -121,6 +126,8 @@ namespace dae
 		{
 			m_currentIndex = m_startFrameIndex.colIdx + (m_currentIndex + 1) % m_sprite.movementFrames;
 			m_accumulatedTime -= maxTime;
+
+			PlayStepSound();
 		}
 	}
 
@@ -166,5 +173,18 @@ namespace dae
 		m_startFrameIndex.colIdx = 0;
 		m_startFrameIndex.rowIdx = m_sprite.rows - 1;
 		m_lastDirection = {};
+	}
+
+	void SpriteComponent::PlayStepSound()
+	{
+		if (m_sprite.type != entities::EntityType::Bomberman) return;
+
+		m_stepCount = ++m_stepCount % m_maxStepSkip;
+
+		if (m_stepCount == m_maxStepSkip - 1)
+		{
+			if (m_lastDirection.x * m_lastDirection.x > 0.f) ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::HorizontalStep), 10);
+			if (m_lastDirection.y * m_lastDirection.y > 0.f) ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::VerticalStep), 10);
+		}
 	}
 }
