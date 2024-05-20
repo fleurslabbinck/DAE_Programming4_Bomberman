@@ -28,11 +28,8 @@ namespace dae
 		case static_cast<int>(GameEvent::PLAYER_RESPAWN):
 			if (!IsGameOver())
 			{
-				ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathTune));
+				ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathTune), 10);
 				Notify(static_cast<int>(GameEvent::RESET_LEVEL), nullptr);
-				// send event to handle game, set timer when game restarts
-				// in sprite when death animation done: send event to hud? to set screen black displaying lives?
-				//BombermanManager::GetInstance().HandleGame(static_cast<int>(gameInput::GameInput::LevelReset));
 			}
 			break;
 		}
@@ -46,7 +43,7 @@ namespace dae
 		{
 		case entities::EntityType::Bomberman:
 			Notify(static_cast<int>(GameEvent::PLAYER_DEATH), GetOwner());
-			ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathSound));
+			ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathSound), 10);
 			m_dead = true;
 			break;
 		case entities::EntityType::Balloom:

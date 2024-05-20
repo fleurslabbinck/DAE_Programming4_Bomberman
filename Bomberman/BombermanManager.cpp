@@ -16,11 +16,13 @@
 #include "Components/CameraComponent.h"
 #include "Components/HUDComponent.h"
 #include "Components/BomberComponent.h"
+#include "Components/StageScreenComponent.h"
 #include "Commands/MoveCommand.h"
 #include "Commands/BombCommand.h"
 #include "Commands/GameInputCommands.h"
 #include "Commands/InfoCommand.h"
 #include "States/MainMenuState.h"
+#include "States/HighScoreState.h"
 
 namespace dae
 {
@@ -41,12 +43,14 @@ namespace dae
 		m_state->OnEnter();
 	}
 
-	void BombermanManager::LoadScene(GameScene scene, int level)
+	void BombermanManager::LoadScene(GameScene scene)
 	{
 		if (!m_currentScene.empty())
 		{
+			CollisionManager::GetInstance().RemoveAllColliders();
 			SceneManager::GetInstance().RemoveScene(m_currentScene);
 			InputManager::GetInstance().SetUpdatePlayerControllersFlag();
+			Renderer::GetInstance().SetViewport(SDL_Rect{ 0, 0, constants::WINDOW_WIDTH, constants::WINDOW_HEIGHT });
 		}
 
 		switch (static_cast<scenes::Scenes>(scene))
@@ -54,8 +58,11 @@ namespace dae
 		case scenes::Scenes::Menu:
 			LoadMenuScene();
 			break;
+		case scenes::Scenes::StageScreen:
+			LoadStageScreen();
+			break;
 		case scenes::Scenes::Level:
-			LoadLevel(level);
+			LoadLevel();
 			break;
 		case scenes::Scenes::HighScore:
 			LoadHighScoreScene();
@@ -75,11 +82,32 @@ namespace dae
 		AddMenuControls(PlayerController::ControlMethod::Keyboard);
 	}
 
-	void BombermanManager::LoadLevel(int level)
+	void BombermanManager::LoadStageScreen()
 	{
-		m_currentScene = "Level " + std::to_string(level);
+		m_currentScene = "StageScreen " + std::to_string(m_currentLevel);
 
 		auto& scene = dae::SceneManager::GetInstance().CreateScene(m_currentScene);
+
+		Renderer::GetInstance().SetBackgroundColor(m_stageBackgroundColor);
+
+		GameObject* stage{ scene.AddGameObject(std::make_unique<GameObject>(0.f, 0.f)) };
+		TextComponent* textComp{ stage->AddComponent<TextComponent>(m_font, m_fontSize, "STAGE " + std::to_string(m_currentLevel)) };
+
+		const glm::vec2 textureSize{ textComp->GetRenderComponent()->GetTexture()->GetSize()};
+
+		stage->SetPosition(constants::WINDOW_WIDTH / 2.f - textureSize.x / 2.f, constants::WINDOW_HEIGHT / 2.f - textureSize.y / 2.f);
+
+		StageScreenComponent* stageScreenComp{ stage->AddComponent<StageScreenComponent>(2.f) };
+		stageScreenComp->AddObserver(m_state.get());
+	}
+
+	void BombermanManager::LoadLevel()
+	{
+		m_currentScene = "Level " + std::to_string(m_currentLevel);
+
+		auto& scene = dae::SceneManager::GetInstance().CreateScene(m_currentScene);
+
+		Renderer::GetInstance().SetBackgroundColor(m_inGameBackgroundColor);
 
 		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS) };
 		Player(scene, playfield);
@@ -95,7 +123,9 @@ namespace dae
 
 		auto& scene = dae::SceneManager::GetInstance().CreateScene(m_currentScene);
 
-		GameObject* highScoreText{ scene.AddGameObject(std::make_unique<GameObject>(0.f, 0.f)) };
+		Renderer::GetInstance().SetBackgroundColor(m_stageBackgroundColor);
+
+		GameObject* highScoreText{ scene.AddGameObject(std::make_unique<GameObject>(10.f, 10.f)) };
 		highScoreText->AddComponent<TextComponent>(m_font, m_fontSize, "HIGH SCORES:");
 
 		AddMenuControls(PlayerController::ControlMethod::Gamepad);

@@ -14,7 +14,7 @@ namespace dae
 		LoggingSoundSystem(std::unique_ptr<SoundSystem>&& soundSystem);
 
 		void LoadSoundFX(int id, const std::string& path) override;
-		void PlaySoundFX(int id) override;
+		void PlaySoundFX(int id, int volume) override;
 		void UpdateSoundFX() override;
 		void SignalEnd() override;
 

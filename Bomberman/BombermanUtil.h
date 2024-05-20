@@ -21,6 +21,7 @@ namespace scenes
 {
 	enum class Scenes {
 		Menu,
+		StageScreen,
 		Level,
 		HighScore,
 	};
@@ -58,6 +59,7 @@ enum class GameEvent {
 	HEALTH_CHANGED,
 	SCORE_CHANGED,
 	PLAYER_RESPAWN,
+	START_LEVEL,
 	NEXT_LEVEL,
 	RESET_LEVEL,
 	GAME_WON,

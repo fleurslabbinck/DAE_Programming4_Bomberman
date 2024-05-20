@@ -17,7 +17,7 @@ namespace dae
 
 		void AddCollider(ColliderComponent* collider);
 		void RemoveCollider(ColliderComponent* collider);
-		bool HasCollider(ColliderComponent* collider) const;
+		void RemoveAllColliders();
 
 		void FixedUpdate();
 

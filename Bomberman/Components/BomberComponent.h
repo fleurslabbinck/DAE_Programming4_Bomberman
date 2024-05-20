@@ -17,7 +17,7 @@ namespace dae
 	class BomberComponent final : public BaseComponent
 	{
 	public:
-		void Update();
+		void Update() override;
 
 		bool CanPlaceBomb() const { return m_bombs.size() < m_maxBombs; }
 		void DropBomb(GameObject* parent, const glm::vec2& pos);

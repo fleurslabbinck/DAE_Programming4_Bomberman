@@ -58,8 +58,7 @@ namespace dae
 
 	BombComponent::~BombComponent()
 	{
-		if (m_explode) for (auto& explosion : m_explosions)
-			if (m_collisionManager.HasCollider(explosion.colliderComp.get())) m_collisionManager.RemoveCollider(explosion.colliderComp.get());
+		if (m_explode) for (auto& explosion : m_explosions) m_collisionManager.RemoveCollider(explosion.colliderComp.get());
 	}
 
 	void BombComponent::Update()

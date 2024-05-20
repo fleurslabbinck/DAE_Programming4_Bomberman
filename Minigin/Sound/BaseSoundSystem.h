@@ -7,6 +7,7 @@ namespace dae
 {
 	struct PlayMessage {
 		int id;
+		int volume;
 	};
 
 	//---------------------------------
@@ -23,7 +24,7 @@ namespace dae
 		virtual BaseSoundSystem& operator=(BaseSoundSystem&& other) = delete;
 
 		virtual void LoadSoundFX(int id, const std::string& path) = 0;
-		virtual void PlaySoundFX(int id) = 0;
+		virtual void PlaySoundFX(int id, int volume) = 0;
 		virtual void UpdateSoundFX() = 0;
 		virtual void SignalEnd() = 0;
 	};

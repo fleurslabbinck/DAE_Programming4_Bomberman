@@ -24,17 +24,28 @@ namespace dae
 
 		void InitializeGame();
 		void HandleGame() override;
-		void LoadScene(GameScene scene, int level = 0);
+		void LoadScene(GameScene scene);
 
 		void LoseHealth() { --m_currentHealth; }
-		void ResetHealth() { m_currentHealth = 3; }
+		void ResetHealth() { m_currentHealth = m_maxHealth; }
+
+		void NextLevel() { ++m_currentLevel; }
+		void ResetLevel() { m_currentLevel = 0; }
+		bool GameWon() { return m_currentLevel >= m_maxLevels; }
 
 	private:
 		friend class Singleton<BombermanManager>;
 		BombermanManager() = default;
 		~BombermanManager() = default;
 
-		int m_currentHealth{ 1 };
+		const uint8_t m_maxHealth{ 2 };
+		uint8_t m_currentHealth{ m_maxHealth };
+
+		const uint8_t m_maxLevels{ 3 };
+		uint8_t m_currentLevel{};
+
+		SDL_Color m_inGameBackgroundColor{ 176, 176, 176 };
+		SDL_Color m_stageBackgroundColor{ 0, 0, 0 };
 
 		const int m_fontSize{ 8 };
 		const std::string m_font{ "nintendo-nes-font.otf" };
@@ -42,7 +53,8 @@ namespace dae
 		const SDL_Color m_backgroundColor{ 0, 147, 0 };
 
 		void LoadMenuScene();
-		void LoadLevel(int level);
+		void LoadStageScreen();
+		void LoadLevel();
 		void LoadHighScoreScene();
 
 		GameObject* Playfield(Scene& scene, int totalCols, int totalRows) const;

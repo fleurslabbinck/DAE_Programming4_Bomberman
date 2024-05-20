@@ -37,7 +37,7 @@ namespace dae
 			m_soundFXs.emplace(id, ResourceManager::GetInstance().LoadSoundFX(path));
 		}
 
-		void PlaySoundFX(int id)
+		void PlaySoundFX(int id, int volume)
 		{
 			std::deque<PlayMessage> currentMessages = m_pendingMessages;
 
@@ -48,7 +48,7 @@ namespace dae
 
 			std::lock_guard lock(m_mutex);
 
-			m_pendingMessages.push_back(PlayMessage{ id });
+			m_pendingMessages.push_back(PlayMessage{ id, volume });
 
 			if (m_promiseSet) return;
 
@@ -81,6 +81,7 @@ namespace dae
 					// Play sounds untill empty
 					while (!currentMessages.empty())
 					{
+						Mix_Volume(static_cast<int>(ChannelUse::SoundFX), currentMessages.front().volume);
 						if (Mix_PlayChannel(static_cast<int>(ChannelUse::SoundFX), m_soundFXs[currentMessages.front().id]->GetSoundFX(), 0) == -1)
 						{
 							Mix_FreeChunk(m_soundFXs[currentMessages.front().id]->GetSoundFX());
@@ -138,9 +139,9 @@ namespace dae
 		m_pImpl->LoadSoundFX(id, path);
 	}
 
-	void SoundSystem::PlaySoundFX(int id)
+	void SoundSystem::PlaySoundFX(int id, int volume)
 	{
-		m_pImpl->PlaySoundFX(id);
+		m_pImpl->PlaySoundFX(id, volume);
 	}
 
 	void SoundSystem::UpdateSoundFX()

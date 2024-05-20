@@ -19,9 +19,6 @@ namespace dae
 		void OnEnter() const override;
 
 	private:
-		const int m_maxLevels{ 3 };
-		inline static int m_currentLevel{};
-
 		void NextLevel();
 		void ResetLevel();
 	};

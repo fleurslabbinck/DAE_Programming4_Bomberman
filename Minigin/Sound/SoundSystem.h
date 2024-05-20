@@ -17,7 +17,7 @@ namespace dae
 		~SoundSystem();
 		
 		void LoadSoundFX(int id, const std::string& path) override;
-		void PlaySoundFX(int id) override;
+		void PlaySoundFX(int id, int volume) override;
 		void UpdateSoundFX() override;
 		void SignalEnd() override;
 

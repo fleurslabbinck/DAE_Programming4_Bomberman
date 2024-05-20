@@ -16,9 +16,9 @@ namespace dae
 		std::cout << "Loading " << id << " from path: " << path << std::endl;
 	}
 
-	void LoggingSoundSystem::PlaySoundFX(int id)
+	void LoggingSoundSystem::PlaySoundFX(int id, int volume)
 	{
-		m_SoundSystemPtr->PlaySoundFX(id);
+		m_SoundSystemPtr->PlaySoundFX(id, volume);
 		std::cout << "Added " << id << " to the queue\n";
 	}
 

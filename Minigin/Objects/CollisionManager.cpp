@@ -21,25 +21,17 @@ namespace dae
 		switch (collider->GetObjectType())
 		{
 		case ObjectType::Dynamic:
-			std::erase(m_dynamicColliders, collider);
+			if (std::find(m_dynamicColliders.begin(), m_dynamicColliders.end(), collider) != m_dynamicColliders.end()) std::erase(m_dynamicColliders, collider);
 			break;
 		case ObjectType::Static:
-			std::erase(m_staticColliders, collider);
+			if (std::find(m_staticColliders.begin(), m_staticColliders.end(), collider) != m_staticColliders.end())std::erase(m_staticColliders, collider);
 		}
 	}
 
-	bool CollisionManager::HasCollider(ColliderComponent* collider) const
+	void CollisionManager::RemoveAllColliders()
 	{
-		switch (collider->GetObjectType())
-		{
-		case ObjectType::Dynamic:
-			if (std::find(m_dynamicColliders.begin(), m_dynamicColliders.end(), collider) != m_dynamicColliders.end()) return true;
-			break;
-		case ObjectType::Static:
-			if (std::find(m_staticColliders.begin(), m_staticColliders.end(), collider) != m_staticColliders.end()) return true;
-		}
-
-		return false;
+		m_dynamicColliders.clear();
+		m_staticColliders.clear();
 	}
 
 	void CollisionManager::FixedUpdate()
