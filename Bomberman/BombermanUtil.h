@@ -23,6 +23,7 @@ namespace scenes
 		Menu,
 		StageScreen,
 		Level,
+		GameOverScreen,
 		HighScore,
 	};
 }

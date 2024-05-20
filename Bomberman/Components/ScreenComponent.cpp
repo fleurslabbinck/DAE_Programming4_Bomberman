@@ -1,15 +1,15 @@
-#include "StageScreenComponent.h"
+#include "ScreenComponent.h"
 
 #include "TimeManager.h"
 #include "../BombermanUtil.h"
 
 namespace dae
 {
-	StageScreenComponent::StageScreenComponent(GameObject* pOwner, float maxTime)
+	ScreenComponent::ScreenComponent(GameObject* pOwner, float maxTime)
 		: BaseComponent(pOwner), m_maxWaitTime{ maxTime }
 	{}
 
-	void StageScreenComponent::Update()
+	void ScreenComponent::Update()
 	{
 		const float timePassed{ TimeManager::GetInstance().GetDeltaTime() };
 
@@ -17,7 +17,7 @@ namespace dae
 
 		if (m_accumulatedTime >= m_maxWaitTime)
 		{
-			Notify(static_cast<int>(GameEvent::START_LEVEL), nullptr);
+			Notify(static_cast<int>(GameEvent::CONTINUE), nullptr);
 		}
 	}
 }

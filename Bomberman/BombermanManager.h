@@ -53,7 +53,7 @@ namespace dae
 		const SDL_Color m_backgroundColor{ 0, 147, 0 };
 
 		void LoadMenuScene();
-		void LoadStageScreen();
+		void LoadScreen(const std::string& title);
 		void LoadLevel();
 		void LoadHighScoreScene();
 

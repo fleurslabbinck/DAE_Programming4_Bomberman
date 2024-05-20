@@ -2,9 +2,9 @@
 
 #include "../BombermanUtil.h"
 #include "../BombermanManager.h"
-#include "MainMenuState.h"
 #include "HighScoreState.h"
 #include "StageScreenState.h"
+#include "GameOverScreenState.h"
 
 namespace dae
 {
@@ -23,7 +23,7 @@ namespace dae
 			break;
 		case GameEvent::GAME_OVER:
 			ResetLevel();
-			m_state = std::make_unique<HighScoreState>();
+			m_state = std::make_unique<GameOverScreenState>();
 			break;
 		default:
 			m_state = nullptr;

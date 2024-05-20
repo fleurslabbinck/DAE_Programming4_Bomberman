@@ -15,7 +15,6 @@ namespace dae
 		StageScreenState& operator=(StageScreenState&& other) = delete;
 
 		void OnNotify(Event event, GameObject* gameObject) override;
-		std::unique_ptr<GameState> HandleGame() override { return std::move(m_state); }
 		void OnEnter() const override;
 	};
 }

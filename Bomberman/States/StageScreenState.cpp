@@ -8,7 +8,7 @@ namespace dae
 {
 	void StageScreenState::OnNotify(Event event, GameObject*)
 	{
-		if (event == static_cast<int>(GameEvent::START_LEVEL))
+		if (event == static_cast<int>(GameEvent::CONTINUE))
 		{
 			m_state = std::make_unique<PlayState>();
 		}

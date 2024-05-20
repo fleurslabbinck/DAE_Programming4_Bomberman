@@ -174,8 +174,9 @@
     <ClCompile Include="Components\HealthComponent.cpp" />
     <ClCompile Include="Components\HUDComponent.cpp" />
     <ClCompile Include="Components\SpriteComponent.cpp" />
-    <ClCompile Include="Components\StageScreenComponent.cpp" />
+    <ClCompile Include="Components\ScreenComponent.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="States\GameOverScreenState.cpp" />
     <ClCompile Include="States\HighScoreState.cpp" />
     <ClCompile Include="States\MainMenuState.cpp" />
     <ClCompile Include="States\PlayState.cpp" />
@@ -196,7 +197,8 @@
     <ClInclude Include="Components\HealthComponent.h" />
     <ClInclude Include="Components\HUDComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
-    <ClInclude Include="Components\StageScreenComponent.h" />
+    <ClInclude Include="Components\ScreenComponent.h" />
+    <ClInclude Include="States\GameOverScreenState.h" />
     <ClInclude Include="States\HighScoreState.h" />
     <ClInclude Include="States\MainMenuState.h" />
     <ClInclude Include="States\PlayState.h" />

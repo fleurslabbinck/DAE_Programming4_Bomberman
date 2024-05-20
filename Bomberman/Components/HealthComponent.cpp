@@ -49,7 +49,6 @@ namespace dae
 		case entities::EntityType::Balloom:
 			if (!gameObject->GetComponent<HealthComponent>())
 			Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
-			//ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathSound));
 			break;
 		case entities::EntityType::Brick:
 			if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Explosion)
@@ -65,7 +64,6 @@ namespace dae
 		if (m_maxLives > 0)
 		{
 			Notify(static_cast<int>(GameEvent::HEALTH_CHANGED), GetOwner());
-			//Respawn();
 		}
 
 		if (m_lives < 0)

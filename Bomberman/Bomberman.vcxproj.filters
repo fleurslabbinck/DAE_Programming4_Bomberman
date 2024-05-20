@@ -69,7 +69,10 @@
     <ClCompile Include="States\StageScreenState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\StageScreenComponent.cpp">
+    <ClCompile Include="Components\ScreenComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="States\GameOverScreenState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,7 +131,10 @@
     <ClInclude Include="States\StageScreenState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\StageScreenComponent.h">
+    <ClInclude Include="Components\ScreenComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="States\GameOverScreenState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
