@@ -30,6 +30,7 @@ namespace dae
 {
 	void BombermanManager::InitializeGame()
 	{
+		srand(static_cast<unsigned int>(time(0)));
 		m_state = std::make_unique<MainMenuState>();
 		m_state->OnEnter();
 	}

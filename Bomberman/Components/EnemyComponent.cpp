@@ -24,20 +24,30 @@ namespace dae
 		case entities::EntityType::Balloom:
 			filepath = "Sprites/Balloom.png";
 			score = 100;
+			m_turnChance = 1;
+			m_speed = 10;
 			break;
 		case entities::EntityType::Oneal:
 			filepath = "Sprites/Oneal.png";
 			score = 200;
+			m_turnChance = 8;
+			m_speed = 15;
 			break;
 		case entities::EntityType::Doll:
 			filepath = "Sprites/Doll.png";
 			score = 400;
+			m_turnChance = 8;
+			m_speed = 20;
 			break;
 		case entities::EntityType::Minvo:
 			filepath = "Sprites/Minvo.png";
 			score = 800;
+			m_turnChance = 1;
+			m_speed = 25;
 			break;
 		}
+
+		m_speed *= constants::WINDOW_SCALE;
 
 		m_spriteComponent = std::make_unique<SpriteComponent>(pOwner, filepath, enemyType);
 		m_scoreComponent = std::make_unique<ScoreComponent>(pOwner,score);
@@ -50,16 +60,14 @@ namespace dae
 		m_spriteComponent->AddObserver(scoreComp);
 
 		m_gridComponent = pOwner->GetParent()->GetComponent<GridComponent>();
-	}
 
-	EnemyComponent::~EnemyComponent()
-	{
-		//m_collisionManager.RemoveCollider(m_colliderComponent.get());
+		m_targetPos = m_colliderComponent->GetLocalCenter();
 	}
 
 	void EnemyComponent::Update()
 	{
 		m_spriteComponent->Update();
+		Move();
 	}
 
 	void EnemyComponent::Render(const glm::vec2& pos) const
@@ -69,7 +77,71 @@ namespace dae
 
 	void EnemyComponent::Move()
 	{
+		if (m_spriteComponent->IsDead()) return;
 
+		const glm::vec2 offset{ m_direction * m_speed * TimeManager::GetInstance().GetDeltaTime() };
+
+		glm::vec2 centeredPos{ m_colliderComponent->GetLocalCenter() };
+		const float distToTarget{ glm::distance(centeredPos, m_targetPos) };
+		constexpr float targetOffset{ 0.3f };
+
+		if (distToTarget <= targetOffset)
+		{
+			m_targetPos = m_gridComponent->GetNextPosition(centeredPos, m_direction);
+
+			if (!CollisionManager::GetInstance().CanMove(m_colliderComponent.get(), m_targetPos) || Turn())
+			{
+				m_direction = GetRandomDirection(centeredPos);
+				m_spriteComponent->SetDirection(m_direction);
+			}
+		}
+
+		// move object
+		GetOwner()->GetTransform()->Translate(offset);
+		m_spriteComponent->AnimateMovement();
+	}
+
+	glm::vec2 EnemyComponent::GetRandomDirection(const glm::vec2& centeredPos)
+	{
+		constexpr int amtDirections{ 4 };
+		int randNr{};
+		glm::vec2 direction{};
+
+		do
+		{
+			randNr = rand() % amtDirections;
+
+			switch (randNr)
+			{
+			case 0:
+				direction = {-1, 0};
+				break;
+			case 1:
+				direction = { 1, 0 };
+				break;
+			case 2:
+				direction = { 0, -1 };
+				break;
+			case 3:
+				direction = { 0, 1 };
+				break;
+			}
+
+			m_targetPos = m_gridComponent->GetNextPosition(centeredPos, direction);
+
+		} while (!CollisionManager::GetInstance().CanMove(m_colliderComponent.get(), m_targetPos));
+
+		return direction;
+	}
+
+	bool EnemyComponent::Turn() const
+	{
+		const int randNr{ rand() % m_maxChance };
+		bool shouldTurn{ false };
+
+		if (randNr < m_turnChance) shouldTurn = true;
+
+		return shouldTurn;
 	}
 
 	void EnemyComponent::Killed()

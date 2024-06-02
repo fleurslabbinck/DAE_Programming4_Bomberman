@@ -29,14 +29,18 @@ namespace dae
 		int GetScore() const;
 
 		explicit EnemyComponent(GameObject* pOwner, ScoreComponent* scoreComp, entities::EntityType enemyType, glm::vec2 collider, glm::vec2 offset);
-		~EnemyComponent();
+		~EnemyComponent() = default;
 		EnemyComponent(const EnemyComponent& other) = delete;
 		EnemyComponent(EnemyComponent&& other) = delete;
 
 	private:
 		bool m_killed{ false };
+		int m_turnChance{};
+		const int m_maxChance{ 10 };
+		float m_speed{};
 		entities::EntityType m_EntityType;
 		glm::vec2 m_direction{};
+		glm::vec2 m_targetPos{};
 
 		CollisionManager& m_collisionManager{ CollisionManager::GetInstance() };
 
@@ -45,6 +49,9 @@ namespace dae
 		std::unique_ptr<HealthComponent> m_healthComponent;
 		std::unique_ptr<SpriteComponent> m_spriteComponent{};
 		std::unique_ptr<ScoreComponent> m_scoreComponent{};
+
+		glm::vec2 GetRandomDirection(const glm::vec2& centeredPos);
+		bool Turn() const;
 	};
 }
 #endif
