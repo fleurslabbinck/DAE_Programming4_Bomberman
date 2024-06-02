@@ -60,7 +60,8 @@ namespace dae
 
 		GameObject* Playfield(Scene& scene, int totalCols, int totalRows) const;
 		GameObject* Player(Scene& scene, GameObject* parent) const;
-		GameObject* Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos, entities::EntityType enemyType, bool player = false) const;
+		GameObject* Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos, entities::EntityType enemyType) const;
+		GameObject* EnemyPlayer(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos) const;
 		GameObject* FPSComponent(Scene& scene) const;
 
 		void AddMenuControls(PlayerController::ControlMethod controlMethod) const;

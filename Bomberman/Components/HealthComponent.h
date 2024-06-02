@@ -22,13 +22,14 @@ namespace dae
 		entities::EntityType GetEntityType() const { return m_entityType; }
 		int GetLives() const { return m_lives; }
 
-		explicit HealthComponent(GameObject* pOwner, entities::EntityType entityType, int maxLives = 2);
+		explicit HealthComponent(GameObject* pOwner, entities::EntityType entityType, int maxLives = 2, bool enemyPlayer = false);
 		HealthComponent(const HealthComponent& other) = delete;
 		HealthComponent(HealthComponent&& other) = delete;
 
 	private:
 		bool m_dead{ false };
-		const entities::EntityType m_entityType{ entities::EntityType::Bomberman };
+		bool m_enemyPlayer{ false };
+		const entities::EntityType m_entityType;
 		const int m_maxLives;
 		int m_lives{ m_maxLives };
 

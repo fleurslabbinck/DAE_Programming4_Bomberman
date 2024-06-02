@@ -119,7 +119,9 @@ namespace dae
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
 
-		Enemy(scene, playfield, scoreComp, glm::vec2{ 5.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Balloom, true);
+		EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 1.f * constants::GRIDCELL });
+
+		Enemy(scene, playfield, scoreComp, glm::vec2{ 5.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Balloom);
 		Enemy(scene, playfield, scoreComp, glm::vec2{ 6.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Oneal);
 		Enemy(scene, playfield, scoreComp, glm::vec2{ 7.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Doll);
 		Enemy(scene, playfield, scoreComp, glm::vec2{ 8.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Minvo);
@@ -222,54 +224,43 @@ namespace dae
 		return player;
 	}
 
-	GameObject* BombermanManager::Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos, entities::EntityType enemyType, bool) const
+	GameObject* BombermanManager::Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos, entities::EntityType enemyType) const
 	{
 		constexpr glm::vec2 collider{ 10.f, 14.f };
 		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
-		//constexpr float speed{ 20.f * constants::WINDOW_SCALE };
 
 		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
 		enemy->SetParent(parent);
 
-		//ColliderComponent* enemyCollider{ enemy->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
-		//CollisionManager::GetInstance().AddCollider(enemyCollider);
-		//
-		////enemy->AddComponent<BomberComponent>(scene);
-		//
-		//SpriteComponent* spriteComp{};
-		//int score{};
-		//
-		//switch (enemyType)
-		//{
-		//case entities::EntityType::Balloom:
-		//	spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Balloom.png", enemyType);
-		//	score = 100;
-		//	break;
-		//case entities::EntityType::Oneal:
-		//	spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Oneal.png", enemyType);
-		//	score = 200;
-		//	break;
-		//case entities::EntityType::Doll:
-		//	spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Doll.png", enemyType);
-		//	score = 400;
-		//	break;
-		//case entities::EntityType::Minvo:
-		//	spriteComp = enemy->AddComponent<SpriteComponent>("Sprites/Minvo.png", enemyType);
-		//	score = 800;
-		//	break;
-		//}
-		//
-		//HealthComponent* healthComp{ enemy->AddComponent<HealthComponent>(enemyType, 1) };
-		//enemy->AddComponent<ScoreComponent>(score);
-		//
-		//enemyCollider->AddObserver(healthComp);
-		//healthComp->AddObserver(spriteComp);
-		//spriteComp->AddObserver(healthComp);
-		//spriteComp->AddObserver(scoreComp);
-
 		enemy->AddComponent<EnemyComponent>(scoreComp, enemyType, collider, offset);
 
-		//if (player) AddPlayerControls(enemy, PlayerController::ControlMethod::Keyboard, speed);
+		return enemy;
+	}
+
+	GameObject* BombermanManager::EnemyPlayer(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos) const
+	{
+		constexpr glm::vec2 collider{ 10.f, 14.f };
+		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
+		constexpr float speed{ 20.f * constants::WINDOW_SCALE };
+
+		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
+		enemy->SetParent(parent);
+
+		ColliderComponent* enemyCollider{ enemy->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
+		CollisionManager::GetInstance().AddCollider(enemyCollider);
+		
+		//enemy->AddComponent<BomberComponent>(scene);
+		
+		SpriteComponent* spriteComp{ enemy->AddComponent<SpriteComponent>("Sprites/Balloom.png", entities::EntityType::Balloom) };
+		HealthComponent* healthComp{ enemy->AddComponent<HealthComponent>(entities::EntityType::Balloom, 1, true) };
+		enemy->AddComponent<ScoreComponent>(100);
+		
+		enemyCollider->AddObserver(healthComp);
+		healthComp->AddObserver(spriteComp);
+		spriteComp->AddObserver(healthComp);
+		spriteComp->AddObserver(scoreComp);
+
+		AddPlayerControls(enemy, PlayerController::ControlMethod::Keyboard, speed);
 
 		return enemy;
 	}

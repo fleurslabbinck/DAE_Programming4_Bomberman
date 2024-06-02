@@ -13,8 +13,8 @@ namespace dae
 	//---------------------------------
 	//HEALTHCOMPONENT
 	//---------------------------------
-	HealthComponent::HealthComponent(GameObject* pOwner, entities::EntityType entityType, int maxLives)
-		: BaseComponent(pOwner), m_entityType{ entityType }, m_maxLives { maxLives }
+	HealthComponent::HealthComponent(GameObject* pOwner, entities::EntityType entityType, int maxLives, bool enemyPlayer)
+		: BaseComponent(pOwner), m_entityType{ entityType }, m_maxLives { maxLives }, m_enemyPlayer{ enemyPlayer }
 	{
 		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathSound), "../Data/Sounds/DieSound.wav");
 		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathTune), "../Data/Sounds/BombermanDies.wav");
@@ -53,8 +53,12 @@ namespace dae
 		case entities::EntityType::Doll:
 		case entities::EntityType::Minvo:
 			if (!gameObject->GetComponent<HealthComponent>())
-			Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
-			GetOwner()->GetComponent<EnemyComponent>()->Killed();
+			{
+				Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
+				if (!m_enemyPlayer) GetOwner()->GetComponent<EnemyComponent>()->Killed();
+				else CollisionManager::GetInstance().RemoveCollider(GetOwner()->GetComponent<ColliderComponent>());
+			}
+			else if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Bomberman) Notify(static_cast<int>(GameEvent::PLAYER_DEATH), gameObject);
 			break;
 		case entities::EntityType::Brick:
 			if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Explosion)
