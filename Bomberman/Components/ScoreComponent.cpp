@@ -1,6 +1,7 @@
 #include "ScoreComponent.h"
 
 #include "Objects/GameObject.h"
+#include "EnemyComponent.h"
 
 namespace dae
 {
@@ -17,7 +18,7 @@ namespace dae
 	{
 		if (event == static_cast<int>(GameEvent::SCORE_CHANGED))
 		{
-			m_totalScore += gameObject->GetComponent<ScoreComponent>()->GetScore();
+			m_totalScore += gameObject->GetComponent<EnemyComponent>()->GetScore();
 			Notify(static_cast<int>(GameEvent::SCORE_CHANGED), GetOwner());
 		}
 	}

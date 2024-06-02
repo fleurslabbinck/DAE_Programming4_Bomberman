@@ -12,6 +12,7 @@ namespace dae
 		void FollowPlayer();
 
 		explicit CameraComponent(GameObject* pOwner, int playfieldWidth, int minBorder, int maxBorder);
+		~CameraComponent() = default;
 		CameraComponent(const CameraComponent& other) = delete;
 		CameraComponent(CameraComponent&& other) = delete;
 

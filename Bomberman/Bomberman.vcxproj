@@ -169,7 +169,7 @@
     <ClCompile Include="Components\BombComponent.cpp" />
     <ClCompile Include="Components\BomberComponent.cpp" />
     <ClCompile Include="Components\CameraComponent.cpp" />
-    <ClCompile Include="Components\CollisionComponent.cpp" />
+    <ClCompile Include="Components\EnemyComponent.cpp" />
     <ClCompile Include="Components\GridComponent.cpp" />
     <ClCompile Include="Components\HealthComponent.cpp" />
     <ClCompile Include="Components\HUDComponent.cpp" />
@@ -193,7 +193,7 @@
     <ClInclude Include="Components\BombComponent.h" />
     <ClInclude Include="Components\BomberComponent.h" />
     <ClInclude Include="Components\CameraComponent.h" />
-    <ClInclude Include="Components\CollisionComponent.h" />
+    <ClInclude Include="Components\EnemyComponent.h" />
     <ClInclude Include="Components\GridComponent.h" />
     <ClInclude Include="Components\HealthComponent.h" />
     <ClInclude Include="Components\HUDComponent.h" />

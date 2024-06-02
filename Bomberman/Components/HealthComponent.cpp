@@ -6,6 +6,7 @@
 #include "ServiceLocator.h"
 #include "Sound/SoundSystem.h"
 #include "../BombermanManager.h"
+#include "EnemyComponent.h"
 
 namespace dae
 {
@@ -53,7 +54,7 @@ namespace dae
 		case entities::EntityType::Minvo:
 			if (!gameObject->GetComponent<HealthComponent>())
 			Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
-			CollisionManager::GetInstance().RemoveCollider(GetOwner()->GetComponent<ColliderComponent>());
+			GetOwner()->GetComponent<EnemyComponent>()->Killed();
 			break;
 		case entities::EntityType::Brick:
 			if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Explosion)
