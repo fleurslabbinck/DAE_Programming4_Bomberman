@@ -2,6 +2,7 @@
 #define BOMBCOMPONENT_H
 
 #include "Objects/Components/BaseComponent.h"
+#include "Objects/Components/RenderComponent.h"
 #include "Objects/CollisionManager.h"
 #include "Scene/Scene.h"
 
@@ -10,7 +11,6 @@ namespace dae
 	class ColliderComponent;
 	class HealthComponent;
 	class SpriteComponent;
-	class RenderComponent;
 
 	class BombComponent final : public BaseComponent
 	{

@@ -3,7 +3,6 @@
 #include <sdl.h>
 
 #include "Render/Renderer.h"
-#include "Objects/Components/RenderComponent.h"
 #include "../Components/HealthComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../BombermanUtil.h"

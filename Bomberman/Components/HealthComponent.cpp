@@ -7,6 +7,7 @@
 #include "Sound/SoundSystem.h"
 #include "../BombermanManager.h"
 #include "EnemyComponent.h"
+#include "BombComponent.h"
 
 namespace dae
 {
@@ -54,15 +55,12 @@ namespace dae
 		case entities::EntityType::Oneal:
 		case entities::EntityType::Doll:
 		case entities::EntityType::Minvo:
-			if (gameObjHealthComp)
+			if (gameObjHealthComp != nullptr && gameObjHealthComp->GetEntityType() == entities::EntityType::Bomberman) Notify(static_cast<int>(GameEvent::PLAYER_DEATH), gameObject);
+			else if (gameObject->GetComponent<BombComponent>())
 			{
-				if (gameObjHealthComp->GetEntityType() == entities::EntityType::Explosion)
-				{
-					Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
-					if (!m_enemyPlayer) GetOwner()->GetComponent<EnemyComponent>()->Killed();
-					else CollisionManager::GetInstance().RemoveCollider(GetOwner()->GetComponent<ColliderComponent>());
-				}
-				else if (gameObjHealthComp->GetEntityType() == entities::EntityType::Bomberman) Notify(static_cast<int>(GameEvent::PLAYER_DEATH), gameObject);
+				Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
+				if (!m_enemyPlayer) GetOwner()->GetComponent<EnemyComponent>()->Killed();
+				else CollisionManager::GetInstance().RemoveCollider(GetOwner()->GetComponent<ColliderComponent>());
 			}
 			break;
 		case entities::EntityType::Brick:
