@@ -16,12 +16,17 @@ namespace dae
 	{
 	public:
 		struct Cell {
+			bool free{ true };
 			float size{ static_cast<float>(constants::GRIDCELL) };
 			glm::vec2 startPos;
 			glm::vec2 center;
 		};
 
 		void Render(const glm::vec2& pos) const override;
+
+		void AddFreeIdx(unsigned int idx);
+		glm::vec2 GetFreeCell() const;
+		void OccupyCell(const glm::vec2& pos);
 
 		glm::vec2 GetCelPosAtIdx(int idx) { return m_cells[idx].startPos; }
 		glm::vec2 GetNextPosition(const glm::vec2& currentPos, const glm::vec2& direction) const;
@@ -36,6 +41,7 @@ namespace dae
 	private:
 		const int m_cols;
 		const int m_rows;
+		std::vector<unsigned int> m_freeIndices{};
 		std::vector<Cell> m_cells{};
 
 		const bool m_hasBackgroundColor;

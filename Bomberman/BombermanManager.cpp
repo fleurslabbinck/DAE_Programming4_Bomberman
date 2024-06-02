@@ -113,24 +113,15 @@ namespace dae
 
 		auto& scene = dae::SceneManager::GetInstance().CreateScene(m_currentScene);
 
+		switch (m_currentLevel)
+		{
+		case 0:
+			LoadStage1(scene);
+			break;
+		}
+
 		Renderer::GetInstance().SetBackgroundColor(m_inGameBackgroundColor);
 
-		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS) };
-
-		GameObject* player{ Player(scene, playfield) };
-		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
-
-		Brick(scene, playfield, { 1.f * constants::GRIDCELL, 6.f * constants::GRIDCELL });
-		Brick(scene, playfield, { 2.f * constants::GRIDCELL, 1.f * constants::GRIDCELL });
-		Brick(scene, playfield, { 3.f * constants::GRIDCELL, 1.f * constants::GRIDCELL });
-		Brick(scene, playfield, { 4.f * constants::GRIDCELL, 1.f * constants::GRIDCELL });
-
-		EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 3.f * constants::GRIDCELL });
-		
-		Enemy(scene, playfield, scoreComp, glm::vec2{ 5.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Balloom);
-		Enemy(scene, playfield, scoreComp, glm::vec2{ 6.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Oneal);
-		Enemy(scene, playfield, scoreComp, glm::vec2{ 7.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Doll);
-		Enemy(scene, playfield, scoreComp, glm::vec2{ 8.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Minvo);
 		FPSComponent(scene);
 	}
 
@@ -151,21 +142,39 @@ namespace dae
 		AddMenuControls(PlayerController::ControlMethod::Keyboard);
 	}
 
-	void BombermanManager::LoadStage1()
+	void BombermanManager::LoadStage1(Scene& scene)
 	{
+		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS) };
 
+		GameObject* player{ Player(scene, playfield) };
+		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+
+		constexpr int amtBricks{ 60 };
+
+		for (int i{}; i < amtBricks; ++i) Brick(scene, playfield);
+
+		constexpr int amtBallooms{ 6 };
+
+		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
+
+		//EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 3.f * constants::GRIDCELL });
+		//
+		//Enemy(scene, playfield, scoreComp, glm::vec2{ 5.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Balloom);
+		//Enemy(scene, playfield, scoreComp, glm::vec2{ 6.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Oneal);
+		//Enemy(scene, playfield, scoreComp, glm::vec2{ 7.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Doll);
+		//Enemy(scene, playfield, scoreComp, glm::vec2{ 8.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Minvo);
 	}
 
 	GameObject* BombermanManager::Playfield(Scene& scene, int totalCols, int totalRows) const
 	{
 		// Playfield
 		GameObject* playfield{ scene.AddGameObject(std::make_unique<GameObject>(0.f, static_cast<float>(constants::WINDOW_HEIGHT - constants::GRIDCELL * constants::GRID_ROWS))) };
-		playfield->AddComponent<GridComponent>(totalCols, totalRows, true, m_backgroundColor);
+		GridComponent* gridComp{ playfield->AddComponent<GridComponent>(totalCols, totalRows, true, m_backgroundColor) };
 
 		const char playfieldArr[constants::GRID_COLS * constants::GRID_ROWS]{
 			'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#',
-			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-			'#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
+			'#', 'x', 'x', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+			'#', 'x', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
 			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
 			'#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
 			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
@@ -182,14 +191,20 @@ namespace dae
 
 		glm::vec2 startPos{};
 
-		for (int row{}; row < totalRows; ++row)
-			for (int col{}; col < totalCols; ++col)
+		for (unsigned int row{}; row < static_cast<unsigned int>(totalRows); ++row)
+			for (unsigned int col{}; col < static_cast<unsigned int>(totalCols); ++col)
 			{
-				const int idx{ row * totalCols + col };
+				const unsigned int idx{ row * totalCols + col };
 
 				if (playfieldArr[idx] != '#') continue;
+				else if (playfieldArr[idx] == 'x')
+				{
+					gridComp->AddFreeIdx(idx);
+					continue;
+				}
 
-				startPos = playfield->GetComponent<dae::GridComponent>()->GetCelPosAtIdx(idx);
+				startPos = gridComp->GetCelPosAtIdx(idx);
+				gridComp->OccupyCell(startPos);
 
 				GameObject* block{ scene.AddGameObject(std::make_unique<GameObject>(startPos.x, startPos.y)) };
 				block->SetParent(playfield);
@@ -202,11 +217,14 @@ namespace dae
 		return playfield;
 	}
 
-	GameObject* BombermanManager::Brick(Scene& scene, GameObject* parent, const glm::vec2& pos) const
+	GameObject* BombermanManager::Brick(Scene& scene, GameObject* parent) const
 	{
+		GridComponent* gridComp{ parent->GetComponent<GridComponent>() };
+		const glm::vec2 gridPos{ gridComp->GetFreeCell() };
+
 		constexpr glm::vec2 collider{ static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL) };
 
-		GameObject* brick{ scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
+		GameObject* brick{ scene.AddGameObject(std::make_unique<GameObject>(gridPos.x, gridPos.y)) };
 		brick->SetParent(parent);
 
 		ColliderComponent* brickColliderStatic{ brick->AddComponent<ColliderComponent>(glm::vec2{}, collider.x, collider.y, false) };
@@ -254,13 +272,16 @@ namespace dae
 		return player;
 	}
 
-	GameObject* BombermanManager::Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos, entities::EntityType enemyType) const
+	GameObject* BombermanManager::Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, entities::EntityType enemyType) const
 	{
+		GridComponent* gridComp{ parent->GetComponent<GridComponent>() };
+		const glm::vec2 gridPos{ gridComp->GetFreeCell() };
+
+		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>(gridPos.x, gridPos.y)) };
+		enemy->SetParent(parent);
+
 		constexpr glm::vec2 collider{ 10.f, 14.f };
 		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
-
-		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
-		enemy->SetParent(parent);
 
 		enemy->AddComponent<EnemyComponent>(scoreComp, enemyType, collider, offset);
 

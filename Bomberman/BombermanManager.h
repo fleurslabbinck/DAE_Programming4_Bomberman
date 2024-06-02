@@ -58,12 +58,12 @@ namespace dae
 		void LoadLevel();
 		void LoadHighScoreScene();
 
-		void LoadStage1();
+		void LoadStage1(Scene& scene);
 
 		GameObject* Playfield(Scene& scene, int totalCols, int totalRows) const;
-		GameObject* Brick(Scene& scene, GameObject* parent, const glm::vec2& pos) const;
+		GameObject* Brick(Scene& scene, GameObject* parent) const;
 		GameObject* Player(Scene& scene, GameObject* parent) const;
-		GameObject* Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos, entities::EntityType enemyType) const;
+		GameObject* Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, entities::EntityType enemyType) const;
 		GameObject* EnemyPlayer(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos) const;
 		GameObject* FPSComponent(Scene& scene) const;
 

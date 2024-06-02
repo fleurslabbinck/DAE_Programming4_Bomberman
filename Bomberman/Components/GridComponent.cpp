@@ -32,6 +32,37 @@ namespace dae
 		Renderer::GetInstance().RenderRectangle(background, m_BackgroundColor);
 	}
 
+	void GridComponent::AddFreeIdx(unsigned int idx)
+	{
+		m_freeIndices.push_back(idx);
+	}
+
+	glm::vec2 GridComponent::GetFreeCell() const
+	{
+		Cell cell{};
+
+		bool validCell{ false };
+
+		do
+		{
+			const unsigned int randIdx{ rand() % (m_cells.size() - 1) };
+			cell = m_cells[randIdx];
+
+			for (unsigned int idx : m_freeIndices) if (idx == randIdx) continue;
+
+			if (cell.free) validCell = true;
+
+		} while (!validCell);
+
+		return cell.startPos;
+	}
+
+	void GridComponent::OccupyCell(const glm::vec2& pos)
+	{
+		const int idx{ PositionToIndex(pos) };
+		m_cells[idx].free = false;
+	}
+
 	glm::vec2 GridComponent::GetNextPosition(const glm::vec2& currentPos, const glm::vec2& direction) const
 	{
 		const int currentIdx{ PositionToIndex(currentPos) };
