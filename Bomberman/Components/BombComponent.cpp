@@ -5,6 +5,7 @@
 #include "Render/Renderer.h"
 #include "../Components/HealthComponent.h"
 #include "../Components/SpriteComponent.h"
+#include "../Components/GridComponent.h"
 #include "../BombermanUtil.h"
 
 namespace dae
@@ -25,9 +26,12 @@ namespace dae
 		const glm::vec2 bombPos{ GetOwner()->GetTransform()->GetWorldPosition() };
 
 		//collider
+		constexpr float offset{ 4 };
+		m_explosionCollider = { static_cast<float>(constants::GRIDCELL) - offset, static_cast<float>(constants::GRIDCELL) - offset };
+
 		Explosion midExplosion{};
 		midExplosion.pos = bombPos;
-		midExplosion.colliderComp = std::make_unique<ColliderComponent>(GetOwner(), glm::vec2{}, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL));
+		midExplosion.colliderComp = std::make_unique<ColliderComponent>(GetOwner(), glm::vec2{}, m_explosionCollider.x, m_explosionCollider.y);
 		midExplosion.renderComp = std::make_unique<RenderComponent>(GetOwner(), "Sprites/Explosion.png");
 		midExplosion.row = 0;
 		m_explosions.push_back(std::move(midExplosion));
@@ -112,9 +116,15 @@ namespace dae
 		m_collisionManager.RemoveCollider(m_colliderComponentBomb.get());
 		m_spriteComponent->ToggleVisibility();
 
-		for (auto& explosion : m_explosions) m_collisionManager.AddCollider(explosion.colliderComp.get());
+		for (auto& explosion : m_explosions)
+		{
+			m_collisionManager.AddCollider(explosion.colliderComp.get());
+			explosion.colliderComp->AddObserver(m_healthComponent.get());
+		}
 
 		m_explode = true;
+
+		for (GameObject* brick : m_bricks) brick->GetComponent<SpriteComponent>()->SetDead();
 	}
 
 	bool BombComponent::AddExplosion(int explosionCount, FireDirection dir, uint8_t midRow, uint8_t endRow)
@@ -145,7 +155,7 @@ namespace dae
 
 		if (CollisionManager::GetInstance().CanMove(m_explosions.front().colliderComp.get(), {colliderPos.x + constants::GRIDCELL / 2.f, colliderPos.y + constants::GRIDCELL / 2.f}))
 		{
-			explosion.colliderComp = std::make_unique<ColliderComponent>(GetOwner(), directionOffset, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL));
+			explosion.colliderComp = std::make_unique<ColliderComponent>(GetOwner(), directionOffset, m_explosionCollider.x, m_explosionCollider.y);
 			explosion.renderComp = std::make_unique<RenderComponent>(GetOwner(), "Sprites/Explosion.png");
 
 			if (explosionCount < m_fire) explosion.row = midRow;
@@ -154,6 +164,18 @@ namespace dae
 			m_explosions.push_back(std::move(explosion));
 
 			return false;
+		}
+		else
+		{
+			GridComponent* gridComp{ GetOwner()->GetParent()->GetComponent<GridComponent>()};
+
+			std::vector<GameObject*> entities{ gridComp->GetEntitiesInCell(colliderPos) };
+
+			for (GameObject* entity : entities)
+			{
+				HealthComponent* healthComp{ entity->GetComponent<HealthComponent>() };
+				if (healthComp != nullptr && healthComp->GetEntityType() == entities::EntityType::Brick) m_bricks.push_back(entity);
+			}
 		}
 
 		return true;

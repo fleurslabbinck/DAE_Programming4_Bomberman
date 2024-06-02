@@ -58,7 +58,9 @@ namespace dae
 		float m_accumulatedTime{};
 		bool m_oppositeAnim{ false };
 
+		glm::vec2 m_explosionCollider{};
 		std::vector<Explosion> m_explosions{};
+		std::vector<GameObject*> m_bricks{};
 
 		bool AddExplosion(int explosionCount, FireDirection dir, uint8_t midRow, uint8_t endRow);
 		void KillBomb();

@@ -23,6 +23,7 @@ namespace dae
 			const int movementFrames{ 3 };
 			int deathFrames{};
 			int framesPerSecond{};
+			int deathFramesPerSecond{};
 			bool hasDirection{ true };
 			FrameIndex startFrameLeft{}, startFrameRight{}, startFrameDown{}, startFrameUp{};
 			bool enemy{ false };

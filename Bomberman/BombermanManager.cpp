@@ -120,8 +120,13 @@ namespace dae
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
 
-		EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 1.f * constants::GRIDCELL });
+		Brick(scene, playfield, { 1.f * constants::GRIDCELL, 6.f * constants::GRIDCELL });
+		Brick(scene, playfield, { 2.f * constants::GRIDCELL, 1.f * constants::GRIDCELL });
+		Brick(scene, playfield, { 3.f * constants::GRIDCELL, 1.f * constants::GRIDCELL });
+		Brick(scene, playfield, { 4.f * constants::GRIDCELL, 1.f * constants::GRIDCELL });
 
+		EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 3.f * constants::GRIDCELL });
+		
 		Enemy(scene, playfield, scoreComp, glm::vec2{ 5.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Balloom);
 		Enemy(scene, playfield, scoreComp, glm::vec2{ 6.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Oneal);
 		Enemy(scene, playfield, scoreComp, glm::vec2{ 7.f * constants::GRIDCELL, 1.f * constants::GRIDCELL }, entities::EntityType::Doll);
@@ -144,6 +149,11 @@ namespace dae
 
 		AddMenuControls(PlayerController::ControlMethod::Gamepad);
 		AddMenuControls(PlayerController::ControlMethod::Keyboard);
+	}
+
+	void BombermanManager::LoadStage1()
+	{
+
 	}
 
 	GameObject* BombermanManager::Playfield(Scene& scene, int totalCols, int totalRows) const
@@ -190,6 +200,25 @@ namespace dae
 			}
 
 		return playfield;
+	}
+
+	GameObject* BombermanManager::Brick(Scene& scene, GameObject* parent, const glm::vec2& pos) const
+	{
+		constexpr glm::vec2 collider{ static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL) };
+
+		GameObject* brick{ scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
+		brick->SetParent(parent);
+
+		ColliderComponent* brickColliderStatic{ brick->AddComponent<ColliderComponent>(glm::vec2{}, collider.x, collider.y, false) };
+		CollisionManager::GetInstance().AddCollider(brickColliderStatic);
+
+		SpriteComponent* spriteComp{ brick->AddComponent<SpriteComponent>("Sprites/Brick.png", entities::EntityType::Brick) };
+		HealthComponent* healthComp{ brick->AddComponent<HealthComponent>(entities::EntityType::Brick, 1) };
+
+		healthComp->AddObserver(spriteComp);
+		spriteComp->AddObserver(healthComp);
+
+		return brick;
 	}
 
 	GameObject* BombermanManager::Player(Scene& scene, GameObject* parent) const

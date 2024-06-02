@@ -63,8 +63,6 @@ namespace dae
 				else CollisionManager::GetInstance().RemoveCollider(GetOwner()->GetComponent<ColliderComponent>());
 			}
 			break;
-		case entities::EntityType::Brick:
-			if (gameObjHealthComp->GetEntityType() == entities::EntityType::Explosion) Notify(static_cast<int>(GameEvent::BRICK_DEATH), GetOwner());
 		}
 	}
 

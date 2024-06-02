@@ -19,6 +19,7 @@ namespace dae
 			m_sprite.rows = 3;
 			m_sprite.deathFrames = m_sprite.cols;
 			m_sprite.framesPerSecond = 10;
+			m_sprite.deathFramesPerSecond = 4;
 
 			m_sprite.hasDirection = true;
 			m_sprite.startFrameLeft = { 0, 0 };
@@ -32,7 +33,8 @@ namespace dae
 			m_sprite.cols = 6;
 			m_sprite.rows = 2;
 			m_sprite.deathFrames = m_sprite.cols;
-			m_sprite.framesPerSecond = 5;
+			m_sprite.framesPerSecond = 3;
+			m_sprite.deathFramesPerSecond = 5;
 
 			m_sprite.hasDirection = true;
 			m_sprite.startFrameRight = { 0, 0 };
@@ -58,7 +60,7 @@ namespace dae
 			m_sprite.cols = 7;
 			m_sprite.rows = 1;
 			m_sprite.deathFrames = m_sprite.cols;
-			m_sprite.framesPerSecond = 5;
+			m_sprite.deathFramesPerSecond = 10;
 
 			m_sprite.hasDirection = false;
 		}
@@ -97,10 +99,6 @@ namespace dae
 			if (!m_sprite.enemy) return;
 			SetDead();
 			break;
-		case static_cast<int>(GameEvent::BRICK_DEATH):
-			if (m_sprite.type != entities::EntityType::Brick) return;
-			SetDead();
-			break;
 		}
 	}
 
@@ -134,7 +132,7 @@ namespace dae
 	void SpriteComponent::AnimateDying()
 	{
 		m_accumulatedTime += TimeManager::GetInstance().GetDeltaTime();
-		constexpr float maxTime{ 1.f / 3 };
+		const float maxTime{ 1.f / m_sprite.deathFramesPerSecond };
 
 		if (m_accumulatedTime >= maxTime)
 		{

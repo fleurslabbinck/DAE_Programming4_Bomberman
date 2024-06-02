@@ -107,8 +107,7 @@ namespace dae
 		int randNr{};
 		glm::vec2 direction{};
 
-		do
-		{
+		do {
 			randNr = rand() % amtDirections;
 
 			switch (randNr)
