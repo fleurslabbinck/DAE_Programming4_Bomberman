@@ -41,6 +41,8 @@ namespace dae
 	{
 		if (m_dead) return;
 
+		const HealthComponent* gameObjHealthComp{ gameObject->GetComponent<HealthComponent>() };
+
 		switch (m_entityType)
 		{
 		case entities::EntityType::Bomberman:
@@ -52,17 +54,19 @@ namespace dae
 		case entities::EntityType::Oneal:
 		case entities::EntityType::Doll:
 		case entities::EntityType::Minvo:
-			if (!gameObject->GetComponent<HealthComponent>())
+			if (gameObjHealthComp)
 			{
-				Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
-				if (!m_enemyPlayer) GetOwner()->GetComponent<EnemyComponent>()->Killed();
-				else CollisionManager::GetInstance().RemoveCollider(GetOwner()->GetComponent<ColliderComponent>());
+				if (gameObjHealthComp->GetEntityType() == entities::EntityType::Explosion)
+				{
+					Notify(static_cast<int>(GameEvent::ENEMY_DEATH), GetOwner());
+					if (!m_enemyPlayer) GetOwner()->GetComponent<EnemyComponent>()->Killed();
+					else CollisionManager::GetInstance().RemoveCollider(GetOwner()->GetComponent<ColliderComponent>());
+				}
+				else if (gameObjHealthComp->GetEntityType() == entities::EntityType::Bomberman) Notify(static_cast<int>(GameEvent::PLAYER_DEATH), gameObject);
 			}
-			else if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Bomberman) Notify(static_cast<int>(GameEvent::PLAYER_DEATH), gameObject);
 			break;
 		case entities::EntityType::Brick:
-			if (gameObject->GetComponent<HealthComponent>()->GetEntityType() == entities::EntityType::Explosion)
-			Notify(static_cast<int>(GameEvent::BRICK_DEATH), GetOwner());
+			if (gameObjHealthComp->GetEntityType() == entities::EntityType::Explosion) Notify(static_cast<int>(GameEvent::BRICK_DEATH), GetOwner());
 		}
 	}
 
