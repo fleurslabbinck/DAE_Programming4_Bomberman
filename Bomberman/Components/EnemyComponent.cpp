@@ -83,13 +83,13 @@ namespace dae
 
 		glm::vec2 centeredPos{ m_colliderComponent->GetLocalCenter() };
 		const float distToTarget{ glm::distance(centeredPos, m_targetPos) };
-		constexpr float targetOffset{ 0.3f };
+		constexpr float targetOffset{ 0.5f };
 
 		if (distToTarget <= targetOffset)
 		{
 			m_targetPos = m_gridComponent->GetNextPosition(centeredPos, m_direction);
 
-			if (!CollisionManager::GetInstance().CanMove(m_colliderComponent.get(), m_targetPos) || Turn())
+			if (!m_collisionManager.CanMove(m_colliderComponent.get(), m_targetPos) || Turn())
 			{
 				m_direction = GetRandomDirection(centeredPos);
 				m_spriteComponent->SetDirection(m_direction);
@@ -108,6 +108,8 @@ namespace dae
 		glm::vec2 direction{};
 
 		do {
+			if (IsBoxed(centeredPos)) break;
+
 			randNr = rand() % amtDirections;
 
 			switch (randNr)
@@ -128,7 +130,7 @@ namespace dae
 
 			m_targetPos = m_gridComponent->GetNextPosition(centeredPos, direction);
 
-		} while (!CollisionManager::GetInstance().CanMove(m_colliderComponent.get(), m_targetPos));
+		} while (!m_collisionManager.CanMove(m_colliderComponent.get(), m_targetPos) || direction == m_direction);
 
 		return direction;
 	}
@@ -141,6 +143,16 @@ namespace dae
 		if (randNr < m_turnChance) shouldTurn = true;
 
 		return shouldTurn;
+	}
+
+	bool EnemyComponent::IsBoxed(const glm::vec2& centeredPos) const
+	{
+		bool boxed{ !m_collisionManager.CanMove(m_colliderComponent.get(), m_gridComponent->GetNextPosition(centeredPos, { -1, 0 })) &&
+					!m_collisionManager.CanMove(m_colliderComponent.get(), m_gridComponent->GetNextPosition(centeredPos, { 1, 0 })) &&
+					!m_collisionManager.CanMove(m_colliderComponent.get(), m_gridComponent->GetNextPosition(centeredPos, { 0, -1 })) &&
+					!m_collisionManager.CanMove(m_colliderComponent.get(), m_gridComponent->GetNextPosition(centeredPos, { 0, 1 })) };
+
+		return boxed;
 	}
 
 	void EnemyComponent::Killed()

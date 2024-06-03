@@ -19,7 +19,7 @@ namespace dae
 			m_sprite.rows = 3;
 			m_sprite.deathFrames = m_sprite.cols;
 			m_sprite.framesPerSecond = 10;
-			m_sprite.deathFramesPerSecond = 4;
+			m_sprite.deathFramesPerSecond = 3;
 
 			m_sprite.hasDirection = true;
 			m_sprite.startFrameLeft = { 0, 0 };

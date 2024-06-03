@@ -31,7 +31,6 @@ namespace dae
 		glm::vec2 GetCelPosAtIdx(int idx) { return m_cells[idx].startPos; }
 		glm::vec2 GetNextPosition(const glm::vec2& currentPos, const glm::vec2& direction) const;
 		glm::vec2 GetGridStartPos(const glm::vec2& pos) const;
-		std::vector<GameObject*> GetEntitiesClose(const glm::vec2& pos) const;
 		std::vector<GameObject*> GetEntitiesInCell(const glm::vec2& pos) const;
 
 		explicit GridComponent(GameObject* pOwner, int cols, int rows, bool setBackgroundColor = false, const SDL_Color& color = {});
@@ -49,7 +48,6 @@ namespace dae
 		const SDL_Rect m_background;
 
 		int PositionToIndex(const glm::vec2& pos) const;
-		std::vector<int> GetSurroundingIndices(int idx) const;
 		std::vector<GameObject*> GetChildren(const GameObject* parent) const;
 	};
 }

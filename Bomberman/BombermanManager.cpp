@@ -150,11 +150,11 @@ namespace dae
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
 
 		constexpr int amtBricks{ 60 };
-
+		
 		for (int i{}; i < amtBricks; ++i) Brick(scene, playfield);
-
+		
 		constexpr int amtBallooms{ 6 };
-
+		
 		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
 
 		//EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 3.f * constants::GRIDCELL });
@@ -191,28 +191,25 @@ namespace dae
 
 		glm::vec2 startPos{};
 
-		for (unsigned int row{}; row < static_cast<unsigned int>(totalRows); ++row)
-			for (unsigned int col{}; col < static_cast<unsigned int>(totalCols); ++col)
+		for (unsigned int idx{}; idx < static_cast<unsigned int>(totalCols) * static_cast<unsigned int>(totalRows); ++idx)
+		{
+			if (playfieldArr[idx] == ' ') continue;
+			else if (playfieldArr[idx] == 'x')
 			{
-				const unsigned int idx{ row * totalCols + col };
-
-				if (playfieldArr[idx] != '#') continue;
-				else if (playfieldArr[idx] == 'x')
-				{
-					gridComp->AddFreeIdx(idx);
-					continue;
-				}
-
-				startPos = gridComp->GetCelPosAtIdx(idx);
-				gridComp->OccupyCell(startPos);
-
-				GameObject* block{ scene.AddGameObject(std::make_unique<GameObject>(startPos.x, startPos.y)) };
-				block->SetParent(playfield);
-				block->AddComponent<RenderComponent>("Obstacles/Block.png");
-
-				ColliderComponent* blockCollider{ block->AddComponent<ColliderComponent>(glm::vec2{}, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL), false) };
-				CollisionManager::GetInstance().AddCollider(blockCollider);
+				gridComp->AddFreeIdx(idx);
+				continue;
 			}
+
+			startPos = gridComp->GetCelPosAtIdx(idx);
+			gridComp->OccupyCell(startPos);
+
+			GameObject* block{ scene.AddGameObject(std::make_unique<GameObject>(startPos.x, startPos.y)) };
+			block->SetParent(playfield);
+			block->AddComponent<RenderComponent>("Obstacles/Block.png");
+
+			ColliderComponent* blockCollider{ block->AddComponent<ColliderComponent>(glm::vec2{}, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL), false) };
+			CollisionManager::GetInstance().AddCollider(blockCollider);
+		}
 
 		return playfield;
 	}
@@ -276,11 +273,12 @@ namespace dae
 	{
 		GridComponent* gridComp{ parent->GetComponent<GridComponent>() };
 		const glm::vec2 gridPos{ gridComp->GetFreeCell() };
+		gridComp->OccupyCell(gridPos);
 
 		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>(gridPos.x, gridPos.y)) };
 		enemy->SetParent(parent);
 
-		constexpr glm::vec2 collider{ 10.f, 14.f };
+		constexpr glm::vec2 collider{ 10.f, 12.f };
 		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
 
 		enemy->AddComponent<EnemyComponent>(scoreComp, enemyType, collider, offset);

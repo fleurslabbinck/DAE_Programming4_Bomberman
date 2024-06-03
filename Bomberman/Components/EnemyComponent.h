@@ -52,6 +52,7 @@ namespace dae
 
 		glm::vec2 GetRandomDirection(const glm::vec2& centeredPos);
 		bool Turn() const;
+		bool IsBoxed(const glm::vec2& centeredPos) const;
 	};
 }
 #endif

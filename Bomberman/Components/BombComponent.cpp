@@ -26,7 +26,7 @@ namespace dae
 		const glm::vec2 bombPos{ GetOwner()->GetTransform()->GetWorldPosition() };
 
 		//collider
-		constexpr float offset{ 4 };
+		constexpr float offset{ 0 };
 		m_explosionCollider = { static_cast<float>(constants::GRIDCELL) - offset, static_cast<float>(constants::GRIDCELL) - offset };
 
 		Explosion midExplosion{};

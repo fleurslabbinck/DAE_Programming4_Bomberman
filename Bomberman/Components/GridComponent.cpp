@@ -48,9 +48,7 @@ namespace dae
 			const unsigned int randIdx{ rand() % (m_cells.size() - 1) };
 			cell = m_cells[randIdx];
 
-			for (unsigned int idx : m_freeIndices) if (idx == randIdx) continue;
-
-			if (cell.free) validCell = true;
+			if (std::find(m_freeIndices.begin(), m_freeIndices.end(), randIdx) == m_freeIndices.end() && cell.free) validCell = true;
 
 		} while (!validCell);
 
@@ -83,25 +81,6 @@ namespace dae
 		return m_cells[currentIdx].startPos;
 	}
 
-	std::vector<GameObject*> GridComponent::GetEntitiesClose(const glm::vec2& pos) const
-	{
-		const GameObject* owner{ GetOwner() };
-
-		std::vector<GameObject*> children{ GetChildren(owner) };
-		std::vector<int> indices{ GetSurroundingIndices(PositionToIndex(pos)) };
-
-		std::vector<GameObject*> entities{};
-
-		for (GameObject* child : children)
-		{
-			const glm::vec2 childPos{ child->GetTransform()->GetLocalPosition()};
-
-			for (int i : indices) if (PositionToIndex(childPos) == i) entities.push_back(child);
-		}
-
-		return entities;
-	}
-
 	std::vector<GameObject*> GridComponent::GetEntitiesInCell(const glm::vec2& pos) const
 	{
 		const GameObject* owner{ GetOwner() };
@@ -131,17 +110,6 @@ namespace dae
 		const int idx{ row * constants::GRID_COLS + col };
 
 		return idx;
-	}
-
-	std::vector<int> GridComponent::GetSurroundingIndices(int idx) const
-	{
-		const std::vector<int> indices{
-			idx + m_cols - 1,	idx + m_cols,		idx + m_cols + 1,
-			idx - 1,			idx,				idx + 1,
-			idx - m_cols - 1,	idx - m_cols,		idx - m_cols + 1,
-		};
-
-		return indices;
 	}
 
 	std::vector<GameObject*> GridComponent::GetChildren(const GameObject* parent) const
