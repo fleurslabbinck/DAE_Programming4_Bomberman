@@ -53,6 +53,15 @@ namespace dae
 		return std::any_of(m_children.begin(), m_children.end(), [&](GameObject* child) { return child->IsChild(parent); });
 	}
 
+	const std::vector<GameObject*> GameObject::GetChildrenWithName(const std::string& name) const
+	{
+		std::vector<GameObject*> objects;
+
+		for (GameObject* child : m_children) if (child->GetName() == name) objects.push_back(child);
+
+		return objects;
+	}
+
 	void GameObject::RemoveChild(GameObject* child)
 	{
 		//ckeck if valid

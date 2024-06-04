@@ -117,13 +117,16 @@ namespace dae
 		switch (m_currentLevel)
 		{
 		case 0:
-			LoadStage1(scene);
+			LoadStage4(scene);
 			break;
 		case 1:
-			LoadStage1(scene);
+			LoadStage2(scene);
 			break;
 		case 2:
-			LoadStage1(scene);
+			LoadStage3(scene);
+			break;
+		case 3:
+			LoadStage4(scene);
 			break;
 		}
 
@@ -151,7 +154,7 @@ namespace dae
 
 	void BombermanManager::LoadStage1(Scene& scene)
 	{
-		constexpr uint8_t amtBallooms{ 1 };
+		constexpr uint8_t amtBallooms{ 6 };
 
 		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms) };
 
@@ -167,6 +170,72 @@ namespace dae
 		scene.PlaceOnTop("player");
 
 		//EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 3.f * constants::GRIDCELL });
+	}
+
+	void BombermanManager::LoadStage2(Scene& scene)
+	{
+		constexpr uint8_t amtBallooms{ 3 };
+		constexpr uint8_t amtOneals{ 3 };
+
+		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals) };
+
+		GameObject* player{ Player(scene, playfield) };
+		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+
+		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
+		for (int i{}; i < amtOneals; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Oneal);
+
+		ManageObservers(scene);
+
+		// Place bricks & bomberman on top
+		scene.PlaceOnTop("brick");
+		scene.PlaceOnTop("player");
+	}
+
+	void BombermanManager::LoadStage3(Scene& scene)
+	{
+		constexpr uint8_t amtBallooms{ 2 };
+		constexpr uint8_t amtOneals{ 2 };
+		constexpr uint8_t amtDolls{ 2 };
+
+		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals + amtDolls) };
+
+		GameObject* player{ Player(scene, playfield) };
+		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+
+		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
+		for (int i{}; i < amtOneals; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Oneal);
+		for (int i{}; i < amtDolls; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Doll);
+
+		ManageObservers(scene);
+
+		// Place bricks & bomberman on top
+		scene.PlaceOnTop("brick");
+		scene.PlaceOnTop("player");
+	}
+
+	void BombermanManager::LoadStage4(Scene& scene)
+	{
+		constexpr uint8_t amtBallooms{ 1 };
+		constexpr uint8_t amtOneals{ 1 };
+		constexpr uint8_t amtDolls{ 2 };
+		constexpr uint8_t amtMinvos{ 2 };
+
+		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals + amtDolls + amtMinvos) };
+
+		GameObject* player{ Player(scene, playfield) };
+		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+
+		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
+		for (int i{}; i < amtOneals; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Oneal);
+		for (int i{}; i < amtDolls; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Doll);
+		for (int i{}; i < amtMinvos; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Minvo);
+
+		ManageObservers(scene);
+
+		// Place bricks & bomberman on top
+		scene.PlaceOnTop("brick");
+		scene.PlaceOnTop("player");
 	}
 
 	void BombermanManager::ManageObservers(Scene& scene) const

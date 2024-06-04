@@ -16,6 +16,7 @@ namespace dae
 		int GetChildCount() const { return static_cast<int>(m_children.size()); }
 		GameObject* GetChildAt(int index) const { return m_children[index]; }
 		const std::vector<GameObject*>& GetChildren() const { return m_children; }
+		const std::vector<GameObject*> GetChildrenWithName(const std::string& name) const;
 
 		template <typename ComponentType, typename... Args>
 		ComponentType* AddComponent(const Args&... args)

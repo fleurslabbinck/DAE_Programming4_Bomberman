@@ -41,8 +41,9 @@ namespace dae
 		const int m_maxChance{ 10 };
 		float m_speed{};
 		entities::EntityType m_EntityType;
-		glm::vec2 m_direction{ -1, 0 };
+		glm::vec2 m_direction{};
 		glm::vec2 m_targetPos{};
+		std::vector<glm::vec2> m_directions{};
 
 		CollisionManager& m_collisionManager{ CollisionManager::GetInstance() };
 
@@ -52,9 +53,10 @@ namespace dae
 		std::unique_ptr<SpriteComponent> m_spriteComponent{};
 		std::unique_ptr<ScoreComponent> m_scoreComponent{};
 
-		glm::vec2 GetRandomDirection(const glm::vec2& centeredPos);
-		bool Turn() const;
-		bool IsBoxed(const glm::vec2& centeredPos) const;
+		bool ShouldTurn() const;
+		void SetDirection();
+		glm::vec2 GetRandomDirection(const std::vector<glm::vec2>& values) const;
+		glm::vec2 GetDirectionToPlayer(const std::vector<glm::vec2>& values) const;
 	};
 }
 #endif

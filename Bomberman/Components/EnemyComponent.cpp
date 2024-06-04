@@ -30,13 +30,13 @@ namespace dae
 		case entities::EntityType::Oneal:
 			filepath = "Sprites/Oneal.png";
 			score = 200;
-			m_turnChance = 8;
+			m_turnChance = 6;
 			m_speed = 15;
 			break;
 		case entities::EntityType::Doll:
 			filepath = "Sprites/Doll.png";
 			score = 400;
-			m_turnChance = 8;
+			m_turnChance = 6;
 			m_speed = 20;
 			break;
 		case entities::EntityType::Minvo:
@@ -62,6 +62,13 @@ namespace dae
 		m_gridComponent = pOwner->GetParent()->GetComponent<GridComponent>();
 
 		m_targetPos = m_colliderComponent->GetLocalCenter();
+
+		m_directions.push_back({ -1, 0 });
+		m_directions.push_back({ 1, 0 });
+		m_directions.push_back({ 0, -1 });
+		m_directions.push_back({ 0, 1 });
+
+		SetDirection();
 	}
 
 	void EnemyComponent::Update()
@@ -79,63 +86,33 @@ namespace dae
 	{
 		if (m_spriteComponent->IsDead()) return;
 
-		const glm::vec2 offset{ m_direction * m_speed * TimeManager::GetInstance().GetDeltaTime() };
-
 		glm::vec2 centeredPos{ m_colliderComponent->GetLocalCenter() };
 		const float distToTarget{ glm::distance(centeredPos, m_targetPos) };
-		constexpr float targetOffset{ 0.5f };
+		constexpr float targetOffset{ 2.f };
+
+		bool shouldTurn{ false };
 
 		if (distToTarget <= targetOffset)
 		{
 			m_targetPos = m_gridComponent->GetNextPosition(centeredPos, m_direction);
+			shouldTurn = ShouldTurn();
+		}
 
-			if (!m_collisionManager.CanMove(m_colliderComponent.get(), m_targetPos) || Turn())
-			{
-				m_direction = GetRandomDirection(centeredPos);
-				m_spriteComponent->SetDirection(m_direction);
-			}
+		if (!m_collisionManager.CanMove(m_colliderComponent.get(), m_targetPos) || shouldTurn)
+		{
+			SetDirection();
+			m_spriteComponent->SetDirection(m_direction);
+
+			m_targetPos = m_gridComponent->GetNextPosition(centeredPos, m_direction);
 		}
 
 		// move object
+		const glm::vec2 offset{ m_direction * m_speed * TimeManager::GetInstance().GetDeltaTime() };
 		GetOwner()->GetTransform()->Translate(offset);
 		m_spriteComponent->AnimateMovement();
 	}
 
-	glm::vec2 EnemyComponent::GetRandomDirection(const glm::vec2& centeredPos)
-	{
-		constexpr int amtDirections{ 4 };
-		int randNr{};
-		glm::vec2 direction{};
-
-		do {
-			if (IsBoxed(centeredPos)) break;
-
-			randNr = rand() % amtDirections;
-
-			switch (randNr)
-			{
-			case 0:
-				direction = {-1, 0};
-				break;
-			case 1:
-				direction = { 1, 0 };
-				break;
-			case 2:
-				direction = { 0, -1 };
-				break;
-			case 3:
-				direction = { 0, 1 };
-				break;
-			}
-
-			m_targetPos = m_gridComponent->GetNextPosition(centeredPos, direction);
-
-		} while (!m_collisionManager.CanMove(m_colliderComponent.get(), m_targetPos) || direction == m_direction);
-
-		return direction;
-	}
-
-	bool EnemyComponent::Turn() const
+	bool EnemyComponent::ShouldTurn() const
 	{
 		const int randNr{ rand() % m_maxChance };
 		bool shouldTurn{ false };
@@ -145,14 +122,73 @@ namespace dae
 		return shouldTurn;
 	}
 
-	bool EnemyComponent::IsBoxed(const glm::vec2& centeredPos) const
+	void EnemyComponent::SetDirection()
 	{
-		bool boxed{ !m_collisionManager.CanMove(m_colliderComponent.get(), m_gridComponent->GetNextPosition(centeredPos, { -1, 0 })) &&
-					!m_collisionManager.CanMove(m_colliderComponent.get(), m_gridComponent->GetNextPosition(centeredPos, { 1, 0 })) &&
-					!m_collisionManager.CanMove(m_colliderComponent.get(), m_gridComponent->GetNextPosition(centeredPos, { 0, -1 })) &&
-					!m_collisionManager.CanMove(m_colliderComponent.get(), m_gridComponent->GetNextPosition(centeredPos, { 0, 1 })) };
+		std::vector<glm::vec2> validDirections{};
 
-		return boxed;
+		for (const glm::vec2& direction : m_directions)
+		{
+			if (m_collisionManager.CanMove(m_colliderComponent.get(), m_gridComponent->GetNextPosition(m_colliderComponent->GetLocalCenter(), direction))) validDirections.push_back(direction);
+		}
+
+		if (validDirections.empty())
+		{
+			m_direction = {};
+			return;
+		}
+		else if (validDirections.size() == 1)
+		{
+			m_direction = validDirections.front();
+			return;
+		}
+
+		switch (m_EntityType)
+		{
+		case entities::EntityType::Balloom:
+			m_direction = GetRandomDirection(validDirections);
+			break;
+		case entities::EntityType::Oneal:
+			m_direction = GetDirectionToPlayer(validDirections);
+			break;
+		case entities::EntityType::Doll:
+			m_direction = GetDirectionToPlayer(validDirections);
+			break;
+		case entities::EntityType::Minvo:
+			m_direction = GetRandomDirection(validDirections);
+			break;
+		}
+	}
+
+	glm::vec2 EnemyComponent::GetRandomDirection(const std::vector<glm::vec2>& values) const
+	{
+		int randIdx = rand() % values.size();
+		return values[randIdx];
+	}
+
+	glm::vec2 EnemyComponent::GetDirectionToPlayer(const std::vector<glm::vec2>& values) const
+	{
+		const GameObject* parent{ GetOwner()->GetParent() };
+		const GameObject* player{ parent->GetChildrenWithName("player").front() };
+		const glm::vec2 playerPos{ player->GetTransform()->GetLocalPosition() };
+
+		float smallestDistSqr{ FLT_MAX };
+		glm::vec2 direction{};
+		glm::vec2 centeredPos{ m_colliderComponent->GetLocalCenter() };
+
+		for (const glm::vec2& dir : values)
+		{
+			const glm::vec2 nextPos{ centeredPos + m_gridComponent->GetNextPosition(centeredPos, dir)};
+			const glm::vec2 delta{ playerPos - nextPos};
+			float distSqr{ glm::dot(delta.x, delta.y) };
+		
+			if (distSqr < smallestDistSqr)
+			{
+				smallestDistSqr = distSqr;
+				direction = dir;
+			}
+		}
+
+		return direction;
 	}
 
 	void EnemyComponent::Killed()
