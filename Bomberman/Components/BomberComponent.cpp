@@ -38,7 +38,7 @@ namespace dae
 	{
 		if (!CanPlaceBomb() || m_accumulatedTime < m_cooldown) return;
 
-		GameObject* bomb{ m_scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
+		GameObject* bomb{ m_scene.AddGameObject(std::make_unique<GameObject>("bomb", pos.x, pos.y))};
 		bomb->SetParent(parent);
 
 		if (m_maxBombs == 1) bomb->AddComponent<BombComponent>(m_fire);

@@ -28,6 +28,8 @@ namespace dae
 		void Killed();
 		int GetScore() const;
 
+		HealthComponent* GetHealthComponent() { return m_healthComponent.get(); }
+
 		explicit EnemyComponent(GameObject* pOwner, ScoreComponent* scoreComp, entities::EntityType enemyType, glm::vec2 collider, glm::vec2 offset);
 		~EnemyComponent() = default;
 		EnemyComponent(const EnemyComponent& other) = delete;
@@ -39,7 +41,7 @@ namespace dae
 		const int m_maxChance{ 10 };
 		float m_speed{};
 		entities::EntityType m_EntityType;
-		glm::vec2 m_direction{};
+		glm::vec2 m_direction{ -1, 0 };
 		glm::vec2 m_targetPos{};
 
 		CollisionManager& m_collisionManager{ CollisionManager::GetInstance() };

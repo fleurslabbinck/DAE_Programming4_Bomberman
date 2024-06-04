@@ -82,7 +82,7 @@ namespace dae
 
 		auto& scene = dae::SceneManager::GetInstance().CreateScene(m_currentScene);
 
-		GameObject* Menu{ scene.AddGameObject(std::make_unique<GameObject>(0.f, 0.f)) };
+		GameObject* Menu{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 0.f, 0.f)) };
 		Menu->AddComponent<RenderComponent>("Menu.png");
 
 		AddMenuControls(PlayerController::ControlMethod::Gamepad);
@@ -97,7 +97,7 @@ namespace dae
 
 		Renderer::GetInstance().SetBackgroundColor(m_stageBackgroundColor);
 
-		GameObject* stage{ scene.AddGameObject(std::make_unique<GameObject>(0.f, 0.f)) };
+		GameObject* stage{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 0.f, 0.f)) };
 		TextComponent* textComp{ stage->AddComponent<TextComponent>(m_font, m_fontSize, title) };
 
 		const glm::vec2 textureSize{ textComp->GetRenderComponent()->GetTexture()->GetSize()};
@@ -142,7 +142,7 @@ namespace dae
 
 		Renderer::GetInstance().SetBackgroundColor(m_stageBackgroundColor);
 
-		GameObject* highScoreText{ scene.AddGameObject(std::make_unique<GameObject>(10.f, 10.f)) };
+		GameObject* highScoreText{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 10.f, 10.f)) };
 		highScoreText->AddComponent<TextComponent>(m_font, m_fontSize, "HIGH SCORES:");
 
 		AddMenuControls(PlayerController::ControlMethod::Gamepad);
@@ -151,35 +151,75 @@ namespace dae
 
 	void BombermanManager::LoadStage1(Scene& scene)
 	{
-		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS) };
+		constexpr uint8_t amtBallooms{ 1 };
 
-		GameObject* exit{ scene.AddGameObject(std::make_unique<GameObject>(2.f * constants::GRIDCELL, 1.f * constants::GRIDCELL)) };
-		exit->SetParent(playfield);
-
-		constexpr uint8_t amtBallooms{ 0 };
-
-		ExitComponent* exitComp{ exit->AddComponent<ExitComponent>(m_maxLevels, m_currentLevel, amtBallooms) };
+		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms) };
 
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
-		HealthComponent* healthComp{ player->GetComponent<HealthComponent>() };
 
-		constexpr int amtBricks{ 60 };
-		
-		for (int i{}; i < amtBricks; ++i) Brick(scene, playfield);
-		
 		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
 
-		healthComp->AddObserver(exitComp);
-		exitComp->AddObserver(m_state.get());
+		ManageObservers(scene);
+
+		// Place bricks & bomberman on top
+		scene.PlaceOnTop("brick");
+		scene.PlaceOnTop("player");
 
 		//EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 3.f * constants::GRIDCELL });
 	}
 
-	GameObject* BombermanManager::Playfield(Scene& scene, int totalCols, int totalRows) const
+	void BombermanManager::ManageObservers(Scene& scene) const
+	{
+		std::vector<GameObject*> objects{};
+
+		// Player
+		objects = scene.GetGameObjects("player");
+
+		if (objects.empty()) return;
+
+		GameObject* player{ objects.front() };
+
+		HealthComponent* playerHealth{ player->GetComponent<HealthComponent>() };
+
+		// Exit
+		objects = scene.GetGameObjects("exit");
+
+		GameObject* exit{ objects.front() };
+
+		if (objects.empty()) return;
+
+		ExitComponent* exitComp{ exit->GetComponent<ExitComponent>() };
+
+		// Observer to check overlap between player and exit
+		playerHealth->AddObserver(exitComp);
+
+		// Observer to check if game won
+		exitComp->AddObserver(m_state.get());
+
+		// Enemies
+		objects = scene.GetGameObjects("enemy");
+
+		if (!objects.empty())
+		{
+			// Observer to update exit door when enemy is killed
+			for (GameObject* enemy : objects) enemy->GetComponent<EnemyComponent>()->GetHealthComponent()->AddObserver(exitComp);
+		}
+
+		// Enemy Player
+		objects = scene.GetGameObjects("enemyPlayer");
+
+		if (!objects.empty())
+		{
+			// Observer to update exit door when enemy is killed
+			objects.front()->GetComponent<HealthComponent>()->AddObserver(exitComp);
+		}
+	}
+
+	GameObject* BombermanManager::Playfield(Scene& scene, int totalCols, int totalRows, uint8_t totalEnemies) const
 	{
 		// Playfield
-		GameObject* playfield{ scene.AddGameObject(std::make_unique<GameObject>(0.f, static_cast<float>(constants::WINDOW_HEIGHT - constants::GRIDCELL * constants::GRID_ROWS))) };
+		GameObject* playfield{ scene.AddGameObject(std::make_unique<GameObject>("playfield", 0.f, static_cast<float>(constants::WINDOW_HEIGHT - constants::GRIDCELL * constants::GRID_ROWS)))};
 		GridComponent* gridComp{ playfield->AddComponent<GridComponent>(totalCols, totalRows, true, m_backgroundColor) };
 
 		const char playfieldArr[constants::GRID_COLS * constants::GRID_ROWS]{
@@ -214,13 +254,21 @@ namespace dae
 			startPos = gridComp->GetCelPosAtIdx(idx);
 			gridComp->OccupyCell(startPos);
 
-			GameObject* block{ scene.AddGameObject(std::make_unique<GameObject>(startPos.x, startPos.y)) };
+			GameObject* block{ scene.AddGameObject(std::make_unique<GameObject>("block", startPos.x, startPos.y)) };
 			block->SetParent(playfield);
 			block->AddComponent<RenderComponent>("Sprites/Block.png");
 
 			ColliderComponent* blockCollider{ block->AddComponent<ColliderComponent>(glm::vec2{}, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL), false) };
 			CollisionManager::GetInstance().AddCollider(blockCollider);
 		}
+
+		constexpr int amtBricks{ 59 };
+		for (int i{}; i < amtBricks; ++i) Brick(scene, playfield);
+
+		const glm::vec2 exitPos{ Brick(scene, playfield)->GetTransform()->GetLocalPosition() };
+		GameObject* exit{ scene.AddGameObject(std::make_unique<GameObject>("exit", exitPos.x, exitPos.y)) };
+		exit->SetParent(playfield);
+		exit->AddComponent<ExitComponent>(m_maxLevels, m_currentLevel, totalEnemies);
 
 		return playfield;
 	}
@@ -232,7 +280,7 @@ namespace dae
 
 		constexpr glm::vec2 collider{ static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL) };
 
-		GameObject* brick{ scene.AddGameObject(std::make_unique<GameObject>(gridPos.x, gridPos.y)) };
+		GameObject* brick{ scene.AddGameObject(std::make_unique<GameObject>("brick", gridPos.x, gridPos.y))};
 		brick->SetParent(parent);
 
 		ColliderComponent* brickColliderStatic{ brick->AddComponent<ColliderComponent>(glm::vec2{}, collider.x, collider.y, false) };
@@ -254,7 +302,7 @@ namespace dae
 		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
 		constexpr float speed{ 20.f * constants::WINDOW_SCALE };
 
-		GameObject* player{ scene.AddGameObject(std::make_unique<GameObject>(startPos.x, startPos.y)) };
+		GameObject* player{ scene.AddGameObject(std::make_unique<GameObject>("player", startPos.x, startPos.y))};
 		player->SetParent(parent);
 
 		ColliderComponent* playerCollider{ player->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
@@ -286,7 +334,7 @@ namespace dae
 		const glm::vec2 gridPos{ gridComp->GetFreeCell() };
 		gridComp->OccupyCell(gridPos);
 
-		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>(gridPos.x, gridPos.y)) };
+		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>("enemy", gridPos.x, gridPos.y))};
 		enemy->SetParent(parent);
 
 		constexpr glm::vec2 collider{ 10.f, 12.f };
@@ -303,7 +351,7 @@ namespace dae
 		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
 		constexpr float speed{ 20.f * constants::WINDOW_SCALE };
 
-		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
+		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>("enemyPlayer", pos.x, pos.y))};
 		enemy->SetParent(parent);
 
 		ColliderComponent* enemyCollider{ enemy->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
@@ -327,7 +375,7 @@ namespace dae
 
 	GameObject* BombermanManager::FPSComponent(Scene& scene) const
 	{
-		GameObject* fps{ scene.AddGameObject(std::make_unique<GameObject>(5.f, constants::WINDOW_HEIGHT - (12.f))) };
+		GameObject* fps{ scene.AddGameObject(std::make_unique<GameObject>("fps", 5.f, constants::WINDOW_HEIGHT - (12.f))) };
 		fps->AddComponent<dae::FPSComponent>(m_font, m_fontSize);
 
 		return fps;

@@ -59,7 +59,9 @@ namespace dae
 
 		void LoadStage1(Scene& scene);
 
-		GameObject* Playfield(Scene& scene, int totalCols, int totalRows) const;
+		void ManageObservers(Scene& scene) const;
+
+		GameObject* Playfield(Scene& scene, int totalCols, int totalRows, uint8_t totalEnemies) const;
 		GameObject* Brick(Scene& scene, GameObject* parent) const;
 		GameObject* Player(Scene& scene, GameObject* parent) const;
 		GameObject* Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, entities::EntityType enemyType) const;
