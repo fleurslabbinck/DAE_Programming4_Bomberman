@@ -18,6 +18,7 @@
 #include "Components/HUDComponent.h"
 #include "Components/BomberComponent.h"
 #include "Components/EnemyComponent.h"
+#include "Components/ExitComponent.h"
 #include "Components/ScreenComponent.h"
 #include "Commands/MoveCommand.h"
 #include "Commands/BombCommand.h"
@@ -52,7 +53,7 @@ namespace dae
 		{
 			CollisionManager::GetInstance().RemoveAllColliders();
 			SceneManager::GetInstance().RemoveScene(m_currentScene);
-			InputManager::GetInstance().SetUpdatePlayerControllersFlag();
+			InputManager::GetInstance().RemovePlayerControllers();
 			Renderer::GetInstance().SetViewport(SDL_Rect{ 0, 0, constants::WINDOW_WIDTH, constants::WINDOW_HEIGHT });
 		}
 
@@ -118,6 +119,12 @@ namespace dae
 		case 0:
 			LoadStage1(scene);
 			break;
+		case 1:
+			LoadStage1(scene);
+			break;
+		case 2:
+			LoadStage1(scene);
+			break;
 		}
 
 		Renderer::GetInstance().SetBackgroundColor(m_inGameBackgroundColor);
@@ -146,16 +153,25 @@ namespace dae
 	{
 		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS) };
 
+		GameObject* exit{ scene.AddGameObject(std::make_unique<GameObject>(2.f * constants::GRIDCELL, 1.f * constants::GRIDCELL)) };
+		exit->SetParent(playfield);
+
+		constexpr uint8_t amtBallooms{ 0 };
+
+		ExitComponent* exitComp{ exit->AddComponent<ExitComponent>(m_maxLevels, m_currentLevel, amtBallooms) };
+
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+		HealthComponent* healthComp{ player->GetComponent<HealthComponent>() };
 
 		constexpr int amtBricks{ 60 };
 		
 		for (int i{}; i < amtBricks; ++i) Brick(scene, playfield);
 		
-		constexpr int amtBallooms{ 6 };
-		
 		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
+
+		healthComp->AddObserver(exitComp);
+		exitComp->AddObserver(m_state.get());
 
 		//EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 3.f * constants::GRIDCELL });
 	}
@@ -200,7 +216,7 @@ namespace dae
 
 			GameObject* block{ scene.AddGameObject(std::make_unique<GameObject>(startPos.x, startPos.y)) };
 			block->SetParent(playfield);
-			block->AddComponent<RenderComponent>("Obstacles/Block.png");
+			block->AddComponent<RenderComponent>("Sprites/Block.png");
 
 			ColliderComponent* blockCollider{ block->AddComponent<ColliderComponent>(glm::vec2{}, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL), false) };
 			CollisionManager::GetInstance().AddCollider(blockCollider);

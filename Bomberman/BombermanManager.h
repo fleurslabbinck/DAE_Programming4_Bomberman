@@ -32,7 +32,6 @@ namespace dae
 
 		void NextLevel() { ++m_currentLevel; }
 		void ResetLevel() { m_currentLevel = 0; }
-		bool GameWon() { return m_currentLevel >= m_maxLevels; }
 
 	private:
 		friend class Singleton<BombermanManager>;

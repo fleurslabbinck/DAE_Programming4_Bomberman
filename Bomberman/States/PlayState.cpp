@@ -14,12 +14,15 @@ namespace dae
 		{
 		case GameEvent::NEXT_LEVEL:
 			NextLevel();
-			if (BombermanManager::GetInstance().GameWon()) m_state = std::make_unique<HighScoreState>();
-			else m_state = std::make_unique<StageScreenState>();
+			m_state = std::make_unique<StageScreenState>();
 			break;
 		case GameEvent::RESET_LEVEL:
 			BombermanManager::GetInstance().LoseHealth();
 			m_state = std::make_unique<StageScreenState>();
+			break;
+		case GameEvent::GAME_WON:
+			ResetLevel();
+			m_state = std::make_unique<HighScoreState>();
 			break;
 		case GameEvent::GAME_OVER:
 			ResetLevel();

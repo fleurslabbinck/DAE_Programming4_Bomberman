@@ -8,6 +8,7 @@
 #include "../BombermanManager.h"
 #include "EnemyComponent.h"
 #include "BombComponent.h"
+#include "ExitComponent.h"
 
 namespace dae
 {
@@ -47,9 +48,13 @@ namespace dae
 		switch (m_entityType)
 		{
 		case entities::EntityType::Bomberman:
-			Notify(static_cast<int>(GameEvent::PLAYER_DEATH), GetOwner());
-			ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathSound), 10);
-			m_dead = true;
+			if (gameObject->GetComponent<ExitComponent>() != nullptr) Notify(static_cast<int>(GameEvent::PLAYER_EXIT), nullptr);
+			else
+			{
+				Notify(static_cast<int>(GameEvent::PLAYER_DEATH), GetOwner());
+				ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::DeathSound), 10);
+				m_dead = true;
+			}
 			break;
 		case entities::EntityType::Balloom:
 		case entities::EntityType::Oneal:

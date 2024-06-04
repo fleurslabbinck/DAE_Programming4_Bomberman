@@ -40,7 +40,9 @@ namespace dae
 
 		GameObject* bomb{ m_scene.AddGameObject(std::make_unique<GameObject>(pos.x, pos.y)) };
 		bomb->SetParent(parent);
-		bomb->AddComponent<BombComponent>(m_fire, true);
+
+		if (m_maxBombs == 1) bomb->AddComponent<BombComponent>(m_fire);
+		else bomb->AddComponent<BombComponent>(m_fire, true);
 
 		ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::PlaceBomb), 10);
 
