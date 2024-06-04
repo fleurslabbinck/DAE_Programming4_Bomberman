@@ -31,7 +31,7 @@ namespace dae
 	private:
 		Scene& m_scene;
 
-		uint8_t m_maxBombs{ 1 };
+		uint8_t m_maxBombs{ 2 };
 		uint8_t m_fire{ 1 };
 		const float m_detonationTime{ 3.f };
 		const float m_cooldown{ 0.5f };

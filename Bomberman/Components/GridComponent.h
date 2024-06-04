@@ -17,6 +17,7 @@ namespace dae
 	public:
 		struct Cell {
 			bool free{ true };
+			bool brick{ false };
 			float size{ static_cast<float>(constants::GRIDCELL) };
 			glm::vec2 startPos;
 			glm::vec2 center;

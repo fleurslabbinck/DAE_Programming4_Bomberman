@@ -52,6 +52,8 @@ namespace dae
 
 		} while (!validCell);
 
+		cell.brick = true;
+
 		return cell.startPos;
 	}
 

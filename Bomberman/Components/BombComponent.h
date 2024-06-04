@@ -37,7 +37,9 @@ namespace dae
 
 		void Explode();
 
-		explicit BombComponent(GameObject* pOwner, uint8_t fire);
+		bool IsExploded() const { return m_explode; }
+
+		explicit BombComponent(GameObject* pOwner, uint8_t fire, bool checkForChainExplosion = false);
 		~BombComponent() override;
 		BombComponent(const BombComponent& other) = delete;
 		BombComponent(BombComponent&& other) = delete;
@@ -50,6 +52,7 @@ namespace dae
 		std::unique_ptr<SpriteComponent> m_spriteComponent;
 		
 		bool m_explode{ false };
+		bool m_checkForChainExplosion;
 
 		uint8_t m_fire;
 		uint8_t m_currentFirePhase{};
@@ -61,8 +64,10 @@ namespace dae
 		glm::vec2 m_explosionCollider{};
 		std::vector<Explosion> m_explosions{};
 		std::vector<GameObject*> m_bricks{};
+		std::vector<GameObject*> m_bombs{};
 
-		bool AddExplosion(int explosionCount, FireDirection dir, uint8_t midRow, uint8_t endRow);
+		void AssembleExplosion();
+		bool AddExplosionCollider(int explosionCount, FireDirection dir, uint8_t midRow, uint8_t endRow);
 		void KillBomb();
 	};
 }

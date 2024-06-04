@@ -10,12 +10,13 @@
 
 namespace dae
 {
-	BombComponent::BombComponent(GameObject* pOwner, uint8_t fire)
+	BombComponent::BombComponent(GameObject* pOwner, uint8_t fire, bool checkForChainExplosion)
 		: BaseComponent(pOwner),
 		m_colliderComponentBomb{ std::make_unique<ColliderComponent>(pOwner, glm::vec2{}, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL), false) },
 		m_healthComponent{ std::make_unique<HealthComponent>(pOwner, entities::EntityType::Explosion, 1) },
 		m_spriteComponent{ std::make_unique<SpriteComponent>(pOwner, "Sprites/Bomb.png", entities::EntityType::Bomb) },
-		m_fire{ fire }
+		m_fire{ fire },
+		m_checkForChainExplosion{ checkForChainExplosion }
 	{
 		m_collisionManager.AddCollider(m_colliderComponentBomb.get());
 
@@ -23,40 +24,9 @@ namespace dae
 		m_subComponents.push_back(m_healthComponent.get());
 		m_subComponents.push_back(m_spriteComponent.get());
 
-		const glm::vec2 bombPos{ GetOwner()->GetTransform()->GetWorldPosition() };
-
 		//collider
 		constexpr float offset{ 0 };
 		m_explosionCollider = { static_cast<float>(constants::GRIDCELL) - offset, static_cast<float>(constants::GRIDCELL) - offset };
-
-		Explosion midExplosion{};
-		midExplosion.pos = bombPos;
-		midExplosion.colliderComp = std::make_unique<ColliderComponent>(GetOwner(), glm::vec2{}, m_explosionCollider.x, m_explosionCollider.y);
-		midExplosion.renderComp = std::make_unique<RenderComponent>(GetOwner(), "Sprites/Explosion.png");
-		midExplosion.row = 0;
-		m_explosions.push_back(std::move(midExplosion));
-
-		bool leftBlocked{ false };
-		bool rightBlocked{ false };
-		bool upBlocked{ false };
-		bool downBlocked{ false };
-
-		for (int i{}; i < m_fire; ++i)
-		{
-			int count{ i + 1 };
-
-			// left
-			if (!leftBlocked) leftBlocked = AddExplosion(count, FireDirection::Left, 1, 2);
-
-			// right
-			if (!rightBlocked) rightBlocked = AddExplosion(count, FireDirection::Right, 3, 4);
-
-			// up
-			if (!upBlocked) upBlocked = AddExplosion(count, FireDirection::Up, 5, 6);
-
-			// down
-			if (!downBlocked) downBlocked = AddExplosion(count, FireDirection::Down, 7, 8);
-		}
 	}
 
 	BombComponent::~BombComponent()
@@ -116,6 +86,8 @@ namespace dae
 		m_collisionManager.RemoveCollider(m_colliderComponentBomb.get());
 		m_spriteComponent->ToggleVisibility();
 
+		AssembleExplosion();
+
 		for (auto& explosion : m_explosions)
 		{
 			m_collisionManager.AddCollider(explosion.colliderComp.get());
@@ -125,9 +97,48 @@ namespace dae
 		m_explode = true;
 
 		for (GameObject* brick : m_bricks) brick->GetComponent<SpriteComponent>()->SetDead();
+		for (GameObject* bomb : m_bombs)
+		{
+			BombComponent* bombComp{ bomb->GetComponent<BombComponent>() };
+			if (!bombComp->IsExploded()) bombComp->Explode();
+		}
 	}
 
-	bool BombComponent::AddExplosion(int explosionCount, FireDirection dir, uint8_t midRow, uint8_t endRow)
+	void BombComponent::AssembleExplosion()
+	{
+		const glm::vec2 bombPos{ GetOwner()->GetTransform()->GetWorldPosition() };
+
+		Explosion midExplosion{};
+		midExplosion.pos = bombPos;
+		midExplosion.colliderComp = std::make_unique<ColliderComponent>(GetOwner(), glm::vec2{}, m_explosionCollider.x, m_explosionCollider.y);
+		midExplosion.renderComp = std::make_unique<RenderComponent>(GetOwner(), "Sprites/Explosion.png");
+		midExplosion.row = 0;
+		m_explosions.push_back(std::move(midExplosion));
+
+		bool leftBlocked{ false };
+		bool rightBlocked{ false };
+		bool upBlocked{ false };
+		bool downBlocked{ false };
+
+		for (int i{}; i < m_fire; ++i)
+		{
+			int count{ i + 1 };
+
+			// left
+			if (!leftBlocked) leftBlocked = AddExplosionCollider(count, FireDirection::Left, 1, 2);
+
+			// right
+			if (!rightBlocked) rightBlocked = AddExplosionCollider(count, FireDirection::Right, 3, 4);
+
+			// up
+			if (!upBlocked) upBlocked = AddExplosionCollider(count, FireDirection::Up, 5, 6);
+
+			// down
+			if (!downBlocked) downBlocked = AddExplosionCollider(count, FireDirection::Down, 7, 8);
+		}
+	}
+
+	bool BombComponent::AddExplosionCollider(int explosionCount, FireDirection dir, uint8_t midRow, uint8_t endRow)
 	{
 		Explosion explosion{};
 		explosion.direction = dir;
@@ -174,7 +185,18 @@ namespace dae
 			for (GameObject* entity : entities)
 			{
 				HealthComponent* healthComp{ entity->GetComponent<HealthComponent>() };
-				if (healthComp != nullptr && healthComp->GetEntityType() == entities::EntityType::Brick) m_bricks.push_back(entity);
+
+				if (healthComp != nullptr)
+				{
+					if (healthComp->GetEntityType() == entities::EntityType::Brick) m_bricks.push_back(entity);
+					continue;
+				}
+
+				if (m_checkForChainExplosion)
+				{
+					BombComponent* bombComp{ entity->GetComponent<BombComponent>() };
+					if (bombComp != nullptr) m_bombs.push_back(entity);
+				}
 			}
 		}
 
