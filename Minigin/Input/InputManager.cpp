@@ -11,36 +11,19 @@ namespace dae
 		else gamepad = nullptr;
 
 		std::unique_ptr<PlayerController> newPlayerController{ std::make_unique<PlayerController>(controlMethod, std::move(gamepad)) };
-		m_newPlayerControllers.push_back(std::move(newPlayerController));
+		m_playerControllers.push_back(std::move(newPlayerController));
 
-		return m_newPlayerControllers.back().get();
+		return m_playerControllers.back().get();
 	}
 
-	void InputManager::SetUpdatePlayerControllersFlag()
+	void InputManager::RemovePlayerControllers()
 	{
-		m_updatePlayerControllers = true;
-		Gamepad::ResetGamepadCount();
-	}
-
-	void InputManager::UpdatePlayerControllers()
-	{
-		if (!m_updatePlayerControllers) return;
 		m_playerControllers.clear();
-
-		for (std::unique_ptr<PlayerController>& playerController : m_newPlayerControllers)
-		{
-			m_playerControllers.push_back(std::move(playerController));
-		}
-
-		m_newPlayerControllers.clear();
-
-		m_updatePlayerControllers = false;
 	}
 
 	bool InputManager::ProcessInput()
 	{
 		ExecuteCommands();
-		UpdatePlayerControllers();
 
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
