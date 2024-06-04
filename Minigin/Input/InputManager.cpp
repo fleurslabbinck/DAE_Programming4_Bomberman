@@ -19,6 +19,7 @@ namespace dae
 	void InputManager::RemovePlayerControllers()
 	{
 		m_playerControllers.clear();
+		Gamepad::ResetGamepadCount();
 	}
 
 	bool InputManager::ProcessInput()
