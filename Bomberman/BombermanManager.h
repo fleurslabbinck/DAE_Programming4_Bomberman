@@ -41,7 +41,7 @@ namespace dae
 		const uint8_t m_maxHealth{ 2 };
 		uint8_t m_currentHealth{ m_maxHealth };
 
-		const uint8_t m_maxLevels{ 3 };
+		const uint8_t m_maxLevels{ 4 };
 		uint8_t m_currentLevel{};
 
 		SDL_Color m_inGameBackgroundColor{ 176, 176, 176 };
@@ -58,6 +58,9 @@ namespace dae
 		void LoadHighScoreScene();
 
 		void LoadStage1(Scene& scene);
+		void LoadStage2(Scene& scene);
+		void LoadStage3(Scene& scene);
+		void LoadStage4(Scene& scene);
 
 		void ManageObservers(Scene& scene) const;
 
