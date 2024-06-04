@@ -36,6 +36,23 @@ namespace dae
 		}
 	}
 
+	std::vector<GameObject*> Scene::GetGameObjects(const std::string& name)
+	{
+		const auto iterator = std::stable_partition(m_gameObjects.begin(), m_gameObjects.end(), [&](const std::unique_ptr<GameObject>& gameObject) { return name != gameObject->GetName(); });
+
+		std::vector<GameObject*> objects;
+
+		for (auto it{ iterator }; it != m_gameObjects.end(); ++it)
+			objects.push_back(it->get());
+
+		return objects;
+	}
+
+	void Scene::PlaceOnTop(const std::string& name)
+	{
+		std::stable_partition(m_gameObjects.begin(), m_gameObjects.end(), [&](const std::unique_ptr<GameObject>& gameObject) { return name != gameObject->GetName(); });
+	}
+
 	void Scene::FixedUpdate()
 	{
 		CollisionManager::GetInstance().FixedUpdate();

@@ -16,6 +16,8 @@ namespace dae
 		void RemoveAllGameObjects();
 
 		const std::string GetName() const { return m_name; }
+		std::vector<GameObject*> GetGameObjects(const std::string& name);
+		void PlaceOnTop(const std::string& name);
 
 		void FixedUpdate();
 		void Update();

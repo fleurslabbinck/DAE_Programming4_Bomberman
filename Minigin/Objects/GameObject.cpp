@@ -3,8 +3,8 @@
 
 namespace dae
 {
-	GameObject::GameObject(float x, float y)
-		: m_transformComponent{ std::make_unique<TransformComponent>(this, x, y) }
+	GameObject::GameObject(const std::string& name, float x, float y)
+		: m_name{ name }, m_transformComponent{std::make_unique<TransformComponent>(this, x, y)}
 	{
 
 	}

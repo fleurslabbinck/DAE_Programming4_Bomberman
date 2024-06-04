@@ -9,6 +9,7 @@ namespace dae
 	class GameObject final
 	{
 	public:
+		const std::string& GetName() const { return m_name; }
 		GameObject* GetParent() const;
 		void SetParent(GameObject* parent, bool keepWorldPosition = false);
 		bool IsChild(GameObject* parent);
@@ -62,7 +63,7 @@ namespace dae
 		TransformComponent* GetTransform() const { return m_transformComponent.get(); }
 		bool IsDead() const { return m_isDead; }
 
-		GameObject(float x = 0, float y = 0);
+		GameObject(const std::string& name, float x = 0, float y = 0);
 		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -70,6 +71,7 @@ namespace dae
 		GameObject& operator=(GameObject&& other) = delete;
 
 	private:
+		const std::string m_name;
 		GameObject* m_parent{};
 		std::vector<GameObject*> m_children{};
 		dae::TimeManager& m_time = TimeManager::GetInstance();
