@@ -40,7 +40,7 @@ namespace dae
 			return m_buttonsPressedThisFrame || m_buttonsReleasedThisFrame;
 		}
 
-		bool IsPressed(GamepadButton button) const
+		bool IsDown(GamepadButton button) const
 		{
 			return m_currentState.Gamepad.wButtons & GetGamepadInput(button);
 		}
@@ -85,6 +85,8 @@ namespace dae
 			case GamepadButton::Y:
 				gamepadInput = XINPUT_GAMEPAD_Y;
 				break;
+			case GamepadButton::START:
+				gamepadInput = XINPUT_GAMEPAD_START;
 			}
 
 			return gamepadInput;
@@ -108,9 +110,9 @@ namespace dae
 		return m_Pimpl->UpdateButtons();
 	}
 
-	bool Gamepad::IsPressed(GamepadButton button) const
+	bool Gamepad::IsDown(GamepadButton button) const
 	{
-		return m_Pimpl->IsPressed(button);
+		return m_Pimpl->IsDown(button);
 	}
 
 	bool Gamepad::IsDownThisFrame(GamepadButton button) const

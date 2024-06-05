@@ -10,9 +10,7 @@ namespace dae
 	//---------------------------------
 	void ContinueCommand::Execute()
 	{
-		if (m_pressed) return;
 		Notify(static_cast<int>(GameEvent::CONTINUE), nullptr);
-		m_pressed = true;
 	}
 
 	//---------------------------------
@@ -20,8 +18,21 @@ namespace dae
 	//---------------------------------
 	void BackCommand::Execute()
 	{
-		if (m_pressed) return;
 		Notify(static_cast<int>(GameEvent::BACK), nullptr);
-		m_pressed = true;
+	}
+
+	//---------------------------------
+	// UP
+	//---------------------------------
+	void UpCommand::Execute()
+	{
+		Notify(static_cast<int>(GameEvent::UP), nullptr);
+	}
+	//---------------------------------
+	// DOWN
+	//---------------------------------
+	void DownCommand::Execute()
+	{
+		Notify(static_cast<int>(GameEvent::DOWN), nullptr);
 	}
 }

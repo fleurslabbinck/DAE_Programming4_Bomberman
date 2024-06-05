@@ -22,9 +22,13 @@ namespace scenes
 	enum class Scenes {
 		Menu,
 		StageScreen,
-		Level,
+		SinglePlayer,
+		Coop,
 		GameOverScreen,
 		HighScore,
+		PvpScreen,
+		Pvp,
+		WinnerScreen,
 	};
 }
 
@@ -60,23 +64,34 @@ namespace sound
 
 enum class GameEvent {
 	ENTITYOVERLAP,
+
 	PLAYER_DEATH,
 	ENEMY_DEATH,
 	PLAYER_EXIT,
 	PLAYER_POWERUP,
+
 	BOMBS,
 	FIRE,
 	DETONATOR,
+
 	HEALTH_CHANGED,
 	SCORE_CHANGED,
 	PLAYER_RESPAWN,
-	START_LEVEL,
+
+	START_SINGLE,
+	START_COOP,
+	START_PVP,
+	HIGHSCORES,
+
 	NEXT_LEVEL,
 	RESET_LEVEL,
 	GAME_WON,
 	GAME_OVER,
+
 	CONTINUE,
 	BACK,
+	UP,
+	DOWN,
 };
 
 namespace powerUps

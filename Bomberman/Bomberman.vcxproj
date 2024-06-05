@@ -175,6 +175,7 @@
     <ClCompile Include="Components\GridComponent.cpp" />
     <ClCompile Include="Components\HealthComponent.cpp" />
     <ClCompile Include="Components\HUDComponent.cpp" />
+    <ClCompile Include="Components\MenuControllerComponent.cpp" />
     <ClCompile Include="Components\PowerUpComponent.cpp" />
     <ClCompile Include="Components\ScoreComponent.cpp" />
     <ClCompile Include="Components\SpriteComponent.cpp" />
@@ -183,7 +184,7 @@
     <ClCompile Include="States\GameOverScreenState.cpp" />
     <ClCompile Include="States\HighScoreState.cpp" />
     <ClCompile Include="States\MainMenuState.cpp" />
-    <ClCompile Include="States\PlayState.cpp" />
+    <ClCompile Include="States\SinglePlayState.cpp" />
     <ClCompile Include="States\StageScreenState.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +203,7 @@
     <ClInclude Include="Components\GridComponent.h" />
     <ClInclude Include="Components\HealthComponent.h" />
     <ClInclude Include="Components\HUDComponent.h" />
+    <ClInclude Include="Components\MenuControllerComponent.h" />
     <ClInclude Include="Components\PowerUpComponent.h" />
     <ClInclude Include="Components\ScoreComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
@@ -209,7 +211,7 @@
     <ClInclude Include="States\GameOverScreenState.h" />
     <ClInclude Include="States\HighScoreState.h" />
     <ClInclude Include="States\MainMenuState.h" />
-    <ClInclude Include="States\PlayState.h" />
+    <ClInclude Include="States\SinglePlayState.h" />
     <ClInclude Include="States\StageScreenState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

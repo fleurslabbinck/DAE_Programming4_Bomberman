@@ -13,8 +13,6 @@ namespace dae
 	public:
 		InfoCommand() : Command() {}
 		void Execute() override;
-	private:
-		bool m_infoAsked{ false };
 	};
 }
 #endif

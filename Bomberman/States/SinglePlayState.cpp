@@ -1,4 +1,4 @@
-#include "PlayState.h"
+#include "SinglePlayState.h"
 
 #include "../BombermanManager.h"
 #include "HighScoreState.h"
@@ -7,7 +7,7 @@
 
 namespace dae
 {
-	void PlayState::OnNotify(Event event, GameObject*)
+	void SinglePlayState::OnNotify(Event event, GameObject*)
 	{
 		switch (static_cast<GameEvent>(event))
 		{
@@ -42,12 +42,12 @@ namespace dae
 		}
 	}
 
-	void PlayState::OnEnter() const
+	void SinglePlayState::OnEnter() const
 	{
-		BombermanManager::GetInstance().LoadScene(static_cast<int>(scenes::Scenes::Level));
+		BombermanManager::GetInstance().LoadScene(static_cast<int>(scenes::Scenes::SinglePlayer));
 	}
 
-	void PlayState::ResetLevel()
+	void SinglePlayState::ResetLevel()
 	{
 		BombermanManager::GetInstance().ResetLevel();
 		BombermanManager::GetInstance().ResetHealth();

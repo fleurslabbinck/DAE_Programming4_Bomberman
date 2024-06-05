@@ -9,8 +9,8 @@ namespace dae
 	//---------------------------------
 	//TEXTCOMPONENT
 	//---------------------------------
-	TextComponent::TextComponent(GameObject* pOwner, const std::string& fontPath, int fontSize, const std::string& text)
-		: BaseComponent(pOwner), m_text{ text }
+	TextComponent::TextComponent(GameObject* pOwner, const std::string& fontPath, int fontSize, const std::string& text, const SDL_Color& textColor, const SDL_Color& shadowColor)
+		: BaseComponent(pOwner), m_text{ text }, m_textColor{ textColor }, m_shadowColor{ shadowColor }
 	{
 		m_font = std::move(dae::ResourceManager::GetInstance().LoadFont(fontPath, fontSize));
 		m_renderComponent = std::make_unique<RenderComponent>(pOwner, std::make_unique<Texture2D>(GetTexture()));
@@ -45,12 +45,10 @@ namespace dae
 
 	SDL_Texture* TextComponent::GetTexture()
 	{
-		const SDL_Color colorFrontText = { 255,255,255,255 };
-		const SDL_Color colorShadow = { 0,0,0,255 };
 		const int shadowOffsetX{ 1 }, shadowOffsetY{ 1 };
 
 		// shadow text
-		const auto shadowSurf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), colorShadow);
+		const auto shadowSurf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), m_shadowColor);
 		if (shadowSurf == nullptr)
 		{
 			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
@@ -62,7 +60,7 @@ namespace dae
 		}
 
 		// main text
-		const auto mainSurf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), colorFrontText);
+		const auto mainSurf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), m_textColor);
 		if (mainSurf == nullptr)
 		{
 			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());

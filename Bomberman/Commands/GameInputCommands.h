@@ -14,9 +14,6 @@ namespace dae
 	public:
 		ContinueCommand() : Command() {}
 		void Execute() override;
-
-	private:
-		bool m_pressed{ false };
 	};
 
 	//---------------------------------
@@ -27,9 +24,26 @@ namespace dae
 	public:
 		BackCommand() : Command() {}
 		void Execute() override;
+	};
 
-	private:
-		bool m_pressed{ false };
+	//---------------------------------
+	// UPCOMMAND
+	//---------------------------------
+	class UpCommand : public Command, public Subject
+	{
+	public:
+		UpCommand() : Command() {}
+		void Execute() override;
+	};
+
+	//---------------------------------
+	// DOWNCOMMAND
+	//---------------------------------
+	class DownCommand : public Command, public Subject
+	{
+	public:
+		DownCommand() : Command() {}
+		void Execute() override;
 	};
 }
 #endif

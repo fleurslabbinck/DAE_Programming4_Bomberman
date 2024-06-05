@@ -48,7 +48,7 @@
     <ClCompile Include="States\MainMenuState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="States\PlayState.cpp">
+    <ClCompile Include="States\SinglePlayState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="States\HighScoreState.cpp">
@@ -87,6 +87,9 @@
     <ClCompile Include="Commands\DetonateCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\MenuControllerComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\BomberComponent.h">
@@ -122,7 +125,7 @@
     <ClInclude Include="States\MainMenuState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="States\PlayState.h">
+    <ClInclude Include="States\SinglePlayState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="States\HighScoreState.h">
@@ -159,6 +162,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Commands\DetonateCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MenuControllerComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

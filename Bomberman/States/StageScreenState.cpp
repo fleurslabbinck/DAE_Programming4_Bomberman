@@ -2,7 +2,7 @@
 
 #include "../BombermanUtil.h"
 #include "../BombermanManager.h"
-#include "PlayState.h"
+#include "SinglePlayState.h"
 
 namespace dae
 {
@@ -10,7 +10,7 @@ namespace dae
 	{
 		if (event == static_cast<int>(GameEvent::CONTINUE))
 		{
-			m_state = std::make_unique<PlayState>();
+			m_state = std::make_unique<SinglePlayState>();
 		}
 	}
 

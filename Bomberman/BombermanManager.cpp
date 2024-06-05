@@ -22,6 +22,7 @@
 #include "Components/EnemyComponent.h"
 #include "Components/ExitComponent.h"
 #include "Components/PowerUpComponent.h"
+#include "Components/MenuControllerComponent.h"
 #include "Components/ScreenComponent.h"
 #include "Commands/MoveCommand.h"
 #include "Commands/BombCommand.h"
@@ -69,7 +70,7 @@ namespace dae
 		case scenes::Scenes::StageScreen:
 			LoadScreen("STAGE " + std::to_string(m_currentLevel + 1));
 			break;
-		case scenes::Scenes::Level:
+		case scenes::Scenes::SinglePlayer:
 			LoadLevel();
 			break;
 		case scenes::Scenes::GameOverScreen:
@@ -100,9 +101,10 @@ namespace dae
 
 		GameObject* Menu{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 0.f, 0.f)) };
 		Menu->AddComponent<RenderComponent>("Menu.png");
+		MenuControllerComponent* controllerComp{ Menu->AddComponent<MenuControllerComponent>(m_font, m_fontSize) };
 
-		AddMenuControls(PlayerController::ControlMethod::Gamepad);
-		AddMenuControls(PlayerController::ControlMethod::Keyboard);
+		AddMenuControls(controllerComp, PlayerController::ControlMethod::Gamepad);
+		AddMenuControls(controllerComp, PlayerController::ControlMethod::Keyboard);
 	}
 
 	void BombermanManager::LoadScreen(const std::string& title)
@@ -164,8 +166,8 @@ namespace dae
 		GameObject* highScoreText{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 10.f, 10.f)) };
 		highScoreText->AddComponent<TextComponent>(m_font, m_fontSize, "HIGH SCORES:");
 
-		AddMenuControls(PlayerController::ControlMethod::Gamepad);
-		AddMenuControls(PlayerController::ControlMethod::Keyboard);
+		AddNavigateControls(PlayerController::ControlMethod::Gamepad);
+		AddNavigateControls(PlayerController::ControlMethod::Keyboard);
 	}
 
 	void BombermanManager::LoadStage1(Scene& scene)
@@ -434,6 +436,7 @@ namespace dae
 		healthComp->AddObserver(m_state.get());
 
 		AddPlayerControls(player, PlayerController::ControlMethod::Gamepad, speed);
+		AddPlayerControls(player, PlayerController::ControlMethod::Keyboard, speed);
 
 		return player;
 	}
@@ -491,11 +494,81 @@ namespace dae
 		return fps;
 	}
 
-	void BombermanManager::AddMenuControls(PlayerController::ControlMethod controlMethod) const
+	void BombermanManager::AddMenuControls(MenuControllerComponent* controllerComp, PlayerController::ControlMethod controlMethod) const
 	{
 		std::unique_ptr<ContinueCommand> continueCommand{ std::make_unique<ContinueCommand>() };
-		continueCommand->AddObserver(m_state.get());
+		continueCommand->AddObserver(controllerComp);
 
+		std::unique_ptr<UpCommand> upCommand{ std::make_unique<UpCommand>() };
+		upCommand->AddObserver(controllerComp);
+
+		std::unique_ptr<DownCommand> downCommand{ std::make_unique<DownCommand>() };
+		downCommand->AddObserver(controllerComp);
+
+		controllerComp->AddObserver(m_state.get());
+
+		switch (controlMethod)
+		{
+		case PlayerController::ControlMethod::Gamepad:
+		{
+			PlayerController* gamepad{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Gamepad) };
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::A), std::move(continueCommand));
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::DPadUp), std::move(upCommand));
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::DPadDown), std::move(downCommand));
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
+			break;
+		}
+		case PlayerController::ControlMethod::Keyboard:
+		{
+			PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_RETURN), std::move(continueCommand));
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_UP), std::move(upCommand));
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_DOWN), std::move(downCommand));
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
+			break;
+		}
+		}
+	}
+
+	void BombermanManager::AddPlayerControls(GameObject* gameObject, PlayerController::ControlMethod controlMethod, float speed, bool isBomberman) const
+	{
+		switch (controlMethod)
+		{
+		case PlayerController::ControlMethod::Gamepad:
+		{
+			PlayerController* gamepad{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Gamepad) };
+			gamepad->BindCommand(PlayerController::KeyState::Down, static_cast<int>(GamepadButton::DPadLeft), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
+			gamepad->BindCommand(PlayerController::KeyState::Down, static_cast<int>(GamepadButton::DPadRight), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 1, 0 }));
+			gamepad->BindCommand(PlayerController::KeyState::Down, static_cast<int>(GamepadButton::DPadDown), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
+			gamepad->BindCommand(PlayerController::KeyState::Down, static_cast<int>(GamepadButton::DPadUp), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
+			if (isBomberman)
+			{
+				gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::X), std::make_unique<BombCommand>(gameObject));
+				gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::A), std::make_unique<DetonateCommand>(gameObject));
+			}
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
+			break;
+		}
+		case PlayerController::ControlMethod::Keyboard:
+		{
+			PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
+			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_LEFT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
+			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_RIGHT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 1, 0 }));
+			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_DOWN), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
+			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_UP), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
+			if (isBomberman)
+			{
+				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_X), std::make_unique<BombCommand>(gameObject));
+				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_Z), std::make_unique<DetonateCommand>(gameObject));
+			}
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
+			break;
+		}
+		}
+	}
+
+	void BombermanManager::AddNavigateControls(PlayerController::ControlMethod controlMethod) const
+	{
 		std::unique_ptr<BackCommand> backCommand{ std::make_unique<BackCommand>() };
 		backCommand->AddObserver(m_state.get());
 
@@ -503,53 +576,16 @@ namespace dae
 		{
 		case PlayerController::ControlMethod::Gamepad:
 		{
-			PlayerController* player{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Gamepad) };
-			player->BindCommand(static_cast<int>(GamepadButton::A), std::move(continueCommand));
-			player->BindCommand(static_cast<int>(GamepadButton::B), std::move(backCommand));
+			PlayerController* gamepad{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Gamepad) };
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::B), std::move(backCommand));
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
 			break;
 		}
 		case PlayerController::ControlMethod::Keyboard:
 		{
-			PlayerController* player{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
-			player->BindCommand(static_cast<int>(SDL_SCANCODE_RETURN), std::move(continueCommand));
-			player->BindCommand(static_cast<int>(SDL_SCANCODE_BACKSPACE), std::move(backCommand));
-			player->BindCommand(static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
-			break;
-		}
-		}
-	}
-
-	void BombermanManager::AddPlayerControls(GameObject* gameObject, PlayerController::ControlMethod controlMethod, float speed) const
-	{
-		switch (controlMethod)
-		{
-		case PlayerController::ControlMethod::Gamepad:
-		{
-			PlayerController* player{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Gamepad) };
-			player->BindCommand(static_cast<int>(GamepadButton::DPadLeft), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
-			player->BindCommand(static_cast<int>(GamepadButton::DPadRight), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 1, 0 }));
-			player->BindCommand(static_cast<int>(GamepadButton::DPadDown), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
-			player->BindCommand(static_cast<int>(GamepadButton::DPadUp), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
-			player->BindCommand(static_cast<int>(GamepadButton::X), std::make_unique<BombCommand>(gameObject));
-			player->BindCommand(static_cast<int>(GamepadButton::A), std::make_unique<DetonateCommand>(gameObject));
-
-			PlayerController* player1{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
-			player1->BindCommand(static_cast<int>(SDL_SCANCODE_LEFT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
-			player1->BindCommand(static_cast<int>(SDL_SCANCODE_RIGHT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 1, 0 }));
-			player1->BindCommand(static_cast<int>(SDL_SCANCODE_DOWN), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
-			player1->BindCommand(static_cast<int>(SDL_SCANCODE_UP), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
-			player1->BindCommand(static_cast<int>(SDL_SCANCODE_X), std::make_unique<BombCommand>(gameObject));
-			player1->BindCommand(static_cast<int>(SDL_SCANCODE_Z), std::make_unique<DetonateCommand>(gameObject));
-			player->BindCommand(static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
-			break;
-		}
-		case PlayerController::ControlMethod::Keyboard:
-		{
-			PlayerController* player{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
-			player->BindCommand(static_cast<int>(SDL_SCANCODE_A), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
-			player->BindCommand(static_cast<int>(SDL_SCANCODE_D), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 1, 0 }));
-			player->BindCommand(static_cast<int>(SDL_SCANCODE_S), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
-			player->BindCommand(static_cast<int>(SDL_SCANCODE_W), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
+			PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_BACKSPACE), std::move(backCommand));
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
 			break;
 		}
 		}

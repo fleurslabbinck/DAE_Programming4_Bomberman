@@ -14,6 +14,7 @@ namespace dae
 		B,
 		X,
 		Y,
+		START
 	};
 
 	class Gamepad
@@ -23,7 +24,7 @@ namespace dae
 		virtual ~Gamepad() = default;
 
 		virtual bool UpdateButtons();
-		virtual bool IsPressed(GamepadButton button) const;
+		virtual bool IsDown(GamepadButton button) const;
 		virtual bool IsDownThisFrame(GamepadButton button) const;
 		virtual bool IsUpThisFrame(GamepadButton button) const;
 
