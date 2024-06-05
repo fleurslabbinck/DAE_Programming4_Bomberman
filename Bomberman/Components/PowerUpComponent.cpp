@@ -63,9 +63,8 @@ namespace dae
 			}
 
 			Notify(static_cast<int>(gameEvent), gameObject);
+			Destroy();
 		}
-
-		Destroy();
 	}
 
 	void PowerUpComponent::Destroy()

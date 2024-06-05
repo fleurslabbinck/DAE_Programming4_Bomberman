@@ -65,8 +65,11 @@ namespace dae
 			m_sprite.hasDirection = false;
 		}
 
-		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::HorizontalStep), "../Data/Sounds/HorizontalStep.wav");
-		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::VerticalStep), "../Data/Sounds/VerticalStep.wav");
+		if (type == entities::EntityType::Bomberman)
+		{
+			ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::HorizontalStep), "../Data/Sounds/HorizontalStep.wav");
+			ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::VerticalStep), "../Data/Sounds/VerticalStep.wav");
+		}
 	}
 
 	void SpriteComponent::Update()
