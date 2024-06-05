@@ -1,8 +1,13 @@
-#include <SDL.h>
 #include "InputManager.h"
 
 namespace dae
 {
+	InputManager::InputManager()
+		: m_currentKeyStates{ SDL_GetKeyboardState(NULL) }
+	{
+		std::memset(m_previousKeyStates, 0, sizeof(m_previousKeyStates));
+	}
+
 	PlayerController* InputManager::AddPlayerController(PlayerController::ControlMethod controlMethod)
 	{
 		std::unique_ptr<Gamepad> gamepad{};
@@ -24,7 +29,7 @@ namespace dae
 
 	bool InputManager::ProcessInput()
 	{
-		ExecuteCommands();
+		UpdateKeyStates();
 
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
@@ -33,7 +38,15 @@ namespace dae
 			}
 		}
 
+		ExecuteCommands();
+
 		return false;
+	}
+
+	void InputManager::UpdateKeyStates()
+	{
+		std::memcpy(m_previousKeyStates, m_currentKeyStates, sizeof(m_previousKeyStates));
+		m_currentKeyStates = SDL_GetKeyboardState(NULL);
 	}
 
 	void InputManager::ExecuteCommands()
@@ -44,33 +57,47 @@ namespace dae
 		}
 	}
 
-	std::vector<Command*> InputManager::HandleInput(const std::unique_ptr<PlayerController>& playerController) const
+	std::vector<Command*> InputManager::HandleInput(const std::unique_ptr<PlayerController>& playerController)
 	{
 		if (playerController->gamepad) playerController->gamepad->UpdateButtons();
 
 		std::vector<Command*> commands{};
 
-		for (const std::tuple<int, std::unique_ptr<Command>>& binding : playerController->bindings)
+		for (const std::tuple<PlayerController::KeyState, int, std::unique_ptr<Command>>& binding : playerController->bindings)
 		{
-			if (IsPressed(playerController, std::get<0>(binding))) commands.push_back(std::get<1>(binding).get());
+			if ((std::get<0>(binding) == PlayerController::KeyState::Down && IsDown(playerController, std::get<1>(binding))) ||
+				(std::get<0>(binding) == PlayerController::KeyState::DownThisFrame && IsDownThisFrame(playerController, std::get<1>(binding))))
+				commands.push_back(std::get<2>(binding).get());
 		}
 
 		return commands;
 	}
 
-	bool InputManager::IsPressed(const std::unique_ptr<PlayerController>& playerController, int input) const
+	bool InputManager::IsDown(const std::unique_ptr<PlayerController>& playerController, int input) const
 	{
 		switch (playerController->controlMethod)
 		{
 		case PlayerController::ControlMethod::Gamepad:
-			return playerController->gamepad->IsPressed(static_cast<GamepadButton>(input));
+			return playerController->gamepad->IsDown(static_cast<GamepadButton>(input));
 			break;
 		case PlayerController::ControlMethod::Keyboard:
-		{
-			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-			return currentKeyStates[input];
-		}
+			return m_currentKeyStates[input];
 			break;
+		}
+
+		return false;
+	}
+
+	bool InputManager::IsDownThisFrame(const std::unique_ptr<PlayerController>& playerController, int input)
+	{
+		switch (playerController->controlMethod)
+		{
+		case PlayerController::ControlMethod::Gamepad:
+			return playerController->gamepad->IsDownThisFrame(static_cast<GamepadButton>(input));
+			break;
+		case PlayerController::ControlMethod::Keyboard:
+			return m_currentKeyStates[input] && !m_previousKeyStates[input];
+		break;
 		}
 
 		return false;
