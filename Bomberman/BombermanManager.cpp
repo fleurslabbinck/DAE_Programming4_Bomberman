@@ -3,6 +3,8 @@
 #include "Scene/SceneManager.h"
 
 #include <memory>
+#include <iostream>
+
 #include "Scene/SceneManager.h"
 #include "Render/Renderer.h"
 #include "Objects/GameObject.h"
@@ -373,6 +375,9 @@ namespace dae
 		GameObject* powerUp{ scene.AddGameObject(std::make_unique<GameObject>("powerUp", powerUpPos.x, powerUpPos.y)) };
 		powerUp->SetParent(playfield);
 		powerUp->AddComponent<PowerUpComponent>(powerUpType);
+
+		std::cout << "EXIT LOCATION: " << exitPos.x / constants::GRIDCELL << ", " << exitPos.y / constants::GRIDCELL << std::endl;
+		std::cout << "POWERUP LOCATION: " << powerUpPos.x / constants::GRIDCELL << ", " << powerUpPos.y / constants::GRIDCELL << std::endl;
 
 		return playfield;
 	}
