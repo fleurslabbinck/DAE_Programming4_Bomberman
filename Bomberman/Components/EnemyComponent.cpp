@@ -86,24 +86,24 @@ namespace dae
 	{
 		if (m_spriteComponent->IsDead()) return;
 
-		glm::vec2 centeredPos{ m_colliderComponent->GetLocalCenter() };
-		const float distToTarget{ glm::distance(centeredPos, m_targetPos) };
-		constexpr float targetOffset{ 2.f };
+		glm::vec2 currentPos{ m_colliderComponent->GetLocalCenter() };
 
-		bool shouldTurn{ false };
-
-		if (distToTarget <= targetOffset)
+		if ((m_direction == glm::vec2{ -1.f, 0 } && currentPos.x <= m_targetPos.x) ||
+			(m_direction == glm::vec2{ 1.f, 0 } && currentPos.x >= m_targetPos.x) ||
+			(m_direction == glm::vec2{ 0, 1.f } && currentPos.y >= m_targetPos.y) ||
+			(m_direction == glm::vec2{ 0, -1.f } && currentPos.y <= m_targetPos.y))
 		{
-			m_targetPos = m_gridComponent->GetNextPosition(centeredPos, m_direction);
-			shouldTurn = ShouldTurn();
-		}
+			GetOwner()->GetTransform()->Translate(-(currentPos - m_targetPos));
 
-		if (!m_collisionManager.CanMove(m_colliderComponent.get(), m_targetPos) || shouldTurn)
-		{
-			SetDirection();
-			m_spriteComponent->SetDirection(m_direction);
+			m_targetPos = m_gridComponent->GetNextPosition(currentPos, m_direction);
 
-			m_targetPos = m_gridComponent->GetNextPosition(centeredPos, m_direction);
+			if (!m_collisionManager.CanMove(m_colliderComponent.get(), m_targetPos) || ShouldTurn())
+			{
+				SetDirection();
+				m_spriteComponent->SetDirection(m_direction);
+			
+				m_targetPos = m_gridComponent->GetNextPosition(currentPos, m_direction);
+			}
 		}
 
 		// move object
