@@ -14,6 +14,7 @@ namespace dae
 	class GameObject;
 	class HealthComponent;
 	class ScoreComponent;
+	class MenuControllerComponent;
 
 	class BombermanManager final : public Singleton<BombermanManager>, public GameManager
 	{
@@ -73,8 +74,9 @@ namespace dae
 		GameObject* EnemyPlayer(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos) const;
 		GameObject* FPSComponent(Scene& scene) const;
 
-		void AddMenuControls(PlayerController::ControlMethod controlMethod) const;
-		void AddPlayerControls(GameObject* gameObject, PlayerController::ControlMethod controlMethod, float speed) const;
+		void AddMenuControls(MenuControllerComponent* controllerComp, PlayerController::ControlMethod controlMethod) const;
+		void AddPlayerControls(GameObject* gameObject, PlayerController::ControlMethod controlMethod, float speed, bool isBomberman = true) const;
+		void AddNavigateControls(PlayerController::ControlMethod controlMethod) const;
 	};
 }
 #endif
