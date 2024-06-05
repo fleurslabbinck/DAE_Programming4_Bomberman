@@ -19,9 +19,11 @@
 #include "Components/BomberComponent.h"
 #include "Components/EnemyComponent.h"
 #include "Components/ExitComponent.h"
+#include "Components/PowerUpComponent.h"
 #include "Components/ScreenComponent.h"
 #include "Commands/MoveCommand.h"
 #include "Commands/BombCommand.h"
+#include "Commands/DetonateCommand.h"
 #include "Commands/GameInputCommands.h"
 #include "Commands/InfoCommand.h"
 #include "States/MainMenuState.h"
@@ -76,6 +78,18 @@ namespace dae
 		}
 	}
 
+	void BombermanManager::NextLevel(powerUps::PowerUpState powerUpState)
+	{
+		++m_currentLevel;
+		m_powerUpState = powerUpState;
+	}
+
+	void BombermanManager::ResetLevel()
+	{
+		m_currentLevel = 0;
+		m_powerUpState = {};
+	}
+
 	void BombermanManager::LoadMenuScene()
 	{
 		m_currentScene = "Menu";
@@ -117,7 +131,7 @@ namespace dae
 		switch (m_currentLevel)
 		{
 		case 0:
-			LoadStage4(scene);
+			LoadStage1(scene);
 			break;
 		case 1:
 			LoadStage2(scene);
@@ -156,7 +170,7 @@ namespace dae
 	{
 		constexpr uint8_t amtBallooms{ 6 };
 
-		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms) };
+		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms, entities::EntityType::Bombs) };
 
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
@@ -177,7 +191,7 @@ namespace dae
 		constexpr uint8_t amtBallooms{ 3 };
 		constexpr uint8_t amtOneals{ 3 };
 
-		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals) };
+		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals, entities::EntityType::Fire) };
 
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
@@ -198,7 +212,7 @@ namespace dae
 		constexpr uint8_t amtOneals{ 2 };
 		constexpr uint8_t amtDolls{ 2 };
 
-		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals + amtDolls) };
+		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals + amtDolls, entities::EntityType::Detonator) };
 
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
@@ -221,7 +235,7 @@ namespace dae
 		constexpr uint8_t amtDolls{ 2 };
 		constexpr uint8_t amtMinvos{ 2 };
 
-		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals + amtDolls + amtMinvos) };
+		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals + amtDolls + amtMinvos, entities::EntityType::Bombs) };
 
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
@@ -250,13 +264,14 @@ namespace dae
 		GameObject* player{ objects.front() };
 
 		HealthComponent* playerHealth{ player->GetComponent<HealthComponent>() };
+		BomberComponent* bomberComp{ player->GetComponent<BomberComponent>() };
 
 		// Exit
 		objects = scene.GetGameObjects("exit");
 
-		GameObject* exit{ objects.front() };
-
 		if (objects.empty()) return;
+
+		GameObject* exit{ objects.front() };
 
 		ExitComponent* exitComp{ exit->GetComponent<ExitComponent>() };
 
@@ -265,6 +280,21 @@ namespace dae
 
 		// Observer to check if game won
 		exitComp->AddObserver(m_state.get());
+
+		// PowerUps
+		objects = scene.GetGameObjects("powerUp");
+
+		if (!objects.empty())
+		{
+			// Observer to overlap between player and powerUp
+			for (GameObject* powerUp : objects)
+			{
+				PowerUpComponent* powerUpComp{ powerUp->GetComponent<PowerUpComponent>() };
+				playerHealth->AddObserver(powerUpComp);
+				powerUpComp->AddObserver(bomberComp);
+				powerUpComp->AddObserver(m_state.get());
+			}
+		}
 
 		// Enemies
 		objects = scene.GetGameObjects("enemy");
@@ -285,7 +315,7 @@ namespace dae
 		}
 	}
 
-	GameObject* BombermanManager::Playfield(Scene& scene, int totalCols, int totalRows, uint8_t totalEnemies) const
+	GameObject* BombermanManager::Playfield(Scene& scene, int totalCols, int totalRows, uint8_t totalEnemies, entities::EntityType powerUpType) const
 	{
 		// Playfield
 		GameObject* playfield{ scene.AddGameObject(std::make_unique<GameObject>("playfield", 0.f, static_cast<float>(constants::WINDOW_HEIGHT - constants::GRIDCELL * constants::GRID_ROWS)))};
@@ -331,13 +361,18 @@ namespace dae
 			CollisionManager::GetInstance().AddCollider(blockCollider);
 		}
 
-		constexpr int amtBricks{ 59 };
+		constexpr int amtBricks{ 58 };
 		for (int i{}; i < amtBricks; ++i) Brick(scene, playfield);
 
 		const glm::vec2 exitPos{ Brick(scene, playfield)->GetTransform()->GetLocalPosition() };
 		GameObject* exit{ scene.AddGameObject(std::make_unique<GameObject>("exit", exitPos.x, exitPos.y)) };
 		exit->SetParent(playfield);
 		exit->AddComponent<ExitComponent>(m_maxLevels, m_currentLevel, totalEnemies);
+
+		const glm::vec2 powerUpPos{ Brick(scene, playfield)->GetTransform()->GetLocalPosition() };
+		GameObject* powerUp{ scene.AddGameObject(std::make_unique<GameObject>("powerUp", powerUpPos.x, powerUpPos.y)) };
+		powerUp->SetParent(playfield);
+		powerUp->AddComponent<PowerUpComponent>(powerUpType);
 
 		return playfield;
 	}
@@ -377,7 +412,8 @@ namespace dae
 		ColliderComponent* playerCollider{ player->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
 		CollisionManager::GetInstance().AddCollider(playerCollider);
 
-		player->AddComponent<BomberComponent>(scene);
+		BomberComponent* bomberComp{ player->AddComponent<BomberComponent>(scene) };
+		bomberComp->SetPowerUpState(m_powerUpState);
 		SpriteComponent* spriteComp{ player->AddComponent<SpriteComponent>("Sprites/Bomberman.png", entities::EntityType::Bomberman)};
 		HealthComponent* healthComp{ player->AddComponent<HealthComponent>(entities::EntityType::Bomberman, m_currentHealth) };
 		ScoreComponent* scoreComp{ player->AddComponent<ScoreComponent>() };
@@ -490,6 +526,7 @@ namespace dae
 			player->BindCommand(static_cast<int>(GamepadButton::DPadDown), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
 			player->BindCommand(static_cast<int>(GamepadButton::DPadUp), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
 			player->BindCommand(static_cast<int>(GamepadButton::X), std::make_unique<BombCommand>(gameObject));
+			player->BindCommand(static_cast<int>(GamepadButton::A), std::make_unique<DetonateCommand>(gameObject));
 
 			PlayerController* player1{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
 			player1->BindCommand(static_cast<int>(SDL_SCANCODE_LEFT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
@@ -497,6 +534,7 @@ namespace dae
 			player1->BindCommand(static_cast<int>(SDL_SCANCODE_DOWN), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
 			player1->BindCommand(static_cast<int>(SDL_SCANCODE_UP), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
 			player1->BindCommand(static_cast<int>(SDL_SCANCODE_X), std::make_unique<BombCommand>(gameObject));
+			player1->BindCommand(static_cast<int>(SDL_SCANCODE_Z), std::make_unique<DetonateCommand>(gameObject));
 			player->BindCommand(static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
 			break;
 		}

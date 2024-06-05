@@ -20,6 +20,7 @@ namespace dae
 		virtual void OnNotify(Event, GameObject*) override {};
 		virtual std::unique_ptr<GameState> HandleGame() { return std::move(m_state); };
 		virtual void OnEnter() const {};
+		virtual void OnExit() const {};
 
 	protected:
 		std::unique_ptr<GameState> m_state{ nullptr };

@@ -30,8 +30,8 @@ namespace dae
 		void LoseHealth() { --m_currentHealth; }
 		void ResetHealth() { m_currentHealth = m_maxHealth; }
 
-		void NextLevel() { ++m_currentLevel; }
-		void ResetLevel() { m_currentLevel = 0; }
+		void NextLevel(powerUps::PowerUpState powerUpState);
+		void ResetLevel();
 
 	private:
 		friend class Singleton<BombermanManager>;
@@ -43,6 +43,8 @@ namespace dae
 
 		const uint8_t m_maxLevels{ 4 };
 		uint8_t m_currentLevel{};
+
+		powerUps::PowerUpState m_powerUpState{};
 
 		SDL_Color m_inGameBackgroundColor{ 176, 176, 176 };
 		SDL_Color m_stageBackgroundColor{ 0, 0, 0 };
@@ -64,7 +66,7 @@ namespace dae
 
 		void ManageObservers(Scene& scene) const;
 
-		GameObject* Playfield(Scene& scene, int totalCols, int totalRows, uint8_t totalEnemies) const;
+		GameObject* Playfield(Scene& scene, int totalCols, int totalRows, uint8_t totalEnemies, entities::EntityType powerUpType) const;
 		GameObject* Brick(Scene& scene, GameObject* parent) const;
 		GameObject* Player(Scene& scene, GameObject* parent) const;
 		GameObject* Enemy(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, entities::EntityType enemyType) const;

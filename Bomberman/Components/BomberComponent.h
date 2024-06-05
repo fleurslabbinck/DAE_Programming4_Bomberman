@@ -2,27 +2,33 @@
 #define BOMBERCOMPONENT_H
 
 #include "Objects/Components/BaseComponent.h"
+#include "Observers/Observer.h"
 #include "Scene/Scene.h"
+#include "../BombermanUtil.h"
 
 namespace dae
 {
 	class HealthComponent;
 
-	struct Bomb
-	{
-		GameObject* bombObj{ nullptr };
-		float timer{};
-	};
-
-	class BomberComponent final : public BaseComponent
+	class BomberComponent final : public BaseComponent, public Observer
 	{
 	public:
+		struct Bomb
+		{
+			GameObject* bombObj{ nullptr };
+			float timer{};
+		};
+
 		void Update() override;
 
-		bool CanPlaceBomb() const { return m_bombs.size() < m_maxBombs; }
+		void OnNotify(Event event, GameObject* gameObject) override;
+
+		void SetPowerUpState(powerUps::PowerUpState powerUpState);
+
+		bool CanPlaceBomb() const { return m_bombs.size() < m_powerUpState.maxBombs; }
 		void DropBomb(GameObject* parent, const glm::vec2& pos);
-		void ExplodeBomb();
-		void ExplodeBombs();
+		void Detonate();
+		bool CanDetonateBombs() const { return m_powerUpState.canDetonate; }
 
 		explicit BomberComponent(GameObject* pOwner, Scene& scene);
 		BomberComponent(const BomberComponent& other) = delete;
@@ -31,13 +37,14 @@ namespace dae
 	private:
 		Scene& m_scene;
 
-		uint8_t m_maxBombs{ 1 };
-		uint8_t m_fire{ 1 };
+		powerUps::PowerUpState m_powerUpState{};
 		const float m_detonationTime{ 3.f };
 		const float m_cooldown{ 0.5f };
 		float m_accumulatedTime{};
 
 		std::vector<Bomb> m_bombs{};
+
+		void ExplodeBomb();
 	};
 }
 #endif

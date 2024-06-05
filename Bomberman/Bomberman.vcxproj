@@ -163,6 +163,7 @@
   <ItemGroup>
     <ClCompile Include="BombermanManager.cpp" />
     <ClCompile Include="Commands\BombCommand.cpp" />
+    <ClCompile Include="Commands\DetonateCommand.cpp" />
     <ClCompile Include="Commands\GameInputCommands.cpp" />
     <ClCompile Include="Commands\InfoCommand.cpp" />
     <ClCompile Include="Commands\MoveCommand.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="Components\GridComponent.cpp" />
     <ClCompile Include="Components\HealthComponent.cpp" />
     <ClCompile Include="Components\HUDComponent.cpp" />
+    <ClCompile Include="Components\PowerUpComponent.cpp" />
     <ClCompile Include="Components\ScoreComponent.cpp" />
     <ClCompile Include="Components\SpriteComponent.cpp" />
     <ClCompile Include="Components\ScreenComponent.cpp" />
@@ -188,6 +190,7 @@
     <ClInclude Include="BombermanManager.h" />
     <ClInclude Include="BombermanUtil.h" />
     <ClInclude Include="Commands\BombCommand.h" />
+    <ClInclude Include="Commands\DetonateCommand.h" />
     <ClInclude Include="Commands\GameInputCommands.h" />
     <ClInclude Include="Commands\InfoCommand.h" />
     <ClInclude Include="Commands\MoveCommand.h" />
@@ -199,6 +202,7 @@
     <ClInclude Include="Components\GridComponent.h" />
     <ClInclude Include="Components\HealthComponent.h" />
     <ClInclude Include="Components\HUDComponent.h" />
+    <ClInclude Include="Components\PowerUpComponent.h" />
     <ClInclude Include="Components\ScoreComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\ScreenComponent.h" />

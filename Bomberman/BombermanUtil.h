@@ -40,7 +40,9 @@ namespace entities
 		Minvo,
 		Brick,
 		ExitWay,
-		PowerUp,
+		Bombs,
+		Fire,
+		Detonator
 	};
 }
 
@@ -61,6 +63,10 @@ enum class GameEvent {
 	PLAYER_DEATH,
 	ENEMY_DEATH,
 	PLAYER_EXIT,
+	PLAYER_POWERUP,
+	BOMBS,
+	FIRE,
+	DETONATOR,
 	HEALTH_CHANGED,
 	SCORE_CHANGED,
 	PLAYER_RESPAWN,
@@ -72,5 +78,14 @@ enum class GameEvent {
 	CONTINUE,
 	BACK,
 };
+
+namespace powerUps
+{
+	struct PowerUpState {
+		uint8_t maxBombs{ 1 };
+		uint8_t fire{ 1 };
+		bool canDetonate{ false };
+	};
+}
 
 #endif

@@ -1,6 +1,5 @@
 #include "PlayState.h"
 
-#include "../BombermanUtil.h"
 #include "../BombermanManager.h"
 #include "HighScoreState.h"
 #include "StageScreenState.h"
@@ -13,7 +12,7 @@ namespace dae
 		switch (static_cast<GameEvent>(event))
 		{
 		case GameEvent::NEXT_LEVEL:
-			NextLevel();
+			BombermanManager::GetInstance().NextLevel(m_powerUpState);
 			m_state = std::make_unique<StageScreenState>();
 			break;
 		case GameEvent::RESET_LEVEL:
@@ -28,6 +27,15 @@ namespace dae
 			ResetLevel();
 			m_state = std::make_unique<GameOverScreenState>();
 			break;
+		case GameEvent::BOMBS:
+			++m_powerUpState.maxBombs;
+			break;
+		case GameEvent::FIRE:
+			++m_powerUpState.fire;
+			break;
+		case GameEvent::DETONATOR:
+			m_powerUpState.canDetonate = true;
+			break;
 		default:
 			m_state = nullptr;
 			break;
@@ -37,12 +45,6 @@ namespace dae
 	void PlayState::OnEnter() const
 	{
 		BombermanManager::GetInstance().LoadScene(static_cast<int>(scenes::Scenes::Level));
-	}
-
-
-	void PlayState::NextLevel()
-	{
-		BombermanManager::GetInstance().NextLevel();
 	}
 
 	void PlayState::ResetLevel()

@@ -2,6 +2,7 @@
 #define PLAYSTATE_H
 
 #include "Game/GameState.h"
+#include "../BombermanUtil.h"
 
 namespace dae
 {
@@ -18,7 +19,8 @@ namespace dae
 		void OnEnter() const override;
 
 	private:
-		void NextLevel();
+		powerUps::PowerUpState m_powerUpState{};
+
 		void ResetLevel();
 	};
 }

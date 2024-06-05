@@ -34,6 +34,27 @@ namespace dae
 		}
 	}
 
+	void BomberComponent::SetPowerUpState(powerUps::PowerUpState powerUpState)
+	{
+		m_powerUpState = powerUpState;
+	}
+
+	void BomberComponent::OnNotify(Event event, GameObject*)
+	{
+		switch (event)
+		{
+		case static_cast<int>(GameEvent::BOMBS):
+			++m_powerUpState.maxBombs;
+			break;
+		case static_cast<int>(GameEvent::FIRE):
+			++m_powerUpState.fire;
+			break;
+		case static_cast<int>(GameEvent::DETONATOR):
+			m_powerUpState.canDetonate = true;
+			break;
+		}
+	}
+
 	void BomberComponent::DropBomb(GameObject* parent, const glm::vec2& pos)
 	{
 		if (!CanPlaceBomb() || m_accumulatedTime < m_cooldown) return;
@@ -41,8 +62,8 @@ namespace dae
 		GameObject* bomb{ m_scene.AddGameObject(std::make_unique<GameObject>("bomb", pos.x, pos.y))};
 		bomb->SetParent(parent);
 
-		if (m_maxBombs == 1) bomb->AddComponent<BombComponent>(m_fire);
-		else bomb->AddComponent<BombComponent>(m_fire, true);
+		if (m_powerUpState.maxBombs == 1) bomb->AddComponent<BombComponent>(m_powerUpState.fire);
+		else bomb->AddComponent<BombComponent>(m_powerUpState.fire, true);
 
 		ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::PlaceBomb), 10);
 
@@ -61,7 +82,7 @@ namespace dae
 		m_bombs.erase(m_bombs.begin());
 	}
 
-	void BomberComponent::ExplodeBombs()
+	void BomberComponent::Detonate()
 	{
 		ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::Explosion), 20);
 

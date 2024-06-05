@@ -9,6 +9,7 @@
 #include "EnemyComponent.h"
 #include "BombComponent.h"
 #include "ExitComponent.h"
+#include "PowerUpComponent.h"
 
 namespace dae
 {
@@ -49,6 +50,11 @@ namespace dae
 		{
 		case entities::EntityType::Bomberman:
 			if (gameObject->GetComponent<ExitComponent>() != nullptr) Notify(static_cast<int>(GameEvent::PLAYER_EXIT), nullptr);
+			else if (PowerUpComponent* powerUpComp = gameObject->GetComponent<PowerUpComponent>())
+			{
+				Notify(static_cast<int>(GameEvent::PLAYER_POWERUP), nullptr);
+				RemoveObserver(powerUpComp);
+			}
 			else
 			{
 				Notify(static_cast<int>(GameEvent::PLAYER_DEATH), GetOwner());

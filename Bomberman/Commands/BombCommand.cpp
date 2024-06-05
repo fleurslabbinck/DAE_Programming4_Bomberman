@@ -3,7 +3,6 @@
 #include "Objects/Components/ColliderComponent.h"
 #include "../Components/GridComponent.h"
 #include "../Components/BomberComponent.h"
-#include "../Components/HealthComponent.h"
 
 namespace dae
 {
