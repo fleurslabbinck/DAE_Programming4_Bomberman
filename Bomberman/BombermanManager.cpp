@@ -674,8 +674,8 @@ namespace dae
 			gamepad->BindCommand(PlayerController::KeyState::Down, static_cast<int>(GamepadButton::DPadUp), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
 			if (isBomberman)
 			{
-				gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::X), std::make_unique<BombCommand>(gameObject));
-				gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::A), std::make_unique<DetonateCommand>(gameObject));
+				gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::A), std::make_unique<BombCommand>(gameObject));
+				gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::B), std::make_unique<DetonateCommand>(gameObject));
 			}
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
 
