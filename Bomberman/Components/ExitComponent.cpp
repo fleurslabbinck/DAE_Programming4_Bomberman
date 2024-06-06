@@ -10,10 +10,8 @@ namespace dae
 	//---------------------------------
 	//EXITCOMPONENT
 	//---------------------------------
-	ExitComponent::ExitComponent(GameObject* pOwner, uint8_t maxLevels, uint8_t currentLevel, uint8_t totalEnemies)
+	ExitComponent::ExitComponent(GameObject* pOwner, uint8_t totalEnemies)
 		: BaseComponent(pOwner),
-		m_maxLevels{ maxLevels },
-		m_currentLevel{ currentLevel },
 		m_totalEnemies{ totalEnemies },
 		m_colliderComponent{ std::make_unique<ColliderComponent>(pOwner, glm::vec2{ 1.f, 0 }, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL)) },
 		m_renderComponent{ std::make_unique<RenderComponent>(pOwner, "Sprites/Exit.png") }
@@ -39,8 +37,7 @@ namespace dae
 		case static_cast<int>(GameEvent::PLAYER_EXIT):
 			if (m_killedEnemies >= m_totalEnemies)
 			{
-				if (m_currentLevel < m_maxLevels - 1) Notify(static_cast<int>(GameEvent::NEXT_LEVEL), nullptr);
-				else Notify(static_cast<int>(GameEvent::GAME_WON), nullptr);
+				Notify(static_cast<int>(GameEvent::STAGE_WON), nullptr);
 			}
 			break;
 		}

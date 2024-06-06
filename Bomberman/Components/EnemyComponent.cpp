@@ -11,8 +11,8 @@ namespace dae
 	//---------------------------------
 	//ENEMYCOMPONENT
 	//---------------------------------
-	EnemyComponent::EnemyComponent(GameObject* pOwner, ScoreComponent* scoreComp, entities::EntityType enemyType, glm::vec2 collider, glm::vec2 offset)
-		: BaseComponent(pOwner), m_EntityType{ enemyType },
+	EnemyComponent::EnemyComponent(GameObject* pOwner, ScoreComponent* scoreComp, entities::EntityType enemyType, glm::vec2 collider, glm::vec2 offset, bool playerControlled)
+		: BaseComponent(pOwner), m_playerControlled{ playerControlled }, m_EntityType{ enemyType },
 		m_colliderComponent{ std::make_unique<ColliderComponent>(pOwner, offset, collider.x, collider.y) },
 		m_healthComponent{ std::make_unique<HealthComponent>(pOwner, enemyType, 1) }
 	{
@@ -74,7 +74,7 @@ namespace dae
 	void EnemyComponent::Update()
 	{
 		m_spriteComponent->Update();
-		Move();
+		if (!m_playerControlled) Move();
 	}
 
 	void EnemyComponent::Render(const glm::vec2& pos) const

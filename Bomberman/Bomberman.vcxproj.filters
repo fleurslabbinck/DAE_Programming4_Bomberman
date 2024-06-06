@@ -48,7 +48,7 @@
     <ClCompile Include="States\MainMenuState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="States\SinglePlayState.cpp">
+    <ClCompile Include="States\StagePlayState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="States\HighScoreState.cpp">
@@ -90,6 +90,15 @@
     <ClCompile Include="Components\MenuControllerComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="States\PvpScreenState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="States\PvpPlayState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="States\WinnerScreenState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\BomberComponent.h">
@@ -125,7 +134,7 @@
     <ClInclude Include="States\MainMenuState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="States\SinglePlayState.h">
+    <ClInclude Include="States\StagePlayState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="States\HighScoreState.h">
@@ -165,6 +174,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\MenuControllerComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="States\PvpScreenState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="States\PvpPlayState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="States\WinnerScreenState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

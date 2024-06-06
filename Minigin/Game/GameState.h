@@ -18,7 +18,7 @@ namespace dae
 		GameState& operator=(GameState&& other) = delete;
 
 		virtual void OnNotify(Event, GameObject*) override {};
-		virtual std::unique_ptr<GameState> HandleGame() { return std::move(m_state); };
+		virtual std::unique_ptr<GameState> HandleGameState() { return std::move(m_state); };
 		virtual void OnEnter() const {};
 		virtual void OnExit() const {};
 

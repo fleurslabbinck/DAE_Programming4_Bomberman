@@ -30,12 +30,13 @@ namespace dae
 
 		HealthComponent* GetHealthComponent() { return m_healthComponent.get(); }
 
-		explicit EnemyComponent(GameObject* pOwner, ScoreComponent* scoreComp, entities::EntityType enemyType, glm::vec2 collider, glm::vec2 offset);
+		explicit EnemyComponent(GameObject* pOwner, ScoreComponent* scoreComp, entities::EntityType enemyType, glm::vec2 collider, glm::vec2 offset, bool playerControlled = false);
 		~EnemyComponent() = default;
 		EnemyComponent(const EnemyComponent& other) = delete;
 		EnemyComponent(EnemyComponent&& other) = delete;
 
 	private:
+		bool m_playerControlled;
 		bool m_killed{ false };
 		int m_turnChance{};
 		const int m_maxChance{ 10 };

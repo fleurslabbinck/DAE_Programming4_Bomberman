@@ -184,8 +184,11 @@
     <ClCompile Include="States\GameOverScreenState.cpp" />
     <ClCompile Include="States\HighScoreState.cpp" />
     <ClCompile Include="States\MainMenuState.cpp" />
-    <ClCompile Include="States\SinglePlayState.cpp" />
+    <ClCompile Include="States\PvpPlayState.cpp" />
+    <ClCompile Include="States\PvpScreenState.cpp" />
+    <ClCompile Include="States\StagePlayState.cpp" />
     <ClCompile Include="States\StageScreenState.cpp" />
+    <ClCompile Include="States\WinnerScreenState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BombermanManager.h" />
@@ -211,8 +214,11 @@
     <ClInclude Include="States\GameOverScreenState.h" />
     <ClInclude Include="States\HighScoreState.h" />
     <ClInclude Include="States\MainMenuState.h" />
-    <ClInclude Include="States\SinglePlayState.h" />
+    <ClInclude Include="States\PvpPlayState.h" />
+    <ClInclude Include="States\PvpScreenState.h" />
+    <ClInclude Include="States\StagePlayState.h" />
     <ClInclude Include="States\StageScreenState.h" />
+    <ClInclude Include="States\WinnerScreenState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

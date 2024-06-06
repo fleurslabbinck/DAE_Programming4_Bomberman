@@ -16,6 +16,10 @@ namespace dae
 
 		void OnNotify(Event event, GameObject* gameObject) override;
 		void OnEnter() const override;
+
+	private:
+		uint8_t m_singlePlayer{ 1 };
+		uint8_t m_multiPlayer{ 2 };
 	};
 }
 #endif

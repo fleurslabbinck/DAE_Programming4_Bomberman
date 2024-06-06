@@ -61,6 +61,7 @@ namespace dae
 		std::vector<Command*> HandleInput(const std::unique_ptr<PlayerController>& playerController);
 		bool IsDown(const std::unique_ptr<PlayerController>& playerController, int input) const;
 		bool IsDownThisFrame(const std::unique_ptr<PlayerController>& playerController, int input);
+		bool IsUpThisFrame(const std::unique_ptr<PlayerController>& playerController, int input);
 	};
 }
 #endif

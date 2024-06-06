@@ -107,7 +107,7 @@ namespace dae
 		const int col{ static_cast<int>(position.x) / constants::GRIDCELL };
 		const int row{ static_cast<int>(position.y) / constants::GRIDCELL };
 
-		const int idx{ row * constants::GRID_COLS + col };
+		const int idx{ row * m_cols + col };
 
 		return idx;
 	}

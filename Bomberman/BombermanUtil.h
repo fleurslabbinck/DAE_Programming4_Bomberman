@@ -14,6 +14,7 @@ namespace constants
 	//grid
 	constexpr int GRIDCELL = 16 /** WINDOW_SCALE*/;
 	constexpr int GRID_COLS = 31;
+	constexpr int GRID_PVPCOLS = 15;
 	constexpr int GRID_ROWS = 13;
 }
 
@@ -83,9 +84,8 @@ enum class GameEvent {
 	START_PVP,
 	HIGHSCORES,
 
-	NEXT_LEVEL,
+	STAGE_WON,
 	RESET_LEVEL,
-	GAME_WON,
 	GAME_OVER,
 
 	CONTINUE,

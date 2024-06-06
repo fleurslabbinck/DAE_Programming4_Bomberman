@@ -66,7 +66,8 @@ namespace dae
 		for (const std::tuple<PlayerController::KeyState, int, std::unique_ptr<Command>>& binding : playerController->bindings)
 		{
 			if ((std::get<0>(binding) == PlayerController::KeyState::Down && IsDown(playerController, std::get<1>(binding))) ||
-				(std::get<0>(binding) == PlayerController::KeyState::DownThisFrame && IsDownThisFrame(playerController, std::get<1>(binding))))
+				(std::get<0>(binding) == PlayerController::KeyState::DownThisFrame && IsDownThisFrame(playerController, std::get<1>(binding))) ||
+				(std::get<0>(binding) == PlayerController::KeyState::UpThisFrame && IsUpThisFrame(playerController, std::get<1>(binding))))
 				commands.push_back(std::get<2>(binding).get());
 		}
 
@@ -98,6 +99,21 @@ namespace dae
 		case PlayerController::ControlMethod::Keyboard:
 			return m_currentKeyStates[input] && !m_previousKeyStates[input];
 		break;
+		}
+
+		return false;
+	}
+
+	bool InputManager::IsUpThisFrame(const std::unique_ptr<PlayerController>& playerController, int input)
+	{
+		switch (playerController->controlMethod)
+		{
+		case PlayerController::ControlMethod::Gamepad:
+			return playerController->gamepad->IsUpThisFrame(static_cast<GamepadButton>(input));
+			break;
+		case PlayerController::ControlMethod::Keyboard:
+			return !m_currentKeyStates[input] && m_previousKeyStates[input];
+			break;
 		}
 
 		return false;

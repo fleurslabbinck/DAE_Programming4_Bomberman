@@ -67,7 +67,7 @@ namespace dae
 		switch (static_cast<GameEvent>(event))
 		{
 		case GameEvent::CONTINUE:
-			Notify(static_cast<int>(GameEvent::CONTINUE), nullptr);
+			Notify(static_cast<int>(m_menuPointer.currentMenuItem->event), nullptr);
 			break;
 		case GameEvent::DOWN:
 			if (m_menuPointer.menuIdx < m_menuItems.size() - 1) m_menuPointer.currentMenuItem = &m_menuItems[++m_menuPointer.menuIdx];

@@ -1,4 +1,4 @@
-#include "SinglePlayState.h"
+#include "StagePlayState.h"
 
 #include "../BombermanManager.h"
 #include "HighScoreState.h"
@@ -7,21 +7,25 @@
 
 namespace dae
 {
-	void SinglePlayState::OnNotify(Event event, GameObject*)
+	void StagePlayState::OnNotify(Event event, GameObject*)
 	{
 		switch (static_cast<GameEvent>(event))
 		{
-		case GameEvent::NEXT_LEVEL:
-			BombermanManager::GetInstance().NextLevel(m_powerUpState);
-			m_state = std::make_unique<StageScreenState>();
+		case GameEvent::STAGE_WON:
+			if (BombermanManager::GetInstance().GetCurrentLevel() < BombermanManager::GetInstance().GetMaxLevels())
+			{
+				BombermanManager::GetInstance().NextLevel(m_powerUpState);
+				m_state = std::make_unique<StageScreenState>();
+			}
+			else
+			{
+				ResetLevel();
+				m_state = std::make_unique<HighScoreState>();
+			}
 			break;
 		case GameEvent::RESET_LEVEL:
 			BombermanManager::GetInstance().LoseHealth();
 			m_state = std::make_unique<StageScreenState>();
-			break;
-		case GameEvent::GAME_WON:
-			ResetLevel();
-			m_state = std::make_unique<HighScoreState>();
 			break;
 		case GameEvent::GAME_OVER:
 			ResetLevel();
@@ -42,12 +46,12 @@ namespace dae
 		}
 	}
 
-	void SinglePlayState::OnEnter() const
+	void StagePlayState::OnEnter() const
 	{
 		BombermanManager::GetInstance().LoadScene(static_cast<int>(scenes::Scenes::SinglePlayer));
 	}
 
-	void SinglePlayState::ResetLevel()
+	void StagePlayState::ResetLevel()
 	{
 		BombermanManager::GetInstance().ResetLevel();
 		BombermanManager::GetInstance().ResetHealth();

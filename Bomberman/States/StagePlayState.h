@@ -6,14 +6,14 @@
 
 namespace dae
 {
-	class SinglePlayState final : public GameState
+	class StagePlayState final : public GameState
 	{
 	public:
-		SinglePlayState() = default;
-		SinglePlayState(const SinglePlayState& other) = delete;
-		SinglePlayState(SinglePlayState&& other) = delete;
-		SinglePlayState& operator=(const SinglePlayState& other) = delete;
-		SinglePlayState& operator=(SinglePlayState&& other) = delete;
+		StagePlayState() = default;
+		StagePlayState(const StagePlayState& other) = delete;
+		StagePlayState(StagePlayState&& other) = delete;
+		StagePlayState& operator=(const StagePlayState& other) = delete;
+		StagePlayState& operator=(StagePlayState&& other) = delete;
 
 		void OnNotify(Event event, GameObject* gameObject) override;
 		void OnEnter() const override;

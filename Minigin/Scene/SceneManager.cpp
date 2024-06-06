@@ -27,7 +27,7 @@ namespace dae
 			scene->LateUpdate();
 		}
 
-		m_gameManager->HandleGame();
+		m_gameManager->HandleGameState();
 
 		if (!m_sceneToRemove.empty())
 		{

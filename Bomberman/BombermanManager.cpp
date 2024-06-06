@@ -41,9 +41,9 @@ namespace dae
 		m_state->OnEnter();
 	}
 
-	void BombermanManager::HandleGame()
+	void BombermanManager::HandleGameState()
 	{
-		std::unique_ptr<GameState> state = m_state->HandleGame();
+		std::unique_ptr<GameState> state = m_state->HandleGameState();
 
 		if (state == nullptr) return;
 
@@ -71,10 +71,20 @@ namespace dae
 			LoadScreen("STAGE " + std::to_string(m_currentLevel + 1));
 			break;
 		case scenes::Scenes::SinglePlayer:
+		case scenes::Scenes::Coop:
 			LoadLevel();
 			break;
 		case scenes::Scenes::GameOverScreen:
 			LoadScreen("GAME OVER");
+			break;
+		case scenes::Scenes::PvpScreen:
+			LoadScreen("PVP");
+			break;
+		case scenes::Scenes::Pvp:
+			LoadPvp();
+			break;
+		case scenes::Scenes::WinnerScreen:
+			LoadScreen(m_pvpWinner + " WON!");
 			break;
 		case scenes::Scenes::HighScore:
 			LoadHighScoreScene();
@@ -153,6 +163,30 @@ namespace dae
 		FPSComponent(scene);
 	}
 
+	void BombermanManager::LoadPvp()
+	{
+		m_currentScene = "pvp";
+
+		auto& scene = dae::SceneManager::GetInstance().CreateScene(m_currentScene);
+
+		GameObject* playfield{ PvpPlayfield(scene) };
+
+		GameObject* player{ Player(scene, playfield) };
+		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+
+		EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 3.f * constants::GRIDCELL });
+
+		ManageObservers(scene);
+
+		// Place bricks & bomberman on top
+		scene.PlaceOnTop("brick");
+		scene.PlaceOnTop("player");
+
+		Renderer::GetInstance().SetBackgroundColor(m_inGameBackgroundColor);
+
+		FPSComponent(scene);
+	}
+
 	void BombermanManager::LoadHighScoreScene()
 	{
 		m_currentScene = "High Score";
@@ -174,10 +208,15 @@ namespace dae
 	{
 		constexpr uint8_t amtBallooms{ 6 };
 
-		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms, entities::EntityType::Bombs) };
+		GameObject* playfield{ Playfield(scene, amtBallooms, entities::EntityType::Bombs) };
 
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+		if (m_totalPlayers == 2)
+		{
+			HealthComponent* healthComp{ player->GetComponent<HealthComponent>() };
+			SecondPlayer(scene, playfield, healthComp);
+		}
 
 		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
 
@@ -186,8 +225,6 @@ namespace dae
 		// Place bricks & bomberman on top
 		scene.PlaceOnTop("brick");
 		scene.PlaceOnTop("player");
-
-		//EnemyPlayer(scene, playfield, scoreComp, glm::vec2{ 3.f * constants::GRIDCELL, 3.f * constants::GRIDCELL });
 	}
 
 	void BombermanManager::LoadStage2(Scene& scene)
@@ -195,10 +232,15 @@ namespace dae
 		constexpr uint8_t amtBallooms{ 3 };
 		constexpr uint8_t amtOneals{ 3 };
 
-		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals, entities::EntityType::Fire) };
+		GameObject* playfield{ Playfield(scene, amtBallooms + amtOneals, entities::EntityType::Fire) };
 
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+		if (m_totalPlayers == 2)
+		{
+			HealthComponent* healthComp{ player->GetComponent<HealthComponent>() };
+			SecondPlayer(scene, playfield, healthComp);
+		}
 
 		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
 		for (int i{}; i < amtOneals; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Oneal);
@@ -216,10 +258,15 @@ namespace dae
 		constexpr uint8_t amtOneals{ 2 };
 		constexpr uint8_t amtDolls{ 2 };
 
-		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals + amtDolls, entities::EntityType::Detonator) };
+		GameObject* playfield{ Playfield(scene, amtBallooms + amtOneals + amtDolls, entities::EntityType::Detonator) };
 
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+		if (m_totalPlayers == 2)
+		{
+			HealthComponent* healthComp{ player->GetComponent<HealthComponent>() };
+			SecondPlayer(scene, playfield, healthComp);
+		}
 
 		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
 		for (int i{}; i < amtOneals; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Oneal);
@@ -239,10 +286,15 @@ namespace dae
 		constexpr uint8_t amtDolls{ 2 };
 		constexpr uint8_t amtMinvos{ 2 };
 
-		GameObject* playfield{ Playfield(scene, constants::GRID_COLS, constants::GRID_ROWS, amtBallooms + amtOneals + amtDolls + amtMinvos, entities::EntityType::Bombs) };
+		GameObject* playfield{ Playfield(scene, amtBallooms + amtOneals + amtDolls + amtMinvos, entities::EntityType::Bombs) };
 
 		GameObject* player{ Player(scene, playfield) };
 		ScoreComponent* scoreComp{ player->GetComponent<ScoreComponent>() };
+		if (m_totalPlayers == 2)
+		{
+			HealthComponent* healthComp{ player->GetComponent<HealthComponent>() };
+			SecondPlayer(scene, playfield, healthComp);
+		}
 
 		for (int i{}; i < amtBallooms; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Balloom);
 		for (int i{}; i < amtOneals; ++i) Enemy(scene, playfield, scoreComp, entities::EntityType::Oneal);
@@ -319,11 +371,11 @@ namespace dae
 		}
 	}
 
-	GameObject* BombermanManager::Playfield(Scene& scene, int totalCols, int totalRows, uint8_t totalEnemies, entities::EntityType powerUpType) const
+	GameObject* BombermanManager::Playfield(Scene& scene, uint8_t totalEnemies, entities::EntityType powerUpType) const
 	{
 		// Playfield
 		GameObject* playfield{ scene.AddGameObject(std::make_unique<GameObject>("playfield", 0.f, static_cast<float>(constants::WINDOW_HEIGHT - constants::GRIDCELL * constants::GRID_ROWS)))};
-		GridComponent* gridComp{ playfield->AddComponent<GridComponent>(totalCols, totalRows, true, m_backgroundColor) };
+		GridComponent* gridComp{ playfield->AddComponent<GridComponent>(constants::GRID_COLS, constants::GRID_ROWS, true, m_backgroundColor) };
 
 		const char playfieldArr[constants::GRID_COLS * constants::GRID_ROWS]{
 			'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#',
@@ -336,8 +388,8 @@ namespace dae
 			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
 			'#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
 			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
-			'#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
-			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+			'#', 'o', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
+			'#', 'o', 'o', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
 			'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#',
 		};
 
@@ -345,12 +397,17 @@ namespace dae
 
 		glm::vec2 startPos{};
 
-		for (unsigned int idx{}; idx < static_cast<unsigned int>(totalCols) * static_cast<unsigned int>(totalRows); ++idx)
+		for (unsigned int idx{}; idx < static_cast<unsigned int>(constants::GRID_COLS) * static_cast<unsigned int>(constants::GRID_ROWS); ++idx)
 		{
 			if (playfieldArr[idx] == ' ') continue;
 			else if (playfieldArr[idx] == 'x')
 			{
 				gridComp->AddFreeIdx(idx);
+				continue;
+			}
+			else if (playfieldArr[idx] == 'o')
+			{
+				if (m_totalPlayers == 2) gridComp->AddFreeIdx(idx);
 				continue;
 			}
 
@@ -371,7 +428,7 @@ namespace dae
 		const glm::vec2 exitPos{ Brick(scene, playfield)->GetTransform()->GetLocalPosition() };
 		GameObject* exit{ scene.AddGameObject(std::make_unique<GameObject>("exit", exitPos.x, exitPos.y)) };
 		exit->SetParent(playfield);
-		exit->AddComponent<ExitComponent>(m_maxLevels, m_currentLevel, totalEnemies);
+		exit->AddComponent<ExitComponent>(totalEnemies);
 
 		const glm::vec2 powerUpPos{ Brick(scene, playfield)->GetTransform()->GetLocalPosition() };
 		GameObject* powerUp{ scene.AddGameObject(std::make_unique<GameObject>("powerUp", powerUpPos.x, powerUpPos.y)) };
@@ -380,6 +437,65 @@ namespace dae
 
 		std::cout << "EXIT LOCATION: " << exitPos.x / constants::GRIDCELL << ", " << exitPos.y / constants::GRIDCELL << std::endl;
 		std::cout << "POWERUP LOCATION: " << powerUpPos.x / constants::GRIDCELL << ", " << powerUpPos.y / constants::GRIDCELL << std::endl;
+
+		return playfield;
+	}
+
+	GameObject* BombermanManager::PvpPlayfield(Scene& scene) const
+	{
+		// Playfield
+		GameObject* playfield{ scene.AddGameObject(std::make_unique<GameObject>("playfield", 0.f, static_cast<float>(constants::WINDOW_HEIGHT - constants::GRIDCELL * constants::GRID_ROWS))) };
+		GridComponent* gridComp{ playfield->AddComponent<GridComponent>(constants::GRID_PVPCOLS, constants::GRID_ROWS, true, m_backgroundColor) };
+
+		const char playfieldArr[constants::GRID_PVPCOLS * constants::GRID_ROWS]{
+			'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#',
+			'#', 'x', 'x', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+			'#', 'x', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
+			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+			'#', ' ', '#', 'x', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
+			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+			'#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
+			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+			'#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
+			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+			'#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#',
+			'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#',
+			'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#',
+		};
+
+		const glm::vec2 blockCollisionBox{ static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL) };
+
+		glm::vec2 startPos{};
+
+		for (unsigned int idx{}; idx < static_cast<unsigned int>(constants::GRID_PVPCOLS) * static_cast<unsigned int>(constants::GRID_ROWS); ++idx)
+		{
+			if (playfieldArr[idx] == ' ') continue;
+			else if (playfieldArr[idx] == 'x')
+			{
+				gridComp->AddFreeIdx(idx);
+				continue;
+			}
+
+			startPos = gridComp->GetCelPosAtIdx(idx);
+			gridComp->OccupyCell(startPos);
+
+			GameObject* block{ scene.AddGameObject(std::make_unique<GameObject>("block", startPos.x, startPos.y)) };
+			block->SetParent(playfield);
+			block->AddComponent<RenderComponent>("Sprites/Block.png");
+
+			ColliderComponent* blockCollider{ block->AddComponent<ColliderComponent>(glm::vec2{}, static_cast<float>(constants::GRIDCELL), static_cast<float>(constants::GRIDCELL), false) };
+			CollisionManager::GetInstance().AddCollider(blockCollider);
+		}
+
+		constexpr int amtBricks{ 29 };
+		for (int i{}; i < amtBricks; ++i) Brick(scene, playfield);
+
+		const glm::vec2 exitPos{ Brick(scene, playfield)->GetTransform()->GetLocalPosition() };
+		GameObject* exit{ scene.AddGameObject(std::make_unique<GameObject>("exit", exitPos.x, exitPos.y)) };
+		exit->SetParent(playfield);
+		exit->AddComponent<ExitComponent>(static_cast<uint8_t>(1));
+
+		std::cout << "EXIT LOCATION: " << exitPos.x / constants::GRIDCELL << ", " << exitPos.y / constants::GRIDCELL << std::endl;
 
 		return playfield;
 	}
@@ -436,6 +552,32 @@ namespace dae
 		healthComp->AddObserver(m_state.get());
 
 		AddPlayerControls(player, PlayerController::ControlMethod::Gamepad, speed);
+		//AddPlayerControls(player, PlayerController::ControlMethod::Keyboard, speed);
+
+		return player;
+	}
+
+	GameObject* BombermanManager::SecondPlayer(Scene& scene, GameObject* parent, HealthComponent* healthComp) const
+	{
+		constexpr glm::vec2 startPos{ 1.f * constants::GRIDCELL, 11.f * constants::GRIDCELL };
+		constexpr glm::vec2 collider{ 10.f, 14.f };
+		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
+		constexpr float speed{ 20.f * constants::WINDOW_SCALE };
+
+		GameObject* player{ scene.AddGameObject(std::make_unique<GameObject>("player", startPos.x, startPos.y)) };
+		player->SetParent(parent);
+
+		ColliderComponent* playerCollider{ player->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
+		CollisionManager::GetInstance().AddCollider(playerCollider);
+
+		BomberComponent* bomberComp{ player->AddComponent<BomberComponent>(scene) };
+		bomberComp->SetPowerUpState(m_powerUpState);
+		SpriteComponent* spriteComp{ player->AddComponent<SpriteComponent>("Sprites/Bomberman2.png", entities::EntityType::Bomberman) };
+
+		playerCollider->AddObserver(healthComp);
+		healthComp->AddObserver(spriteComp);
+		spriteComp->AddObserver(healthComp);
+
 		AddPlayerControls(player, PlayerController::ControlMethod::Keyboard, speed);
 
 		return player;
@@ -460,28 +602,17 @@ namespace dae
 
 	GameObject* BombermanManager::EnemyPlayer(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos) const
 	{
-		constexpr glm::vec2 collider{ 10.f, 14.f };
-		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
 		constexpr float speed{ 20.f * constants::WINDOW_SCALE };
 
-		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>("enemyPlayer", pos.x, pos.y))};
+		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>("enemy", pos.x, pos.y))};
 		enemy->SetParent(parent);
 
-		ColliderComponent* enemyCollider{ enemy->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
-		CollisionManager::GetInstance().AddCollider(enemyCollider);
-		
-		//enemy->AddComponent<BomberComponent>(scene);
-		
-		SpriteComponent* spriteComp{ enemy->AddComponent<SpriteComponent>("Sprites/Balloom.png", entities::EntityType::Balloom) };
-		HealthComponent* healthComp{ enemy->AddComponent<HealthComponent>(entities::EntityType::Balloom, 1, true) };
-		enemy->AddComponent<ScoreComponent>(100);
-		
-		enemyCollider->AddObserver(healthComp);
-		healthComp->AddObserver(spriteComp);
-		spriteComp->AddObserver(healthComp);
-		spriteComp->AddObserver(scoreComp);
+		constexpr glm::vec2 collider{ 10.f, 12.f };
+		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
 
-		AddPlayerControls(enemy, PlayerController::ControlMethod::Keyboard, speed);
+		enemy->AddComponent<EnemyComponent>(scoreComp, entities::EntityType::Balloom, collider, offset, true);
+
+		AddPlayerControls(enemy, PlayerController::ControlMethod::Keyboard, speed, false);
 
 		return enemy;
 	}
@@ -547,10 +678,7 @@ namespace dae
 				gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::A), std::make_unique<DetonateCommand>(gameObject));
 			}
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
-			break;
-		}
-		case PlayerController::ControlMethod::Keyboard:
-		{
+
 			PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
 			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_LEFT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
 			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_RIGHT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 1, 0 }));
@@ -560,6 +688,21 @@ namespace dae
 			{
 				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_X), std::make_unique<BombCommand>(gameObject));
 				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_Z), std::make_unique<DetonateCommand>(gameObject));
+			}
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
+			break;
+		}
+		case PlayerController::ControlMethod::Keyboard:
+		{
+			PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
+			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_A), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
+			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_D), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 1, 0 }));
+			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_S), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
+			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_W), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
+			if (isBomberman)
+			{
+				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_P), std::make_unique<BombCommand>(gameObject));
+				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_O), std::make_unique<DetonateCommand>(gameObject));
 			}
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
 			break;

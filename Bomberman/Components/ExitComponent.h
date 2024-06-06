@@ -18,14 +18,12 @@ namespace dae
 	public:
 		void OnNotify(Event event, GameObject* gameObject) override;
 
-		explicit ExitComponent(GameObject* pOwner, uint8_t maxLevels, uint8_t currentLevel, uint8_t totalEnemies);
+		explicit ExitComponent(GameObject* pOwner, uint8_t totalEnemies);
 		~ExitComponent() override;
 		ExitComponent(const ExitComponent& other) = delete;
 		ExitComponent(ExitComponent&& other) = delete;
 
 	private:
-		uint8_t m_maxLevels;
-		uint8_t m_currentLevel;
 		uint8_t m_totalEnemies;
 		uint8_t m_killedEnemies{};
 
