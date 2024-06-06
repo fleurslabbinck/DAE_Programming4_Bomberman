@@ -43,14 +43,14 @@ namespace dae
 
 		bool validCell{ false };
 
-		do
+		while (!validCell)
 		{
 			const unsigned int randIdx{ rand() % (m_cells.size() - 1) };
 			cell = m_cells[randIdx];
 
 			if (std::find(m_freeIndices.begin(), m_freeIndices.end(), randIdx) == m_freeIndices.end() && cell.free) validCell = true;
 
-		} while (!validCell);
+		}
 
 		return cell.startPos;
 	}

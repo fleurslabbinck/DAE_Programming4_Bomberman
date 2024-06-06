@@ -16,10 +16,12 @@ namespace dae
 			break;
 		case GameEvent::STAGE_WON:
 			BombermanManager::GetInstance().SetPvpWinner("BOMBERMAN");
+			BombermanManager::GetInstance().ResetHealth();
 			m_state = std::make_unique<WinnerScreenState>();
 			break;
 		case GameEvent::GAME_OVER:
 			BombermanManager::GetInstance().SetPvpWinner("BALLOOM");
+			BombermanManager::GetInstance().ResetHealth();
 			m_state = std::make_unique<WinnerScreenState>();
 			break;
 		default:

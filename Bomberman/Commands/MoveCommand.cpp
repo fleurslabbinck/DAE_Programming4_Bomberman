@@ -55,7 +55,7 @@ namespace dae
 		spriteComponent->AnimateMovement();
 
 		// check for block
-		if (!CollisionManager::GetInstance().CanMove(colliderComp, m_targetPos)) return;
+		if (!CollisionManager::GetInstance().CanMove(colliderComp, m_targetPos) && !gridComponent->AreInSameCell(centeredPos, m_targetPos)) return;
 
 		dir = glm::normalize(m_targetPos - centeredPos);
 		const glm::vec2 offset{ dir * m_speed * TimeManager::GetInstance().GetDeltaTime() };

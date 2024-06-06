@@ -28,6 +28,7 @@ namespace dae
 		glm::vec2 GetFreeCell() const;
 		void OccupyCell(const glm::vec2& pos);
 
+		bool AreInSameCell(const glm::vec2& pos1, const glm::vec2& pos2) const { return PositionToIndex(pos1) == PositionToIndex(pos2); }
 		glm::vec2 GetCelPosAtIdx(int idx) { return m_cells[idx].startPos; }
 		glm::vec2 GetNextPosition(const glm::vec2& currentPos, const glm::vec2& direction) const;
 		glm::vec2 GetGridStartPos(const glm::vec2& pos) const;

@@ -17,8 +17,6 @@ namespace dae
 
 		void OnNotify(Event event, GameObject* gameObject) override;
 		void OnEnter() const override;
-
-	private:
 	};
 }
 #endif
