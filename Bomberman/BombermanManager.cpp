@@ -357,13 +357,13 @@ namespace dae
 
 		Renderer::GetInstance().SetBackgroundColor(m_stageBackgroundColor);
 
-		GameObject* highScoreText{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 10.f, 10.f)) };
-		highScoreText->AddComponent<TextComponent>(m_font, m_fontSize, "HIGH SCORES:", m_textColor, m_shadowColor);
-
-		constexpr float nameStartPosX{ constants::WINDOW_WIDTH / 6.f };
-		constexpr float scoreStartPosX{ 5.f * constants::WINDOW_WIDTH / 6.f };
+		constexpr float nameStartPosX{ constants::WINDOW_WIDTH / 7.f };
+		constexpr float scoreStartPosX{ 6.f * constants::WINDOW_WIDTH / 7.f };
 		constexpr float startPosY{ constants::WINDOW_HEIGHT / 6.f };
 		constexpr float margin{ 15.f };
+
+		GameObject* highScoreText{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, nameStartPosX, 20.f)) };
+		highScoreText->AddComponent<TextComponent>(m_font, m_fontSize, "HIGH SCORES:", m_textColor, m_shadowColor);
 
 		for (uint8_t idx{}; idx < m_highScores.size(); ++idx)
 		{
