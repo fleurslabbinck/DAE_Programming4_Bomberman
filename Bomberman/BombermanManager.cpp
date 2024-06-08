@@ -577,7 +577,7 @@ namespace dae
 
 		healthComp->AddObserver(m_state.get());
 
-		AddPlayerControls(player, PlayerController::ControlMethod::Gamepad, speed);
+		AddPlayerControls(player, PlayerController::ControlMethod::Gamepad, speed, true, true);
 		//AddPlayerControls(player, PlayerController::ControlMethod::Keyboard, speed);
 
 		return player;
@@ -604,6 +604,7 @@ namespace dae
 		healthComp->AddObserver(spriteComp);
 		spriteComp->AddObserver(healthComp);
 
+		AddPlayerControls(player, PlayerController::ControlMethod::Gamepad, speed);
 		AddPlayerControls(player, PlayerController::ControlMethod::Keyboard, speed);
 
 		return player;
@@ -723,7 +724,7 @@ namespace dae
 		}
 	}
 
-	void BombermanManager::AddPlayerControls(GameObject* gameObject, PlayerController::ControlMethod controlMethod, float speed, bool isBomberman) const
+	void BombermanManager::AddPlayerControls(GameObject* gameObject, PlayerController::ControlMethod controlMethod, float speed, bool isBomberman, bool extraBinds) const
 	{
 		std::unique_ptr<SkipLevelCommand> skipLevelCommand{ std::make_unique<SkipLevelCommand>() };
 		skipLevelCommand->AddObserver(m_state.get());
@@ -745,19 +746,22 @@ namespace dae
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::BACK), std::make_unique<ToggleMuteCommand>());
 
-			PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
-			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_LEFT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
-			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_RIGHT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 1, 0 }));
-			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_DOWN), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
-			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_UP), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
-			if (isBomberman)
+			if (extraBinds)
 			{
-				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_X), std::make_unique<BombCommand>(gameObject));
-				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_Z), std::make_unique<DetonateCommand>(gameObject));
+				PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
+				keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_LEFT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
+				keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_RIGHT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 1, 0 }));
+				keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_DOWN), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, 1 }));
+				keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_UP), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ 0, -1 }));
+				if (isBomberman)
+				{
+					keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_X), std::make_unique<BombCommand>(gameObject));
+					keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_Z), std::make_unique<DetonateCommand>(gameObject));
+				}
+				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
+				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_M), std::make_unique<ToggleMuteCommand>());
+				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_F1), std::move(skipLevelCommand));
 			}
-			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
-			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_M), std::make_unique<ToggleMuteCommand>());
-			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_F1),std::move(skipLevelCommand));
 			break;
 		}
 		case PlayerController::ControlMethod::Keyboard:

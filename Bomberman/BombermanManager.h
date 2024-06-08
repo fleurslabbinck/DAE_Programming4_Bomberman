@@ -147,7 +147,7 @@ namespace dae
 
 		void AddMenuControls(MenuControllerComponent* controllerComp, PlayerController::ControlMethod controlMethod) const;
 		void AddEnterNameControls(EnterNameComponent* enterNameComp, PlayerController::ControlMethod controlMethod) const;
-		void AddPlayerControls(GameObject* gameObject, PlayerController::ControlMethod controlMethod, float speed, bool isBomberman = true) const;
+		void AddPlayerControls(GameObject* gameObject, PlayerController::ControlMethod controlMethod, float speed, bool isBomberman = true, bool extraBinds = false) const;
 		void AddNavigateControls(PlayerController::ControlMethod controlMethod) const;
 	};
 }
