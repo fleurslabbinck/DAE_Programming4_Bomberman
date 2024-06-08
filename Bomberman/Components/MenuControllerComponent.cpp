@@ -8,9 +8,9 @@ namespace dae
 	//---------------------------------
 	//MENUCONTROLLERCOMPONENT
 	//---------------------------------
-	MenuControllerComponent::MenuControllerComponent(GameObject* pOwner, const std::string& fontpath, int fontSize)
+	MenuControllerComponent::MenuControllerComponent(GameObject* pOwner, const std::string& fontpath, int fontSize, SDL_Color textColor, SDL_Color shadowColor)
 		: BaseComponent(pOwner),
-		m_credits{ std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "RECREATED BY FLEUR SLABBINCK", m_textColor, m_shadowColor) }
+		m_credits{ std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "RECREATED BY FLEUR SLABBINCK", textColor, shadowColor) }
 	{
 		const glm::vec2 menuPos{ constants::WINDOW_WIDTH / 2.f, static_cast<float>(constants::WINDOW_HEIGHT - 90) };
 		constexpr float margin{ 7.f };
@@ -19,28 +19,28 @@ namespace dae
 
 		MenuItem single{};
 		single.event = GameEvent::START_SINGLE;
-		single.textComp = std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "SINGLEPLAYER", m_textColor, m_shadowColor);
+		single.textComp = std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "SINGLEPLAYER", textColor, shadowColor);
 		single.dimensions = single.textComp.get()->GetRenderComponent()->GetTexture()->GetSize();
 		single.startPos = { menuPos.x - single.dimensions.x / 2.f, menuPos.y };
 		m_menuItems.push_back(std::move(single));
 
 		MenuItem coop{};
 		coop.event = GameEvent::START_COOP;
-		coop.textComp = std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "COOP", m_textColor, m_shadowColor);
+		coop.textComp = std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "COOP", textColor, shadowColor);
 		coop.dimensions = coop.textComp.get()->GetRenderComponent()->GetTexture()->GetSize();
 		coop.startPos = { menuPos.x - coop.dimensions.x / 2.f, menuPos.y + 1 * (coop.dimensions.y + margin) };
 		m_menuItems.push_back(std::move(coop));
 
 		MenuItem pvp{};
 		pvp.event = GameEvent::START_PVP;
-		pvp.textComp = std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "PVP", m_textColor, m_shadowColor);
+		pvp.textComp = std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "PVP", textColor, shadowColor);
 		pvp.dimensions = pvp.textComp.get()->GetRenderComponent()->GetTexture()->GetSize();
 		pvp.startPos = { menuPos.x - pvp.dimensions.x / 2.f, menuPos.y + 2 * (coop.dimensions.y + margin) };
 		m_menuItems.push_back(std::move(pvp));
 
 		MenuItem highScore{};
 		highScore.event = GameEvent::HIGHSCORES;
-		highScore.textComp = std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "HIGHSCORES", m_textColor, m_shadowColor);
+		highScore.textComp = std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "HIGHSCORES", textColor, shadowColor);
 		highScore.dimensions = highScore.textComp.get()->GetRenderComponent()->GetTexture()->GetSize();
 		highScore.startPos = { menuPos.x - highScore.dimensions.x / 2.f, menuPos.y + 3 * (coop.dimensions.y + margin) };
 		m_menuItems.push_back(std::move(highScore));

@@ -111,7 +111,7 @@ namespace dae
 
 		GameObject* Menu{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 0.f, 0.f)) };
 		Menu->AddComponent<RenderComponent>("Menu.png");
-		MenuControllerComponent* controllerComp{ Menu->AddComponent<MenuControllerComponent>(m_font, m_fontSize) };
+		MenuControllerComponent* controllerComp{ Menu->AddComponent<MenuControllerComponent>(m_font, m_fontSize, m_textColor, m_shadowColor) };
 
 		AddMenuControls(controllerComp, PlayerController::ControlMethod::Gamepad);
 		AddMenuControls(controllerComp, PlayerController::ControlMethod::Keyboard);
@@ -126,7 +126,7 @@ namespace dae
 		Renderer::GetInstance().SetBackgroundColor(m_stageBackgroundColor);
 
 		GameObject* stage{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 0.f, 0.f)) };
-		TextComponent* textComp{ stage->AddComponent<TextComponent>(m_font, m_fontSize, title) };
+		TextComponent* textComp{ stage->AddComponent<TextComponent>(m_font, m_fontSize, title, m_textColor, m_shadowColor) };
 
 		const glm::vec2 textureSize{ textComp->GetRenderComponent()->GetTexture()->GetSize()};
 
@@ -198,7 +198,7 @@ namespace dae
 		Renderer::GetInstance().SetBackgroundColor(m_stageBackgroundColor);
 
 		GameObject* highScoreText{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 10.f, 10.f)) };
-		highScoreText->AddComponent<TextComponent>(m_font, m_fontSize, "HIGH SCORES:");
+		highScoreText->AddComponent<TextComponent>(m_font, m_fontSize, "HIGH SCORES:", m_textColor, m_shadowColor);
 
 		AddNavigateControls(PlayerController::ControlMethod::Gamepad);
 		AddNavigateControls(PlayerController::ControlMethod::Keyboard);
@@ -541,7 +541,7 @@ namespace dae
 		HealthComponent* healthComp{ player->AddComponent<HealthComponent>(entities::EntityType::Bomberman, m_currentHealth) };
 		ScoreComponent* scoreComp{ player->AddComponent<ScoreComponent>() };
 		HUDComponent* hudComp{ player->AddComponent<HUDComponent>(m_font, m_fontSize) };
-		player->AddComponent<CameraComponent>(constants::GRID_COLS * constants::GRIDCELL, 0, constants::GRID_COLS * constants::GRIDCELL - constants::WINDOW_WIDTH);
+		if (m_totalPlayers == 1) player->AddComponent<CameraComponent>(constants::GRID_COLS * constants::GRIDCELL, 0, constants::GRID_COLS * constants::GRIDCELL - constants::WINDOW_WIDTH);
 
 		playerCollider->AddObserver(healthComp);
 		healthComp->AddObserver(spriteComp);
@@ -603,16 +603,26 @@ namespace dae
 	GameObject* BombermanManager::EnemyPlayer(Scene& scene, GameObject* parent, ScoreComponent* scoreComp, const glm::vec2& pos) const
 	{
 		constexpr float speed{ 20.f * constants::WINDOW_SCALE };
-
-		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>("enemy", pos.x, pos.y))};
+		
+		GameObject* enemy{ scene.AddGameObject(std::make_unique<GameObject>("enemyPlayer", pos.x, pos.y))};
 		enemy->SetParent(parent);
-
+		
 		constexpr glm::vec2 collider{ 10.f, 12.f };
 		constexpr glm::vec2 offset{ (constants::GRIDCELL - collider.x) / 2, (constants::GRIDCELL - collider.y) / 2 };
 
-		enemy->AddComponent<EnemyComponent>(scoreComp, entities::EntityType::Balloom, collider, offset, true);
+		ColliderComponent* enemyCollider{ enemy->AddComponent<ColliderComponent>(offset, collider.x, collider.y) };
+		CollisionManager::GetInstance().AddCollider(enemyCollider);
 
-		AddPlayerControls(enemy, PlayerController::ControlMethod::Keyboard, speed, false);
+		SpriteComponent* spriteComp{ enemy->AddComponent<SpriteComponent>("Sprites/Balloom.png", entities::EntityType::Balloom) };
+		HealthComponent* healthComp{ enemy->AddComponent<HealthComponent>(entities::EntityType::Balloom, 1, true) };
+		enemy->AddComponent<ScoreComponent>(100);
+
+		enemyCollider->AddObserver(healthComp);
+		healthComp->AddObserver(spriteComp);
+		spriteComp->AddObserver(healthComp);
+		spriteComp->AddObserver(scoreComp);
+
+		AddPlayerControls(enemy, PlayerController::ControlMethod::Keyboard, speed);
 
 		return enemy;
 	}

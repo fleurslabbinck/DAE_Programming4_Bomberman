@@ -56,6 +56,9 @@ namespace dae
 
 		std::string m_pvpWinner{};
 
+		SDL_Color m_textColor{ 255, 255, 255, 255 };
+		SDL_Color m_shadowColor{ 200, 200, 200, 200 };
+
 		SDL_Color m_inGameBackgroundColor{ 176, 176, 176 };
 		SDL_Color m_stageBackgroundColor{ 0, 0, 0 };
 

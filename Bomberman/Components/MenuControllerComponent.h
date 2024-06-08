@@ -37,13 +37,10 @@ namespace dae
 
 		void OnNotify(Event event, GameObject* gameObject) override;
 
-		explicit MenuControllerComponent(GameObject* pOwner, const std::string& fontpath, int fontSize);
+		explicit MenuControllerComponent(GameObject* pOwner, const std::string& fontpath, int fontSize, SDL_Color textColor, SDL_Color shadowColor);
 		MenuControllerComponent(const TextComponent& other) = delete;
 		MenuControllerComponent(TextComponent&& other) = delete;
 	private:
-		SDL_Color m_textColor{ 255, 255, 255, 255 };
-		SDL_Color m_shadowColor{ 200, 200, 200, 200 };
-
 		glm::vec2 m_creditPos{};
 		std::unique_ptr<TextComponent> m_credits;
 		
