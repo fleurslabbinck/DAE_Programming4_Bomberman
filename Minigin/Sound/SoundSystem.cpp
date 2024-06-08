@@ -136,6 +136,7 @@ namespace dae
 
 	void SoundSystem::PlaySoundFX(int id, int volume)
 	{
+		if (m_mute) return;
 		m_pImpl->PlaySoundFX(id, volume);
 	}
 

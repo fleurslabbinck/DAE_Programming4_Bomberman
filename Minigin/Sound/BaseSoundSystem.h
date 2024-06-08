@@ -26,7 +26,11 @@ namespace dae
 		virtual void LoadSoundFX(int id, const std::string& path) = 0;
 		virtual void PlaySoundFX(int id, int volume) = 0;
 		virtual void UpdateSoundFX() = 0;
+		virtual void ToggleMute() = 0;
 		virtual void SignalEnd() = 0;
+
+	protected:
+		bool m_mute{ false };
 	};
 }
 

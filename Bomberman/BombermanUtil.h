@@ -56,8 +56,7 @@ namespace sound
 		DeathSound,
 		DeathTune,
 		PlaceBomb,
-		Explosion,
-		StartLevel,
+		Explosion
 	};
 }
 

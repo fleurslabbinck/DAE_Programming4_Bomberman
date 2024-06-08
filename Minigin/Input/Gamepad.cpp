@@ -87,6 +87,10 @@ namespace dae
 				break;
 			case GamepadButton::START:
 				gamepadInput = XINPUT_GAMEPAD_START;
+				break;
+			case GamepadButton::BACK:
+				gamepadInput = XINPUT_GAMEPAD_BACK;
+				break;
 			}
 
 			return gamepadInput;

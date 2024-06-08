@@ -31,6 +31,14 @@ namespace dae
 		std::cout << std::left << std::setw(12) << "UP: " << "DPAD UP / ARROW UP\n";
 		std::cout << std::left << std::setw(12) << "DOWN: " << "DPAD DOWN / ARROW DOWN\n";
 		std::cout << std::left << std::setw(12) << "CONTINUE: " << "A / ENTER\n";
-		std::cout << std::left << std::setw(12) << "BACK: " << "B / BACKSPACE\n";
+		std::cout << std::left << std::setw(12) << "BACK: " << "B / BACKSPACE\n\n";
+
+		std::cout << "ENTER NAME CONTROLS\n";
+		std::cout << std::left << std::setw(12) << "CONTINUE: " << "A / ENTER\n";
+		std::cout << std::left << std::setw(12) << "TYPE NAME: " << "KEYBOARD\n";
+		std::cout << std::left << std::setw(12) << "CORRECT: " << "BACKSPACE\n\n";
+
+		std::cout << "MUTE SOUND CONTROLS\n";
+		std::cout << std::left << std::setw(12) << "TOGGLE MUTE: " << "M / BACK\n\n";
 	}
 }

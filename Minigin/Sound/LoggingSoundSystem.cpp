@@ -28,6 +28,12 @@ namespace dae
 		std::cout << "Updating queue\n";
 	}
 
+	void LoggingSoundSystem::ToggleMute()
+	{
+		m_SoundSystemPtr->ToggleMute();
+		std::cout << "Toggled mute\n";
+	}
+
 	void LoggingSoundSystem::SignalEnd()
 	{
 		m_SoundSystemPtr->SignalEnd();

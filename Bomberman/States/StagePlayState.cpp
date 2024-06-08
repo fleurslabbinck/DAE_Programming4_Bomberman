@@ -1,7 +1,5 @@
 #include "StagePlayState.h"
 
-#include "ServiceLocator.h"
-#include "Sound/SoundSystem.h"
 #include "HighScoreState.h"
 #include "StageScreenState.h"
 #include "GameOverScreenState.h"

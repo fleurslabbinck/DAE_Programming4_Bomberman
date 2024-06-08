@@ -14,7 +14,8 @@ namespace dae
 		B,
 		X,
 		Y,
-		START
+		START,
+		BACK
 	};
 
 	class Gamepad

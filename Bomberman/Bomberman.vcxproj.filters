@@ -108,6 +108,9 @@
     <ClCompile Include="Commands\SkipLevelCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Commands\ToggleMuteCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\BomberComponent.h">
@@ -201,6 +204,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Commands\SkipLevelCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands\ToggleMuteCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

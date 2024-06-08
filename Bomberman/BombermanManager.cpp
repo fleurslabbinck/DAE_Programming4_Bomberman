@@ -35,6 +35,7 @@
 #include "Commands/GameInputCommands.h"
 #include "Commands/SkipLevelCommand.h"
 #include "Commands/InfoCommand.h"
+#include "Commands/ToggleMuteCommand.h"
 #include "States/MainMenuState.h"
 #include "States/HighScoreState.h"
 
@@ -58,8 +59,8 @@ namespace dae
 		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::VerticalStep), "Sounds/VerticalStep.wav");
 		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathSound), "Sounds/DieSound.wav");
 		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathTune), "Sounds/BombermanDies.wav");
-		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::PlaceBomb), "../Data/Sounds/PlaceBomb.wav");
-		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::Explosion), "../Data/Sounds/Explosion.wav");
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::PlaceBomb), "Sounds/PlaceBomb.wav");
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::Explosion), "Sounds/Explosion.wav");
 	}
 
 	void BombermanManager::ParseLevels()
@@ -279,7 +280,7 @@ namespace dae
 
 		stage->SetPosition(constants::WINDOW_WIDTH / 2.f - textureSize.x / 2.f, constants::WINDOW_HEIGHT / 2.f - textureSize.y / 2.f);
 
-		ScreenComponent* screenComp{ stage->AddComponent<ScreenComponent>(2.f) };
+		ScreenComponent* screenComp{ stage->AddComponent<ScreenComponent>(3.f) };
 		screenComp->AddObserver(m_state.get());
 	}
 
@@ -679,6 +680,7 @@ namespace dae
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::DPadUp), std::move(upCommand));
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::DPadDown), std::move(downCommand));
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::BACK), std::make_unique<ToggleMuteCommand>());
 			break;
 		}
 		case PlayerController::ControlMethod::Keyboard:
@@ -688,6 +690,7 @@ namespace dae
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_UP), std::move(upCommand));
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_DOWN), std::move(downCommand));
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_M), std::make_unique<ToggleMuteCommand>());
 			break;
 		}
 		}
@@ -739,6 +742,7 @@ namespace dae
 				gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::B), std::make_unique<DetonateCommand>(gameObject));
 			}
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::BACK), std::make_unique<ToggleMuteCommand>());
 
 			PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
 			keyboard->BindCommand(PlayerController::KeyState::Down, static_cast<int>(SDL_SCANCODE_LEFT), std::make_unique<MoveCommand>(gameObject, speed, glm::vec2{ -1, 0 }));
@@ -751,6 +755,7 @@ namespace dae
 				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_Z), std::make_unique<DetonateCommand>(gameObject));
 			}
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_M), std::make_unique<ToggleMuteCommand>());
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_F1),std::move(skipLevelCommand));
 			break;
 		}
@@ -785,6 +790,7 @@ namespace dae
 			PlayerController* gamepad{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Gamepad) };
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::B), std::move(backCommand));
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::BACK), std::make_unique<ToggleMuteCommand>());
 			break;
 		}
 		case PlayerController::ControlMethod::Keyboard:
@@ -792,6 +798,7 @@ namespace dae
 			PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_BACKSPACE), std::move(backCommand));
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_M), std::make_unique<ToggleMuteCommand>());
 			break;
 		}
 		}

@@ -19,6 +19,7 @@ namespace dae
 		void LoadSoundFX(int id, const std::string& path) override;
 		void PlaySoundFX(int id, int volume) override;
 		void UpdateSoundFX() override;
+		void ToggleMute() override { m_mute = !m_mute; }
 		void SignalEnd() override;
 
 	private:

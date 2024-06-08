@@ -168,6 +168,7 @@
     <ClCompile Include="Commands\InfoCommand.cpp" />
     <ClCompile Include="Commands\MoveCommand.cpp" />
     <ClCompile Include="Commands\SkipLevelCommand.cpp" />
+    <ClCompile Include="Commands\ToggleMuteCommand.cpp" />
     <ClCompile Include="Components\BombComponent.cpp" />
     <ClCompile Include="Components\BomberComponent.cpp" />
     <ClCompile Include="Components\CameraComponent.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="Commands\InfoCommand.h" />
     <ClInclude Include="Commands\MoveCommand.h" />
     <ClInclude Include="Commands\SkipLevelCommand.h" />
+    <ClInclude Include="Commands\ToggleMuteCommand.h" />
     <ClInclude Include="Components\BombComponent.h" />
     <ClInclude Include="Components\BomberComponent.h" />
     <ClInclude Include="Components\CameraComponent.h" />
