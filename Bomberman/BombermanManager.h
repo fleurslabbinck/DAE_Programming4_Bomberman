@@ -25,6 +25,7 @@ namespace dae
 		BombermanManager& operator=(BombermanManager&& other) = delete;
 
 		void InitializeGame();
+		void ParseLevels();
 		void HandleGameState() override;
 		void LoadScene(GameScene scene);
 
@@ -44,11 +45,44 @@ namespace dae
 		BombermanManager() = default;
 		~BombermanManager() = default;
 
+		enum class GameMode {
+			Normal,
+			Pvp
+		};
+
+		struct Stage {
+			uint8_t ballooms;
+			uint8_t oneals;
+			uint8_t dolls;
+			uint8_t minvos;
+			entities::EntityType powerUp;
+		};
+
+		struct Playfield {
+			uint8_t columns;
+			uint8_t rows;
+			std::vector<char> grid;
+		};
+
+		struct NormalMode {
+			uint8_t bricks;
+			Playfield playfield;
+			std::vector<Stage> stages;
+		};
+
+		struct PvpMode {
+			uint8_t bricks;
+			Playfield playfield;
+		};
+
+		GameMode m_gameMode{ GameMode::Normal };
+		NormalMode m_normalMode{};
+		PvpMode m_pvpMode{};
+
 		uint8_t m_totalPlayers{};
 
 		const uint8_t m_maxHealth{ 2 };
 		uint8_t m_currentHealth{ m_maxHealth };
-
 		const uint8_t m_maxLevels{ 4 };
 		uint8_t m_currentLevel{};
 
@@ -73,15 +107,9 @@ namespace dae
 		void LoadPvp();
 		void LoadHighScoreScene();
 
-		void LoadStage1(Scene& scene);
-		void LoadStage2(Scene& scene);
-		void LoadStage3(Scene& scene);
-		void LoadStage4(Scene& scene);
-
 		void ManageObservers(Scene& scene) const;
 
-		GameObject* Playfield(Scene& scene, uint8_t totalEnemies, entities::EntityType powerUpType) const;
-		GameObject* PvpPlayfield(Scene& scene) const;
+		GameObject* Playfield(Scene& scene) const;
 		GameObject* Brick(Scene& scene, GameObject* parent) const;
 		GameObject* Player(Scene& scene, GameObject* parent) const;
 		GameObject* SecondPlayer(Scene& scene, GameObject* parent, HealthComponent* healthComp) const;

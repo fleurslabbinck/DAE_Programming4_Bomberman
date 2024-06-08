@@ -1,0 +1,52 @@
+{
+  "normal": {
+    "cols": 31,
+    "rows": 13,
+    "playfield": "################################xx                           ##x# # # # # # # # # # # # # # ##                             ## # # # # # # # # # # # # # # ##                             ## # # # # # # # # # # # # # # ##                             ## # # # # # # # # # # # # # # ##                             ##o# # # # # # # # # # # # # # ##oo                           ################################",
+    "bricks": 58,
+    "stages": {
+      "1": {
+        "enemies": {
+          "ballooms": 6,
+          "oneals": 0,
+          "dolls": 0,
+          "minvos": 0
+        },
+        "powerup": "bombs"
+      },
+      "2": {
+        "enemies": {
+          "ballooms": 3,
+          "oneals": 3,
+          "dolls": 0,
+          "minvos": 0
+        },
+        "powerup": "fire"
+      },
+      "3": {
+        "enemies": {
+          "ballooms": 2,
+          "oneals": 2,
+          "dolls": 2,
+          "minvos": 0
+        },
+        "powerup": "detonator"
+      },
+      "4": {
+        "enemies": {
+          "ballooms": 1,
+          "oneals": 1,
+          "dolls": 2,
+          "minvos": 2
+        },
+        "powerup": "bombs"
+      }
+    }
+  },
+  "pvp": {
+    "cols": 15,
+    "rows": 13,
+    "playfield": "################xx           ##x# # # # # # ##             ## # # # # # # ##             ## # # # # # # ##             ## # # # # # # ##             ## # # # # # # ##             ################",
+    "bricks": 29
+  }
+}
