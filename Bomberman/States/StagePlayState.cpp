@@ -19,7 +19,7 @@ namespace dae
 			}
 			else
 			{
-				ResetLevel();
+				ResetGame();
 				m_state = std::make_unique<HighScoreState>();
 			}
 			break;
@@ -28,7 +28,7 @@ namespace dae
 			m_state = std::make_unique<StageScreenState>();
 			break;
 		case GameEvent::GAME_OVER:
-			ResetLevel();
+			ResetGame();
 			m_state = std::make_unique<GameOverScreenState>();
 			break;
 		case GameEvent::BOMBS:
@@ -51,7 +51,7 @@ namespace dae
 		m_bombermanManger.LoadScene(static_cast<int>(scenes::Scenes::Normal));
 	}
 
-	void StagePlayState::ResetLevel()
+	void StagePlayState::ResetGame()
 	{
 		m_bombermanManger.ResetLevel();
 		m_bombermanManger.ResetHealth();

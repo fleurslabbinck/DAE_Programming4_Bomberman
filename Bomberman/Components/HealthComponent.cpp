@@ -51,7 +51,8 @@ namespace dae
 		case entities::EntityType::Bomberman:
 			if (gameObject->GetComponent<ExitComponent>() != nullptr)
 			{
-				BombermanManager::GetInstance().SetScore(GetOwner()->GetComponent<ScoreComponent>()->GetScore());
+				const int score{ GetOwner()->GetComponent<ScoreComponent>()->GetScore() };
+				BombermanManager::GetInstance().AddToScore(score);
 				Notify(static_cast<int>(GameEvent::PLAYER_EXIT), nullptr);
 			}
 			else if (PowerUpComponent* powerUpComp = gameObject->GetComponent<PowerUpComponent>())

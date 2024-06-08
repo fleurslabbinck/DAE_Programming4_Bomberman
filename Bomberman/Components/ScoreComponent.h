@@ -22,7 +22,7 @@ namespace dae
 		int GetScore() const { return m_score; }
 		int GetTotalScore() const { return m_totalScore; }
 
-		explicit ScoreComponent(GameObject* pOwner, int score = 0);
+		explicit ScoreComponent(GameObject* pOwner, int totalScore, int enemyScore = 0);
 		ScoreComponent(const ScoreComponent& other) = delete;
 		ScoreComponent(ScoreComponent&& other) = delete;
 

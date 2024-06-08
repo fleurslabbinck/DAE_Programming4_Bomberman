@@ -23,7 +23,7 @@ namespace dae
 		powerUps::PowerUpState m_powerUpState{};
 		BombermanManager& m_bombermanManger{ BombermanManager::GetInstance() };
 
-		void ResetLevel();
+		void ResetGame();
 	};
 }
 #endif

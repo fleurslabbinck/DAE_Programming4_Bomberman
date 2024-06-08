@@ -26,7 +26,7 @@ namespace dae
 
 		MenuItem coop{};
 		coop.event = GameEvent::START_COOP;
-		coop.textComp = std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "COOP", textColor, shadowColor);
+		coop.textComp = std::make_unique<TextComponent>(pOwner, fontpath, fontSize, "CO-OP", textColor, shadowColor);
 		coop.dimensions = coop.textComp.get()->GetRenderComponent()->GetTexture()->GetSize();
 		coop.startPos = { menuPos.x - coop.dimensions.x / 2.f, menuPos.y + 1 * (coop.dimensions.y + margin) };
 		m_menuItems.push_back(std::move(coop));

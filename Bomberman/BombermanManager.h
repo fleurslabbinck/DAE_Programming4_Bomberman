@@ -27,7 +27,6 @@ namespace dae
 		BombermanManager& operator=(const BombermanManager& other) = delete;
 		BombermanManager& operator=(BombermanManager&& other) = delete;
 
-		void SetDataLocation(const std::filesystem::path& data_location) { m_dataLocation = data_location; }
 		void InitializeGame();
 		void HandleGameState() override;
 		void LoadScene(GameScene scene);
@@ -42,7 +41,7 @@ namespace dae
 		void ResetLevel();
 
 		void SetPlayerName(const std::string& name) { m_currentHighScore.name = name; }
-		void SetScore(int score) { m_currentHighScore.score = score; }
+		void AddToScore(int score) { m_currentHighScore.score += score; }
 
 		void SetPvpWinner(const std::string& winner) { m_pvpWinner = winner; }
 
@@ -101,7 +100,7 @@ namespace dae
 		// Game Info
 		uint8_t m_totalPlayers{};
 
-		const uint8_t m_maxHealth{ 2 };
+		const uint8_t m_maxHealth{ 3 };
 		uint8_t m_currentHealth{ m_maxHealth };
 		const uint8_t m_maxLevels{ 3 };
 		uint8_t m_currentLevel{};

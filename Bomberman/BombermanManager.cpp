@@ -48,6 +48,9 @@ namespace dae
 
 	void BombermanManager::InitializeGame()
 	{
+		m_dataLocation = "./Data/";
+		if (!std::filesystem::exists(m_dataLocation)) m_dataLocation = "../Data/";
+
 		ParseLevels();
 		ParseHighScores();
 
@@ -476,7 +479,7 @@ namespace dae
 
 		glm::vec2 startPos{};
 
-		for (int idx{}; idx < grid.size(); ++idx)
+		for (uint16_t idx{}; idx < grid.size(); ++idx)
 		{
 			if (grid[idx] == ' ') continue;
 			else if (grid[idx] == 'x')
@@ -562,7 +565,7 @@ namespace dae
 		bomberComp->SetPowerUpState(m_powerUpState);
 		SpriteComponent* spriteComp{ player->AddComponent<SpriteComponent>("Sprites/Bomberman.png", entities::EntityType::Bomberman)};
 		HealthComponent* healthComp{ player->AddComponent<HealthComponent>(entities::EntityType::Bomberman, m_currentHealth) };
-		ScoreComponent* scoreComp{ player->AddComponent<ScoreComponent>() };
+		ScoreComponent* scoreComp{ player->AddComponent<ScoreComponent>(m_currentHighScore.score) };
 		HUDComponent* hudComp{ player->AddComponent<HUDComponent>(m_font, m_fontSize) };
 		if (m_gameMode == GameMode::Normal) player->AddComponent<CameraComponent>(m_normalMode.playfield.columns * constants::GRIDCELL, 0, m_normalMode.playfield.columns * constants::GRIDCELL - constants::WINDOW_WIDTH);
 
@@ -709,14 +712,12 @@ namespace dae
 		{
 			PlayerController* gamepad{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Gamepad) };
 			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::A), std::move(continueCommand));
-			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
 			break;
 		}
 		case PlayerController::ControlMethod::Keyboard:
 		{
 			PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_RETURN), std::move(continueCommand));
-			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
 			break;
 		}
 		}

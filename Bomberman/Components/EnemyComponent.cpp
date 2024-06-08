@@ -30,13 +30,13 @@ namespace dae
 		case entities::EntityType::Oneal:
 			filepath = "Sprites/Oneal.png";
 			score = 200;
-			m_turnChance = 6;
+			m_turnChance = 3;
 			m_speed = 15;
 			break;
 		case entities::EntityType::Doll:
 			filepath = "Sprites/Doll.png";
 			score = 400;
-			m_turnChance = 6;
+			m_turnChance = 3;
 			m_speed = 20;
 			break;
 		case entities::EntityType::Minvo:
@@ -50,7 +50,7 @@ namespace dae
 		m_speed *= constants::WINDOW_SCALE;
 
 		m_spriteComponent = std::make_unique<SpriteComponent>(pOwner, filepath, enemyType);
-		m_scoreComponent = std::make_unique<ScoreComponent>(pOwner,score);
+		m_scoreComponent = std::make_unique<ScoreComponent>(pOwner, 0, score);
 
 		m_collisionManager.AddCollider(m_colliderComponent.get());
 

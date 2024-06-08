@@ -8,8 +8,8 @@ namespace dae
 	//---------------------------------
 	//SCORECOMPONENT
 	//---------------------------------
-	ScoreComponent::ScoreComponent(GameObject* pOwner, int score)
-		: BaseComponent(pOwner), m_score{ score }
+	ScoreComponent::ScoreComponent(GameObject* pOwner, int totalScore, int enemyScore)
+		: BaseComponent(pOwner), m_totalScore{ totalScore }, m_score{ enemyScore }
 	{
 
 	}
