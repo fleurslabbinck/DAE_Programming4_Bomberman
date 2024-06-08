@@ -3,7 +3,6 @@
 #include "Scene/SceneManager.h"
 
 #include <memory>
-#include <iostream>
 #include <fstream>
 #include <ostream>
 #include <json.hpp>
@@ -26,19 +25,29 @@
 #include "Components/ExitComponent.h"
 #include "Components/PowerUpComponent.h"
 #include "Components/MenuControllerComponent.h"
+#include "Components/EnterNameComponent.h"
 #include "Components/ScreenComponent.h"
 #include "Commands/MoveCommand.h"
 #include "Commands/BombCommand.h"
 #include "Commands/DetonateCommand.h"
 #include "Commands/GameInputCommands.h"
+#include "Commands/SkipLevelCommand.h"
 #include "Commands/InfoCommand.h"
 #include "States/MainMenuState.h"
 #include "States/HighScoreState.h"
 
 namespace dae
 {
+	BombermanManager::~BombermanManager()
+	{
+		WriteHighScores();
+	}
+
 	void BombermanManager::InitializeGame()
 	{
+		ParseLevels();
+		ParseHighScores();
+
 		srand(static_cast<unsigned int>(time(0)));
 		m_state = std::make_unique<MainMenuState>();
 		m_state->OnEnter();
@@ -48,12 +57,9 @@ namespace dae
 	{
 		using json = nlohmann::json;
 
-		std::filesystem::path data_location = "./Data/";
-		if (!std::filesystem::exists(data_location)) data_location = "../Data/";
+		const std::filesystem::path filepath = m_dataLocation / "LevelSetup.json";
 
-		const auto fullPath = data_location / "LevelSetup.json";
-
-		std::ifstream levelSetup(fullPath);
+		std::ifstream levelSetup(filepath);
 
 		if (!levelSetup.is_open())
 		{
@@ -103,6 +109,57 @@ namespace dae
 		}
 	}
 
+	void BombermanManager::ParseHighScores()
+	{
+		const std::filesystem::path filepath = m_dataLocation / m_highScoreFilepath;
+
+		std::ifstream inputfile(filepath);
+
+		if (!inputfile.is_open())
+		{
+			std::cout << "No high scores yet!\n";
+			return;
+		}
+
+		HighScore highScore{};
+
+		while (inputfile >> highScore.name >> highScore.score) m_highScores.push_back(highScore);
+
+		inputfile.close();
+	}
+
+	void BombermanManager::WriteHighScores()
+	{
+		const std::filesystem::path filepath = m_dataLocation / m_highScoreFilepath;
+
+		std::ofstream outputfile(filepath);
+
+		if (!outputfile.is_open())
+		{
+			std::cout << "Failed to open outputfile" << filepath << std::endl;
+			return;
+		}
+
+		for (const HighScore& highScore : m_highScores) outputfile << highScore.name << " " << highScore.score << std::endl;
+
+		outputfile.close();
+	}
+
+	void BombermanManager::UpdateHighScores()
+	{
+		constexpr uint8_t maxHighScores{ 10 };
+
+		if (m_currentHighScore.name.empty()) return;
+
+		m_highScores.push_back(m_currentHighScore);
+
+		std::sort(m_highScores.begin(), m_highScores.end(), [](const HighScore& highScore, const HighScore& otherHighScore) {return otherHighScore.score < highScore.score; });
+
+		if (m_highScores.size() > maxHighScores) m_highScores.resize(maxHighScores);
+
+		m_currentHighScore = {};
+	}
+
 	void BombermanManager::HandleGameState()
 	{
 		std::unique_ptr<GameState> state = m_state->HandleGameState();
@@ -128,6 +185,9 @@ namespace dae
 		{
 		case scenes::Scenes::Menu:
 			LoadMenuScene();
+			break;
+		case scenes::Scenes::EnterName:
+			LoadEnterNameScreen();
 			break;
 		case scenes::Scenes::StageScreen:
 			LoadScreen("STAGE " + std::to_string(m_currentLevel + 1));
@@ -179,6 +239,21 @@ namespace dae
 
 		AddMenuControls(controllerComp, PlayerController::ControlMethod::Gamepad);
 		AddMenuControls(controllerComp, PlayerController::ControlMethod::Keyboard);
+	}
+
+	void BombermanManager::LoadEnterNameScreen()
+	{
+		m_currentScene = "EnterName";
+
+		auto& scene = dae::SceneManager::GetInstance().CreateScene(m_currentScene);
+
+		Renderer::GetInstance().SetBackgroundColor(m_stageBackgroundColor);
+
+		GameObject* EnterName{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 0.f, 0.f)) };
+		EnterNameComponent* enterNameComp{ EnterName->AddComponent<EnterNameComponent>(m_font, m_fontSize, m_textColor, m_shadowColor) };
+
+		AddEnterNameControls(enterNameComp, PlayerController::ControlMethod::Gamepad);
+		AddEnterNameControls(enterNameComp, PlayerController::ControlMethod::Keyboard);
 	}
 
 	void BombermanManager::LoadScreen(const std::string& title)
@@ -263,6 +338,7 @@ namespace dae
 	{
 		m_currentScene = "High Score";
 
+		UpdateHighScores();
 		ResetHealth();
 
 		auto& scene = dae::SceneManager::GetInstance().CreateScene(m_currentScene);
@@ -271,6 +347,25 @@ namespace dae
 
 		GameObject* highScoreText{ scene.AddGameObject(std::make_unique<GameObject>(m_currentScene, 10.f, 10.f)) };
 		highScoreText->AddComponent<TextComponent>(m_font, m_fontSize, "HIGH SCORES:", m_textColor, m_shadowColor);
+
+		constexpr float nameStartPosX{ constants::WINDOW_WIDTH / 6.f };
+		constexpr float scoreStartPosX{ 5.f * constants::WINDOW_WIDTH / 6.f };
+		constexpr float startPosY{ constants::WINDOW_HEIGHT / 6.f };
+		constexpr float margin{ 15.f };
+
+		for (uint8_t idx{}; idx < m_highScores.size(); ++idx)
+		{
+			if (m_highScores[idx].name.empty()) continue;
+
+			GameObject* name{ scene.AddGameObject(std::make_unique<GameObject>("name"))};
+			name->AddComponent<TextComponent>(m_font, m_fontSize, m_highScores[idx].name, m_textColor, m_shadowColor);
+			name->SetPosition(nameStartPosX, startPosY + idx * margin);
+
+			GameObject* score{ scene.AddGameObject(std::make_unique<GameObject>("score"))};
+			TextComponent* scoreTextComp{ score->AddComponent<TextComponent>(m_font, m_fontSize, std::format("{}", m_highScores[idx].score), m_textColor, m_shadowColor)};
+			const glm::vec2 scoreTextDims{ scoreTextComp->GetRenderComponent()->GetTexture()->GetSize() };
+			score->SetPosition(scoreStartPosX - scoreTextDims.x, startPosY + idx * margin);
+		}
 
 		AddNavigateControls(PlayerController::ControlMethod::Gamepad);
 		AddNavigateControls(PlayerController::ControlMethod::Keyboard);
@@ -590,8 +685,37 @@ namespace dae
 		}
 	}
 
+	void BombermanManager::AddEnterNameControls(EnterNameComponent* enterNameComp, PlayerController::ControlMethod controlMethod) const
+	{
+		std::unique_ptr<ContinueCommand> continueCommand{ std::make_unique<ContinueCommand>() };
+		continueCommand->AddObserver(enterNameComp);
+
+		enterNameComp->AddObserver(m_state.get());
+
+		switch (controlMethod)
+		{
+		case PlayerController::ControlMethod::Gamepad:
+		{
+			PlayerController* gamepad{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Gamepad) };
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::A), std::move(continueCommand));
+			gamepad->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(GamepadButton::START), std::make_unique<InfoCommand>());
+			break;
+		}
+		case PlayerController::ControlMethod::Keyboard:
+		{
+			PlayerController* keyboard{ InputManager::GetInstance().AddPlayerController(PlayerController::ControlMethod::Keyboard) };
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_RETURN), std::move(continueCommand));
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
+			break;
+		}
+		}
+	}
+
 	void BombermanManager::AddPlayerControls(GameObject* gameObject, PlayerController::ControlMethod controlMethod, float speed, bool isBomberman) const
 	{
+		std::unique_ptr<SkipLevelCommand> skipLevelCommand{ std::make_unique<SkipLevelCommand>() };
+		skipLevelCommand->AddObserver(m_state.get());
+
 		switch (controlMethod)
 		{
 		case PlayerController::ControlMethod::Gamepad:
@@ -619,6 +743,7 @@ namespace dae
 				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_Z), std::make_unique<DetonateCommand>(gameObject));
 			}
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_F1),std::move(skipLevelCommand));
 			break;
 		}
 		case PlayerController::ControlMethod::Keyboard:
@@ -634,6 +759,7 @@ namespace dae
 				keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_O), std::make_unique<DetonateCommand>(gameObject));
 			}
 			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_I), std::make_unique<InfoCommand>());
+			keyboard->BindCommand(PlayerController::KeyState::DownThisFrame, static_cast<int>(SDL_SCANCODE_F1), std::move(skipLevelCommand));
 			break;
 		}
 		}

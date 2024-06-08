@@ -19,6 +19,7 @@ namespace scenes
 {
 	enum class Scenes {
 		Menu,
+		EnterName,
 		StageScreen,
 		SinglePlayer,
 		Coop,

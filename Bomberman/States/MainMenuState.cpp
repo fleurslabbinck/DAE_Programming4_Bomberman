@@ -2,7 +2,7 @@
 
 #include "../BombermanUtil.h"
 #include "../BombermanManager.h"
-#include "StageScreenState.h"
+#include "EnterNameState.h"
 #include "PvpScreenState.h"
 #include "HighScoreState.h"
 
@@ -14,11 +14,11 @@ namespace dae
 		{
 		case GameEvent::START_SINGLE:
 			BombermanManager::GetInstance().SetTotalPlayers(m_singlePlayer);
-			m_state = std::make_unique<StageScreenState>();
+			m_state = std::make_unique<EnterNameState>();
 			break;
 		case GameEvent::START_COOP:
 			BombermanManager::GetInstance().SetTotalPlayers(m_multiPlayer);
-			m_state = std::make_unique<StageScreenState>();
+			m_state = std::make_unique<EnterNameState>();
 			break;
 		case GameEvent::START_PVP:
 			BombermanManager::GetInstance().SetTotalPlayers(m_multiPlayer);

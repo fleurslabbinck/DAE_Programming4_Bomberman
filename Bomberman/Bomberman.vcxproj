@@ -167,10 +167,12 @@
     <ClCompile Include="Commands\GameInputCommands.cpp" />
     <ClCompile Include="Commands\InfoCommand.cpp" />
     <ClCompile Include="Commands\MoveCommand.cpp" />
+    <ClCompile Include="Commands\SkipLevelCommand.cpp" />
     <ClCompile Include="Components\BombComponent.cpp" />
     <ClCompile Include="Components\BomberComponent.cpp" />
     <ClCompile Include="Components\CameraComponent.cpp" />
     <ClCompile Include="Components\EnemyComponent.cpp" />
+    <ClCompile Include="Components\EnterNameComponent.cpp" />
     <ClCompile Include="Components\ExitComponent.cpp" />
     <ClCompile Include="Components\GridComponent.cpp" />
     <ClCompile Include="Components\HealthComponent.cpp" />
@@ -181,6 +183,7 @@
     <ClCompile Include="Components\SpriteComponent.cpp" />
     <ClCompile Include="Components\ScreenComponent.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="States\EnterNameState.cpp" />
     <ClCompile Include="States\GameOverScreenState.cpp" />
     <ClCompile Include="States\HighScoreState.cpp" />
     <ClCompile Include="States\MainMenuState.cpp" />
@@ -198,10 +201,12 @@
     <ClInclude Include="Commands\GameInputCommands.h" />
     <ClInclude Include="Commands\InfoCommand.h" />
     <ClInclude Include="Commands\MoveCommand.h" />
+    <ClInclude Include="Commands\SkipLevelCommand.h" />
     <ClInclude Include="Components\BombComponent.h" />
     <ClInclude Include="Components\BomberComponent.h" />
     <ClInclude Include="Components\CameraComponent.h" />
     <ClInclude Include="Components\EnemyComponent.h" />
+    <ClInclude Include="Components\EnterNameComponent.h" />
     <ClInclude Include="Components\ExitComponent.h" />
     <ClInclude Include="Components\GridComponent.h" />
     <ClInclude Include="Components\HealthComponent.h" />
@@ -211,6 +216,7 @@
     <ClInclude Include="Components\ScoreComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\ScreenComponent.h" />
+    <ClInclude Include="States\EnterNameState.h" />
     <ClInclude Include="States\GameOverScreenState.h" />
     <ClInclude Include="States\HighScoreState.h" />
     <ClInclude Include="States\MainMenuState.h" />

@@ -1,6 +1,8 @@
 #ifndef BOMBERMANMANAGER_H
 #define BOMBERMANMANAGER_H
 
+#include <iostream>
+#include <filesystem>
 #include <SDL.h>
 
 #include "Singleton.h"
@@ -15,6 +17,7 @@ namespace dae
 	class HealthComponent;
 	class ScoreComponent;
 	class MenuControllerComponent;
+	class EnterNameComponent;
 
 	class BombermanManager final : public Singleton<BombermanManager>, public GameManager
 	{
@@ -24,8 +27,8 @@ namespace dae
 		BombermanManager& operator=(const BombermanManager& other) = delete;
 		BombermanManager& operator=(BombermanManager&& other) = delete;
 
+		void SetDataLocation(const std::filesystem::path& data_location) { m_dataLocation = data_location; }
 		void InitializeGame();
-		void ParseLevels();
 		void HandleGameState() override;
 		void LoadScene(GameScene scene);
 
@@ -38,12 +41,15 @@ namespace dae
 		void NextLevel(powerUps::PowerUpState powerUpState);
 		void ResetLevel();
 
+		void SetPlayerName(const std::string& name) { m_currentHighScore.name = name; }
+		void SetScore(int score) { m_currentHighScore.score = score; }
+
 		void SetPvpWinner(const std::string& winner) { m_pvpWinner = winner; }
 
 	private:
 		friend class Singleton<BombermanManager>;
 		BombermanManager() = default;
-		~BombermanManager() = default;
+		~BombermanManager();
 
 		enum class GameMode {
 			Normal,
@@ -75,21 +81,36 @@ namespace dae
 			Playfield playfield;
 		};
 
+		struct HighScore {
+			std::string name{};
+			int score{};
+		};
+
+		std::filesystem::path m_dataLocation{};
+
+		// Gamemodes
 		GameMode m_gameMode{ GameMode::Normal };
 		NormalMode m_normalMode{};
 		PvpMode m_pvpMode{};
 
+		// Highscores
+		const std::string m_highScoreFilepath{ "highscores.txt" };
+		HighScore m_currentHighScore{};
+		std::vector<HighScore> m_highScores{};
+
+		// Game Info
 		uint8_t m_totalPlayers{};
 
 		const uint8_t m_maxHealth{ 2 };
 		uint8_t m_currentHealth{ m_maxHealth };
-		const uint8_t m_maxLevels{ 4 };
+		const uint8_t m_maxLevels{ 3 };
 		uint8_t m_currentLevel{};
 
 		powerUps::PowerUpState m_powerUpState{};
 
 		std::string m_pvpWinner{};
 
+		// Render Info
 		SDL_Color m_textColor{ 255, 255, 255, 255 };
 		SDL_Color m_shadowColor{ 200, 200, 200, 200 };
 
@@ -98,10 +119,18 @@ namespace dae
 
 		const int m_fontSize{ 8 };
 		const std::string m_font{ "nintendo-nes-font.otf" };
-		std::string m_currentScene{};
 		const SDL_Color m_backgroundColor{ 0, 147, 0 };
 
+		// Scene Info
+		std::string m_currentScene{};
+
+		void ParseLevels();
+		void ParseHighScores();
+		void WriteHighScores();
+		void UpdateHighScores();
+
 		void LoadMenuScene();
+		void LoadEnterNameScreen();
 		void LoadScreen(const std::string& title);
 		void LoadLevel();
 		void LoadPvp();
@@ -118,6 +147,7 @@ namespace dae
 		GameObject* FPSComponent(Scene& scene) const;
 
 		void AddMenuControls(MenuControllerComponent* controllerComp, PlayerController::ControlMethod controlMethod) const;
+		void AddEnterNameControls(EnterNameComponent* enterNameComp, PlayerController::ControlMethod controlMethod) const;
 		void AddPlayerControls(GameObject* gameObject, PlayerController::ControlMethod controlMethod, float speed, bool isBomberman = true) const;
 		void AddNavigateControls(PlayerController::ControlMethod controlMethod) const;
 	};

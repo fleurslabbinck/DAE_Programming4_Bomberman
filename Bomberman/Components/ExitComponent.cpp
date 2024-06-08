@@ -27,7 +27,7 @@ namespace dae
 		CollisionManager::GetInstance().RemoveCollider(m_colliderComponent.get());
 	}
 
-	void ExitComponent::OnNotify(Event event, GameObject*)
+	void ExitComponent::OnNotify(Event event, GameObject* gameObject)
 	{
 		switch (event)
 		{
@@ -37,7 +37,7 @@ namespace dae
 		case static_cast<int>(GameEvent::PLAYER_EXIT):
 			if (m_killedEnemies >= m_totalEnemies)
 			{
-				Notify(static_cast<int>(GameEvent::STAGE_WON), nullptr);
+				Notify(static_cast<int>(GameEvent::STAGE_WON), gameObject);
 			}
 			break;
 		}

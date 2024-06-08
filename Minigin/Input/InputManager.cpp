@@ -33,9 +33,11 @@ namespace dae
 
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
-			if (e.type == SDL_QUIT) {
+			if (e.type == SDL_QUIT)
+			{
 				return true;
 			}
+			else UpdatePlayerInput(e);
 		}
 
 		ExecuteCommands();
@@ -117,5 +119,15 @@ namespace dae
 		}
 
 		return false;
+	}
+
+	void InputManager::UpdatePlayerInput(const SDL_Event& e)
+	{
+		if (e.type == SDL_KEYDOWN)
+		{
+			if (e.key.keysym.sym == SDLK_BACKSPACE && m_playerInput.length() > 0) m_playerInput.pop_back();
+		}
+		else if (e.type == SDL_TEXTINPUT)
+			if (m_playerInput.size() < 20) m_playerInput += e.text.text;
 	}
 }

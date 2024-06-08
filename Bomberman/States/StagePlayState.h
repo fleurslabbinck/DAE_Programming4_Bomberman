@@ -2,6 +2,7 @@
 #define SINGLEPLAYSTATE_H
 
 #include "Game/GameState.h"
+#include "../BombermanManager.h"
 #include "../BombermanUtil.h"
 
 namespace dae
@@ -20,6 +21,7 @@ namespace dae
 
 	private:
 		powerUps::PowerUpState m_powerUpState{};
+		BombermanManager& m_bombermanManger{ BombermanManager::GetInstance() };
 
 		void ResetLevel();
 	};

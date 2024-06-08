@@ -45,6 +45,9 @@ namespace dae
 		bool ProcessInput();
 		PlayerController* AddPlayerController(PlayerController::ControlMethod controlMethod);
 		void RemovePlayerControllers();
+
+		std::string GetPlayerInput() const { return m_playerInput; }
+		void ResetPlayerInput() { m_playerInput = ""; }
 		
 	private:
 		friend class Singleton<InputManager>;
@@ -56,12 +59,16 @@ namespace dae
 
 		std::vector<std::unique_ptr<PlayerController>> m_playerControllers;
 
+		std::string m_playerInput{};
+
 		void UpdateKeyStates();
 		void ExecuteCommands();
 		std::vector<Command*> HandleInput(const std::unique_ptr<PlayerController>& playerController);
 		bool IsDown(const std::unique_ptr<PlayerController>& playerController, int input) const;
 		bool IsDownThisFrame(const std::unique_ptr<PlayerController>& playerController, int input);
 		bool IsUpThisFrame(const std::unique_ptr<PlayerController>& playerController, int input);
+
+		void UpdatePlayerInput(const SDL_Event& e);
 	};
 }
 #endif

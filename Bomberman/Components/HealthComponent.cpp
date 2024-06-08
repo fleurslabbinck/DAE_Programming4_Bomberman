@@ -8,6 +8,7 @@
 #include "../BombermanManager.h"
 #include "EnemyComponent.h"
 #include "BombComponent.h"
+#include "ScoreComponent.h"
 #include "ExitComponent.h"
 #include "PowerUpComponent.h"
 
@@ -52,7 +53,11 @@ namespace dae
 		switch (m_entityType)
 		{
 		case entities::EntityType::Bomberman:
-			if (gameObject->GetComponent<ExitComponent>() != nullptr) Notify(static_cast<int>(GameEvent::PLAYER_EXIT), nullptr);
+			if (gameObject->GetComponent<ExitComponent>() != nullptr)
+			{
+				BombermanManager::GetInstance().SetScore(GetOwner()->GetComponent<ScoreComponent>()->GetScore());
+				Notify(static_cast<int>(GameEvent::PLAYER_EXIT), nullptr);
+			}
 			else if (PowerUpComponent* powerUpComp = gameObject->GetComponent<PowerUpComponent>())
 			{
 				Notify(static_cast<int>(GameEvent::PLAYER_POWERUP), nullptr);
