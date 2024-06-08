@@ -21,8 +21,6 @@ namespace dae
 	{
 		float time{ TimeManager::GetInstance().GetDeltaTime() };
 
-		m_accumulatedTime += time;
-
 		for (Bomb& bomb : m_bombs)
 		{
 			bomb.timer += time;
@@ -55,7 +53,7 @@ namespace dae
 
 	void BomberComponent::DropBomb(GameObject* parent, const glm::vec2& pos)
 	{
-		if (!CanPlaceBomb() || m_accumulatedTime < m_cooldown) return;
+		if (!CanPlaceBomb()) return;
 
 		GameObject* bomb{ m_scene.AddGameObject(std::make_unique<GameObject>("bomb", pos.x, pos.y))};
 		bomb->SetParent(parent);
@@ -66,8 +64,6 @@ namespace dae
 		ServiceLocator::GetSoundSystem().PlaySoundFX(static_cast<int>(sound::SoundId::PlaceBomb), 10);
 
 		m_bombs.push_back({ bomb });
-
-		m_accumulatedTime = 0;
 	}
 
 	void BomberComponent::ExplodeBomb()

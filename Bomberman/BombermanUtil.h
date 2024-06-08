@@ -95,7 +95,7 @@ enum class GameEvent {
 namespace powerUps
 {
 	struct PowerUpState {
-		uint8_t maxBombs{ 2 };
+		uint8_t maxBombs{ 1 };
 		uint8_t fire{ 1 };
 		bool canDetonate{ false };
 	};
