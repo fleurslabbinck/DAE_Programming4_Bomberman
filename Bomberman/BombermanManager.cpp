@@ -280,7 +280,7 @@ namespace dae
 
 		stage->SetPosition(constants::WINDOW_WIDTH / 2.f - textureSize.x / 2.f, constants::WINDOW_HEIGHT / 2.f - textureSize.y / 2.f);
 
-		ScreenComponent* screenComp{ stage->AddComponent<ScreenComponent>(3.f) };
+		ScreenComponent* screenComp{ stage->AddComponent<ScreenComponent>(2.f) };
 		screenComp->AddObserver(m_state.get());
 	}
 
