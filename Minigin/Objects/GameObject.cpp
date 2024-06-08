@@ -39,7 +39,7 @@ namespace dae
 		if (m_parent != nullptr) m_parent->RemoveChild(this);
 
 		//set parent on itself
-		m_parent = std::move(parent);
+		m_parent = parent;
 
 		//add itself as child
 		if (m_parent != nullptr) m_parent->AddChild(this);

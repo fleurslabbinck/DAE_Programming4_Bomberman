@@ -20,11 +20,7 @@ namespace dae
 	HealthComponent::HealthComponent(GameObject* pOwner, entities::EntityType entityType, int maxLives, bool enemyPlayer)
 		: BaseComponent(pOwner), m_entityType{ entityType }, m_maxLives { maxLives }, m_enemyPlayer{ enemyPlayer }
 	{
-		if (entityType == entities::EntityType::Bomberman)
-		{
-			ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathSound), "../Data/Sounds/DieSound.wav");
-			ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathTune), "../Data/Sounds/BombermanDies.wav");
-		}
+
 	}
 
 	void HealthComponent::OnNotify(Event event, GameObject* gameObject)

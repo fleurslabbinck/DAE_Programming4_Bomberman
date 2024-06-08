@@ -14,11 +14,6 @@ namespace dae
 {
 	class SoundSystem::SoundImpl
 	{
-		enum class ChannelUse {
-			SoundFX,
-			Music
-		};
-
 	public:
 		SoundImpl()
 			: m_signalPromise{}
@@ -81,8 +76,8 @@ namespace dae
 					// Play sounds untill empty
 					while (!currentMessages.empty())
 					{
-						Mix_Volume(static_cast<int>(ChannelUse::SoundFX), currentMessages.front().volume);
-						if (Mix_PlayChannel(static_cast<int>(ChannelUse::SoundFX), m_soundFXs[currentMessages.front().id]->GetSoundFX(), 0) == -1)
+						Mix_Volume(-1, currentMessages.front().volume);
+						if (Mix_PlayChannel(-1, m_soundFXs[currentMessages.front().id]->GetSoundFX(), 0) == -1)
 						{
 							Mix_FreeChunk(m_soundFXs[currentMessages.front().id]->GetSoundFX());
 							Mix_Quit();

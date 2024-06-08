@@ -32,12 +32,13 @@ namespace dae
 		};
 
 	public:
-		void Update();
-		void Render(const glm::vec2& pos) const;
+		void Update() override;
+		void Render(const glm::vec2& pos) const override;
 
 		void Explode();
-
-		bool IsExploded() const { return m_explode; }
+		
+		void SetShouldExplode() { m_shouldExplode = true; }
+		bool ShouldExplode() const { return m_shouldExplode; }
 
 		explicit BombComponent(GameObject* pOwner, uint8_t fire, bool checkForChainExplosion = false);
 		~BombComponent() override;
@@ -52,6 +53,7 @@ namespace dae
 		std::unique_ptr<SpriteComponent> m_spriteComponent;
 		
 		bool m_explode{ false };
+		bool m_shouldExplode{ false };
 		bool m_checkForChainExplosion;
 
 		uint8_t m_fire;

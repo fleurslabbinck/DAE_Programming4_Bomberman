@@ -14,8 +14,6 @@ namespace dae
 	BomberComponent::BomberComponent(GameObject* pOwner, Scene& scene)
 		: BaseComponent(pOwner), m_scene{ scene }
 	{
-		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::PlaceBomb), "../Data/Sounds/PlaceBomb.wav");
-		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::Explosion), "../Data/Sounds/Explosion.wav");
 		
 	}
 
@@ -80,6 +78,18 @@ namespace dae
 		if (bombComp) bombComp->Explode();
 
 		m_bombs.erase(m_bombs.begin());
+
+		m_bombs.erase(std::remove_if(m_bombs.begin(), m_bombs.end(), [](Bomb& bomb)
+			{
+				BombComponent* otherBombComp{ bomb.bombObj->GetComponent<BombComponent>() };
+				if (otherBombComp->ShouldExplode())
+				{
+					otherBombComp->Explode();
+					return true;
+				}
+				return false;
+			}
+		), m_bombs.end());
 	}
 
 	void BomberComponent::Detonate()

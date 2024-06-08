@@ -1,5 +1,7 @@
 #include "StagePlayState.h"
 
+#include "ServiceLocator.h"
+#include "Sound/SoundSystem.h"
 #include "HighScoreState.h"
 #include "StageScreenState.h"
 #include "GameOverScreenState.h"
@@ -48,7 +50,7 @@ namespace dae
 
 	void StagePlayState::OnEnter() const
 	{
-		m_bombermanManger.LoadScene(static_cast<int>(scenes::Scenes::SinglePlayer));
+		m_bombermanManger.LoadScene(static_cast<int>(scenes::Scenes::Normal));
 	}
 
 	void StagePlayState::ResetLevel()

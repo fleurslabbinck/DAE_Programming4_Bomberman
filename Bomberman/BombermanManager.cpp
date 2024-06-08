@@ -7,6 +7,8 @@
 #include <ostream>
 #include <json.hpp>
 
+#include "ServiceLocator.h"
+#include "Sound/SoundSystem.h"
 #include "Scene/SceneManager.h"
 #include "Render/Renderer.h"
 #include "Objects/GameObject.h"
@@ -51,6 +53,13 @@ namespace dae
 		srand(static_cast<unsigned int>(time(0)));
 		m_state = std::make_unique<MainMenuState>();
 		m_state->OnEnter();
+
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::HorizontalStep), "Sounds/HorizontalStep.wav");
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::VerticalStep), "Sounds/VerticalStep.wav");
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathSound), "Sounds/DieSound.wav");
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::DeathTune), "Sounds/BombermanDies.wav");
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::PlaceBomb), "../Data/Sounds/PlaceBomb.wav");
+		ServiceLocator::GetSoundSystem().LoadSoundFX(static_cast<int>(sound::SoundId::Explosion), "../Data/Sounds/Explosion.wav");
 	}
 
 	void BombermanManager::ParseLevels()
@@ -192,8 +201,7 @@ namespace dae
 		case scenes::Scenes::StageScreen:
 			LoadScreen("STAGE " + std::to_string(m_currentLevel + 1));
 			break;
-		case scenes::Scenes::SinglePlayer:
-		case scenes::Scenes::Coop:
+		case scenes::Scenes::Normal:
 			m_gameMode = GameMode::Normal;
 			LoadLevel();
 			break;

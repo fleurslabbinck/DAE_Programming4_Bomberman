@@ -83,6 +83,8 @@ namespace dae
 
 	void BombComponent::Explode()
 	{
+		if (m_explode) return;
+
 		m_collisionManager.RemoveCollider(m_colliderComponentBomb.get());
 		m_spriteComponent->ToggleVisibility();
 
@@ -100,7 +102,7 @@ namespace dae
 		for (GameObject* bomb : m_bombs)
 		{
 			BombComponent* bombComp{ bomb->GetComponent<BombComponent>() };
-			if (!bombComp->IsExploded()) bombComp->Explode();
+			bombComp->SetShouldExplode();
 		}
 	}
 
